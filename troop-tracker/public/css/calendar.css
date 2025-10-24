@@ -1,0 +1,66 @@
+.calendar{
+    background: var(--main-content-color);
+    color: var(--primary-bg-color);
+    width:100%;
+    font-family: 'Oxygen';
+    table-layout:fixed;
+	font-weight: bold;
+}
+
+.calendar-title th {
+    font-size: 22px;
+    font-weight: bold;
+    padding: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.calendar-header th {
+    padding: 10px;
+    text-align: center;
+    background: var(--primary-bg-color);
+	font-weight: bold;
+	color: var(--button-text-color);
+}
+
+.calendar tbody tr td {
+    text-align: center;
+    vertical-align: top;
+    width: 14.28%;
+}
+
+.calendar tbody tr td a {
+    color: var(--button-text-color);
+}
+
+.calendar tbody tr td.pad{
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.calendar tbody tr td.day{
+}
+
+.calendar tbody tr td.day div:first-child{
+    padding:4px;
+    line-height:17px;
+    height:25px;
+}
+
+.calendar tbody tr td.day div:last-child{
+    font-size:10px;
+    padding:4px;
+    min-height:25px;
+}
+
+.calendar tbody tr td.today{
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.calendar tbody tr td.mask-start,
+.calendar tbody tr td.mask,
+.calendar tbody tr td.mask-end {
+    background: var(--squad-link-color);
+	overflow-wrap: break-word;
+	hyphens: auto;
+}
