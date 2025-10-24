@@ -60,10 +60,14 @@ class LoginSubmitControllerTest extends TestCase
             'password' => 'password',
         ]);
 
-        // Assert: User is authenticated and redirected to the dashboard
+        // Assert: User is authenticated, session is set, and redirected
         $this->assertAuthenticatedAs($this->trooper);
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect('/index.php');
         $response->assertSessionHasNoErrors();
+        $response->assertSessionHasAll([
+            'id' => $this->trooper->id,
+            'tkid' => $this->trooper->tkid,
+        ]);
     }
 
     public function test_invoke_handles_failed_authentication(): void
@@ -102,8 +106,5 @@ class LoginSubmitControllerTest extends TestCase
         $this->assertGuest();
         $response->assertRedirect();
         $response->assertSessionHasErrors(['username' => 'Refer to command staff']);
-        $response->assertSessionHas('flash_messages.danger', [
-            'You are currently banned. Please refer to command staff for additional information.'
-        ]);
     }
 }

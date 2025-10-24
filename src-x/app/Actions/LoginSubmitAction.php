@@ -215,7 +215,7 @@ if (isset($_POST['loginWithTK'])) {
             } else {
                 echo '
                 <p>
-                    Incorrect username or password. <a href="index.php?action=login">Try again?</a>
+                    Incorrect username or password. <a href="/login">Try again?</a>
                 </p>
 
                 <p>
@@ -228,13 +228,13 @@ if (isset($_POST['loginWithTK'])) {
     // An account does not exist
     if ($i == 0) {
         echo '
-        <p>Account not found. <a href="index.php?action=login">Try again?</a></p>
+        <p>Account not found. <a href="/login">Try again?</a></p>
 
         <p>Please contact the Garrison Webmaster or post a help request on the forums, if you continue to have issues. Your FL Garrison boards name may not match the Troop Tracker records.</p>';
     }
 } else {
     echo '
-    <form action="index.php?action=login" method="POST" name="loginForm" id="loginForm">
+    <form action="/login" method="POST" name="loginForm" id="loginForm">
         <p>Board Name:</p>
         <input type="text" name="tkid" id="tkid" />
 

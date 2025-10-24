@@ -96,7 +96,7 @@
 			<a href="index.php?action=requestaccess" >Request Access</a>
 			<a href="index.php?action=setup" >Account Setup</a>
 			<a href="faq" class="active">FAQ</a>
-	<a href="index.php?action=login" >Login</a>
+	<a href="/login" >Login</a>
 <a href="javascript:void(0);" class="icon" onclick="myFunction()"><i class="fa fa-bars"></i></a>
 </div>
 

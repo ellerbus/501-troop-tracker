@@ -28,7 +28,7 @@ class LogoutControllerTest extends TestCase
         $this->assertGuest();
 
         // Assert: Check for the redirect to the login route.
-        $response->assertRedirectToRoute('login');
+        $response->assertRedirect(route('login', ['logged_out' => '1']));
 
         // Assert: Check that the 'remember me' cookies are being cleared.
         $response->assertCookieExpired('TroopTrackerUsername');

@@ -96,13 +96,13 @@
 			<a href="index.php?action=requestaccess" >Request Access</a>
 			<a href="index.php?action=setup" >Account Setup</a>
 			<a href="faq" >FAQ</a>
-	<a href="index.php?action=login" class="active">Login</a>
+	<a href="/login" class="active">Login</a>
 <a href="javascript:void(0);" class="icon" onclick="myFunction()"><i class="fa fa-bars"></i></a>
 </div>
 
 <div class="dashboard-row"></div>
 	<h2 class="tm-section-header">Login</h2>
-		<form action="index.php?action=login" method="POST" name="loginForm" id="loginForm">
+		<form action="/login" method="POST" name="loginForm" id="loginForm">
 			<p>Board Name:</p>
 			<input type="text" name="tkid" id="tkid" />
 

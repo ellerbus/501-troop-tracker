@@ -49,6 +49,7 @@ class LoginSubmitController extends Controller
             Session::put('id', $trooper->id);
             Session::put('tkid', $trooper->tkid);
 
+            //  TODO REMOVE WHEN 100%
             if (session_status() === PHP_SESSION_NONE)
             {
                 session_start();
@@ -61,7 +62,7 @@ class LoginSubmitController extends Controller
             Auth::login($trooper, $request->remember_me);
 
             //  TODO fix route
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/index.php');
         }
 
         //  no idea but don't let them in

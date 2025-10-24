@@ -26,11 +26,19 @@ class LogoutController extends Controller
 
         Session::forget(['id', 'tkid']);
 
+        //  TODO REMOVE WHEN 100%
+        if (session_status() === PHP_SESSION_NONE)
+        {
+            session_start();
+        }
+
+        session_destroy();
+
         // Forget 'remember me' cookies
         Cookie::queue(Cookie::forget('TroopTrackerUsername'));
         Cookie::queue(Cookie::forget('TroopTrackerPassword'));
 
-        return redirect()->route('login');
+        return redirect()->route('login')->withQuery(['logged_out' => '1']);
     }
 
 }
