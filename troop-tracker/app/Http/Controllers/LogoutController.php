@@ -22,6 +22,8 @@ class LogoutController extends Controller
      */
     public function __invoke(Request $request)
     {
+        $this->flash->success('You have been logged out.');
+
         Auth::logout();
 
         Session::forget(['id', 'tkid']);
@@ -32,13 +34,14 @@ class LogoutController extends Controller
             session_start();
         }
 
-        session_destroy();
+        unset($_SESSION['id']);
+        unset($_SESSION['tkid']);
 
         // Forget 'remember me' cookies
         Cookie::queue(Cookie::forget('TroopTrackerUsername'));
         Cookie::queue(Cookie::forget('TroopTrackerPassword'));
 
-        return redirect()->route('login')->withQuery(['logged_out' => '1']);
+        return redirect()->route('login', ['logged_out' => '1']);
     }
 
 }
