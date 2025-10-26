@@ -106,6 +106,7 @@
       <!-- External JS File -->
       <script type="text/javascript"
               src="script/js/main.js?v=9"></script>
+      @yield('page-script')
 </body>
 
 </html>

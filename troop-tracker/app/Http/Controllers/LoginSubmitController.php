@@ -6,18 +6,16 @@ use App\Enums\AuthenticationStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Services\FlashMessageService;
-use App\Services\XenforoService;
-use Illuminate\Http\Request;
+use App\Services\AuthenticationService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Http;
 use App\Models\Trooper;
 
 class LoginSubmitController extends Controller
 {
     public function __construct(
         private readonly FlashMessageService $flash,
-        private readonly XenforoService $xenforo,
+        private readonly AuthenticationService $auth,
     ) {
 
 
@@ -31,10 +29,16 @@ class LoginSubmitController extends Controller
         //  trooper existance is checked via LoginRequest
         $trooper = Trooper::where('forum_id', $request->username)->first();
 
-        $results = $this->xenforo->authenticate(
-            user_name: $request->username,
-            password: $request->password,
-            trooper: $trooper
+        if ($trooper->approved == false)
+        {
+            $this->flash->warning('Your access has not been approved yet. Please refer to command staff for additional information.');
+
+            return back()->withErrors(['username' => 'Refer to command staff']);
+        }
+
+        $results = $this->auth->authenticate(
+            username: $request->username,
+            password: $request->password
         );
 
         if ($results == AuthenticationStatus::BANNED)
@@ -44,25 +48,53 @@ class LoginSubmitController extends Controller
             return back()->withErrors(['username' => 'Refer to command staff']);
         }
 
+        if ($trooper->permissions == 3)
+        {
+            //  retired
+            $this->flash->danger('You cannot access this account. Please refer to command staff for additional information.');
+
+            return back()->withErrors(['username' => 'You cannot access this account.']);
+        }
+
+        $can_access = false;
+
         if ($results == AuthenticationStatus::SUCCESS)
         {
-            Session::put('id', $trooper->id);
-            Session::put('tkid', $trooper->tkid);
 
-            //  TODO REMOVE WHEN 100%
-            if (session_status() === PHP_SESSION_NONE)
+            if ($trooper->p501 != 3 && $trooper->p501 != 0)
             {
-                session_start();
+                $can_access = true;
             }
 
-            $_SESSION['id'] = $trooper->id;
-            $_SESSION['tkid'] = $trooper->tkid;
+            //  TODO TABLE
+            $clubs = ['pRebel', 'pDroid', 'pMando', 'pOther', 'pSG', 'pDE'];
+            foreach ($clubs as $club)
+            {
+                if ($trooper->{$club} != 3 && $trooper->{$club} != 0)
+                {
+                    $can_access = true;
+                }
+            }
 
-            //  all good
-            Auth::login($trooper, $request->remember_me);
+            if ($can_access)
+            {
+                Session::put('id', $trooper->id);
+                Session::put('tkid', $trooper->tkid);
 
-            //  TODO fix route
-            return redirect()->intended('/index.php');
+                //  TODO REMOVE WHEN 100%
+                if (session_status() === PHP_SESSION_NONE)
+                {
+                    session_start();
+                }
+                $_SESSION['id'] = $trooper->id;
+                $_SESSION['tkid'] = $trooper->tkid;
+
+                //  all good
+                Auth::login($trooper, $request->remember_me);
+
+                //  TODO fix route
+                return redirect()->intended('/index.php');
+            }
         }
 
         //  no idea but don't let them in

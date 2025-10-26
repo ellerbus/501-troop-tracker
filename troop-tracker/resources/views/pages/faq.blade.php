@@ -2,6 +2,9 @@
 @section('current_page', 'faq')
 
 @section('content')
+
+<x-page-title :title="'FAQ'" />
+
 @foreach ($videos as $key => $label)
 <h3>{{ $label }}</h3>
 <p>

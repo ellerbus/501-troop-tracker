@@ -6,7 +6,7 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Enums\AuthenticationStatus;
 use App\Models\Trooper;
-use App\Services\XenforoService;
+use App\Services\AuthenticationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
 use Tests\TestCase;
@@ -23,7 +23,7 @@ class LoginSubmitControllerTest extends TestCase
     private Trooper $trooper;
 
     /**
-     * The mocked XenforoService.
+     * The mocked AuthenticationService.
      *
      * @var \Mockery\MockInterface
      */
@@ -39,8 +39,8 @@ class LoginSubmitControllerTest extends TestCase
             'name' => 'TK-12345',
         ]);
 
-        // Mock the XenforoService and bind it to the container
-        $this->xenforo_mock = $this->mock(XenforoService::class);
+        // Mock the AuthenticationService and bind it to the container
+        $this->xenforo_mock = $this->mock(AuthenticationService::class);
     }
 
     public function test_invoke_handles_successful_authentication(): void
@@ -48,10 +48,7 @@ class LoginSubmitControllerTest extends TestCase
         // Arrange: Xenforo service will return SUCCESS
         $this->xenforo_mock->shouldReceive('authenticate')
             ->once()
-            ->with($this->trooper->forum_id, 'password', \Mockery::on(function ($trooper)
-            {
-                return $trooper->id === $this->trooper->id;
-            }))
+            ->with($this->trooper->forum_id, 'password')
             ->andReturn(AuthenticationStatus::SUCCESS);
 
         // Act: Post to the login route

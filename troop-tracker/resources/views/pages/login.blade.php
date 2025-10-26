@@ -3,28 +3,22 @@
 
 @section('content')
 
-<h2 class="tm-section-header">Login</h2>
+<x-page-title :title="'Login'" />
+
 <form method="POST"
       action="{{ route('login') }}">
   @csrf
 
   <x-label :value="config('forum.name') . ' Username:'" />
   <x-input type="text"
-           name="username"
-           id="username"
-           value="{{ old('username') }}"
            required
-           autofocus />
-  <x-input-error :property="'username'" />
+           autofocus
+           :property="'username'" />
 
   <x-label :value="config('forum.name') . ' Password:'" />
-  <x-input type="password"
-           name="password"
-           id="password"
-           value="{{ old('password') }}"
+  <x-input type="text"
            required
-           autofocus />
-  <x-input-error :property="'password'" />
+           :property="'password'" />
 
   <br /><br />
 

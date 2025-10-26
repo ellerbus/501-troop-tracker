@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\RegisterDisplayController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginSubmitController;
 use App\Http\Controllers\LoginDisplayController;
@@ -10,3 +11,4 @@ Route::get('/faq', FaqDisplayController::class)->name('faq');
 Route::get('/login', LoginDisplayController::class)->name('login');
 Route::post('/login', LoginSubmitController::class);
 Route::get('/logout', LogoutController::class)->name('logout');
+Route::get('/register', RegisterDisplayController::class)->name('register');

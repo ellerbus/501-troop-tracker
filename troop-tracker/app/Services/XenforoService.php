@@ -25,15 +25,14 @@ class XenforoService
     /**
      * Authenticates a user against the Xenforo API.
      *
-     * @param string $user_name The user's forum username.
+     * @param string $username The user's forum username.
      * @param string $password The user's password.
-     * @param Trooper $trooper The trooper model associated with the user. Currently unused.
      * @return AuthenticationStatus The result of the authentication attempt.
      */
-    public function authenticate(string $user_name, string $password, Trooper $trooper): AuthenticationStatus
+    public function authenticate(string $username, string $password): AuthenticationStatus
     {
         $credentials = [
-            'login' => $user_name,
+            'login' => $username,
             'password' => $password,
         ];
 
