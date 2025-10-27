@@ -10,6 +10,7 @@ use App\Services\AuthenticationService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\Trooper;
+use MembershipStatus;
 
 class LoginSubmitController extends Controller
 {
@@ -61,7 +62,7 @@ class LoginSubmitController extends Controller
         if ($results == AuthenticationStatus::SUCCESS)
         {
 
-            if ($trooper->p501 != 3 && $trooper->p501 != 0)
+            if ($trooper->p501 != MembershipStatus::Retired && $trooper->p501 != MembershipStatus::None)
             {
                 $can_access = true;
             }
@@ -70,7 +71,7 @@ class LoginSubmitController extends Controller
             $clubs = ['pRebel', 'pDroid', 'pMando', 'pOther', 'pSG', 'pDE'];
             foreach ($clubs as $club)
             {
-                if ($trooper->{$club} != 3 && $trooper->{$club} != 0)
+                if ($trooper->{$club} != MembershipStatus::Retired && $trooper->{$club} != MembershipStatus::None)
                 {
                     $can_access = true;
                 }
