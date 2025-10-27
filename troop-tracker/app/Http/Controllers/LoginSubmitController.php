@@ -10,7 +10,7 @@ use App\Services\AuthenticationService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\Trooper;
-use MembershipStatus;
+use App\Enums\MembershipStatus;
 
 class LoginSubmitController extends Controller
 {

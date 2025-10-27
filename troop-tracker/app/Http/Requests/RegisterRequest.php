@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\AccountType;
 use App\Enums\AuthenticationStatus;
 use App\Services\AuthenticationService;
 use Illuminate\Foundation\Http\FormRequest;
@@ -68,12 +69,12 @@ class RegisterRequest extends FormRequest
                     $validator->errors()->add('tkid', 'TKID must be an integer.');
                 }
 
-                if ($account_type === 1 && (int) $tkid === 0)
+                if ($account_type === AccountType::Regular && (int) $tkid === 0)
                 {
                     $validator->errors()->add('tkid', 'TKID cannot be zero.');
                 }
 
-                if ($account_type === 4 && (int) $tkid > 0)
+                if ($account_type === AccountType::Handler && (int) $tkid > 0)
                 {
                     $validator->errors()->add('tkid', 'TKID must be zero for a handler account.');
                 }
