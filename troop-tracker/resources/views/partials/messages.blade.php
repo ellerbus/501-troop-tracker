@@ -1,4 +1,4 @@
-@if ($flash_messages)
+@if ($flash_messages = $flash->getMessages())
 <div class="space-content">
   @foreach ($flash_messages as $type => $messages)
   @foreach ($messages as $message)

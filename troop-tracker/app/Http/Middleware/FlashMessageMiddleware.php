@@ -18,9 +18,7 @@ class FlashMessageMiddleware
 
     public function handle(Request $request, Closure $next)
     {
-        $flash_messages = $this->flash->getMessages();
-
-        View::share('flash_messages', $flash_messages);
+        View::share('flash', $this->flash);
 
         return $next($request);
     }

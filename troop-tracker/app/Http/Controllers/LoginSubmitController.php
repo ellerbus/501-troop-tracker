@@ -49,7 +49,7 @@ class LoginSubmitController extends Controller
             return back()->withErrors(['username' => 'Refer to command staff']);
         }
 
-        if ($trooper->permissions == 3)
+        if ($trooper->permissions == MembershipStatus::Retired)
         {
             //  retired
             $this->flash->danger('You cannot access this account. Please refer to command staff for additional information.');
@@ -61,7 +61,6 @@ class LoginSubmitController extends Controller
 
         if ($results == AuthenticationStatus::SUCCESS)
         {
-
             if ($trooper->p501 != MembershipStatus::Retired && $trooper->p501 != MembershipStatus::None)
             {
                 $can_access = true;
@@ -69,6 +68,7 @@ class LoginSubmitController extends Controller
 
             //  TODO TABLE
             $clubs = ['pRebel', 'pDroid', 'pMando', 'pOther', 'pSG', 'pDE'];
+
             foreach ($clubs as $club)
             {
                 if ($trooper->{$club} != MembershipStatus::Retired && $trooper->{$club} != MembershipStatus::None)
