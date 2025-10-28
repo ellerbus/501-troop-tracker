@@ -26,12 +26,15 @@
 
 <h3>I cannot login / I forgot my password</h3>
 <p>
-  The Troop Tracker has been integrated with the boards. You must use your <b>{{ config('forum.name') }}</b> boards
+  The Troop Tracker has been integrated with the boards. You must use your <b>{{ config('tracker.forum.display_name')
+    }}</b> boards
   username and passwordto login to Troop Tracker. To recover your password, use password recovery on the
-  <b>{{ config('forum.name') }}</b> forum. If you
-  continue to have issues logging into your account, your <b>{{ config('forum.name') }}</b> forum username may not
+  <b>{{ config('tracker.forum.display_name') }}</b> forum. If you
+  continue to have issues logging into your account, your <b>{{ config('tracker.forum.display_name') }}</b> forum
+  username may not
   match the Troop Tracker
-  records. Contact the <b>{{ config('forum.name') }}</b> Webmaster or post a help thread on the forums to get this
+  records. Contact the <b>{{ config('tracker.forum.display_name') }}</b> Webmaster or post a help thread on the forums
+  to get this
   corrected.
 </p>
 

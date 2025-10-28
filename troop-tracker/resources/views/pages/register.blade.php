@@ -8,7 +8,8 @@
      id="requestAccessFormArea">
 
   <x-message>
-    New to the 501st and/or {{ config('forum.name') }}? Or are you solely a member of another club? Use this form below
+    New to the 501st and/or {{ config('tracker.forum.display_name') }}? Or are you solely a member of another club? Use
+    this form below
     to start signing up for troops. Command Staff will need to approve your account prior to use.
   </x-message>
 
@@ -55,7 +56,7 @@
     <br /><br />
 
 
-    <x-label :value="config('forum.name') . ' Username:'" />
+    <x-label :value="config('tracker.forum.display_name') . ' Username:'" />
     <x-input type="text"
              required
              autofocus
@@ -63,7 +64,7 @@
     <br /><br />
 
 
-    <x-label :value="config('forum.name') . ' Password:'" />
+    <x-label :value="config('tracker.forum.display_name') . ' Password:'" />
     <x-input type="text"
              required
              :property="'forum_password'" />

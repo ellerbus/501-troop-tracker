@@ -5,23 +5,14 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\AuthenticationStatus;
-use Illuminate\Support\Facades\Auth;
+use App\Contracts\AuthenticationInterface;
 use Illuminate\Support\Facades\Http;
-use App\Models\Trooper;
 
 /**
  * Service to interact with the Xenforo API.
  */
-class AuthenticationService
+class StandaloneAuthenticationService implements AuthenticationInterface
 {
-    /**
-     * XenforoService constructor.
-     */
-    public function __construct(private readonly XenforoService $xenforo)
-    {
-    }
-
-
     /**
      * Authenticates a user against the Xenforo API.
      *
@@ -31,6 +22,7 @@ class AuthenticationService
      */
     public function authenticate(string $username, string $password): AuthenticationStatus
     {
-        return $this->xenforo->authenticate($username, $password);
+        //  no idea but don't let them in
+        return AuthenticationStatus::FAILURE;
     }
 }

@@ -61,7 +61,7 @@ class FlashMessageService
 
         $messages[$type][] = $message;
 
-        Session::flash(self::FLASH_KEY, $messages);
+        Session::put(self::FLASH_KEY, $messages);
     }
 
     /**

@@ -112,18 +112,4 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | Custom Xenforo authentication
-    |--------------------------------------------------------------------------
-    |
-    |
-    */
-    'xenforo' => [
-        'url' => env('XENFORO_URL', ''),
-        'key' => env('XENFORO_KEY', ''),
-        'user' => env('XENFORO_USER', ''),
-    ],
-
 ];

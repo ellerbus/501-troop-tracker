@@ -5,23 +5,14 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\AuthenticationStatus;
-use Illuminate\Support\Facades\Auth;
+use App\Contracts\AuthenticationInterface;
 use Illuminate\Support\Facades\Http;
-use App\Models\Trooper;
 
 /**
  * Service to interact with the Xenforo API.
  */
-class XenforoService
+class XenforoAuthenticationService implements AuthenticationInterface
 {
-    /**
-     * XenforoService constructor.
-     */
-    public function __construct()
-    {
-    }
-
-
     /**
      * Authenticates a user against the Xenforo API.
      *
@@ -37,11 +28,11 @@ class XenforoService
         ];
 
         $headers = [
-            'XF-Api-Key' => config('auth.xenforo.key'),
-            'XF-Api-User' => config('auth.xenforo.user'),
+            'XF-Api-Key' => config('tracker.auth.xenforo.key'),
+            'XF-Api-User' => config('tracker.auth.xenforo.user'),
         ];
 
-        $response = Http::withHeaders($headers)->post(config('auth.xenforo.url'), $credentials);
+        $response = Http::withHeaders($headers)->post(config('tracker.auth.xenforo.url'), $credentials);
 
         $message = json_decode($response->body(), false);
 

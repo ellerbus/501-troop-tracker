@@ -3,22 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
-use App\Repositories\TroopRepository;
-use Illuminate\Http\JsonResponse;
+use App\Contracts\AuthenticationInterface;
+use App\Services\FlashMessageService;
+use App\Services\TrooperService;
+use Illuminate\Http\RedirectResponse;
 
 class RegisterSubmitController extends Controller
 {
     public function __construct(
-        protected TroopRepository $troopRepo
+        private readonly AuthenticationInterface $auth,
+        private readonly FlashMessageService $flash,
+        private readonly TrooperService $troopers
     ) {
     }
 
-    public function store(RegisterRequest $request): JsonResponse
+    public function store(RegisterRequest $request): RedirectResponse
     {
         $data = $request->validated();
 
         // Attempt forum login
         $forumLogin = $request->attemptForumLogin($data['forumid'], $data['forumpassword']);
+
         if (!($forumLogin['success'] ?? false))
         {
             return response()->json(['error' => 'Forum login failed'], 422);

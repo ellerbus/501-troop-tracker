@@ -9,14 +9,14 @@
       action="{{ route('login') }}">
   @csrf
 
-  <x-label :value="config('forum.name') . ' Username:'" />
+  <x-label :value="config('tracker.forum.display_name') . ' Username:'" />
   <x-input type="text"
            required
            autofocus
            :property="'username'" />
 
-  <x-label :value="config('forum.name') . ' Password:'" />
-  <x-input type="text"
+  <x-label :value="config('tracker.forum.display_name') . ' Password:'" />
+  <x-input type="password"
            required
            :property="'password'" />
 
@@ -35,7 +35,7 @@
 
 <p>
   <small>
-    <b>Remember:</b><br />Login with your {{ config('forum.name') }} board username and password.
+    <b>Remember:</b><br />Login with your {{ config('tracker.forum.display_name') }} board username and password.
   </small>
 </p>
 

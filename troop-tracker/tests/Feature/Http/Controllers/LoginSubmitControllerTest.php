@@ -7,8 +7,9 @@ namespace Tests\Feature\Http\Controllers;
 use App\Enums\AuthenticationStatus;
 use App\Enums\MembershipStatus;
 use App\Models\Trooper;
-use App\Services\AuthenticationService;
+use App\Contracts\AuthenticationInterface;
 use App\Services\FlashMessageService;
+use Database\Seeders\ClubSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
 use Tests\TestCase;
@@ -18,7 +19,7 @@ class LoginSubmitControllerTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * The mocked AuthenticationService.
+     * The mocked AuthenticationInterface.
      */
     private MockInterface $auth_mock;
 
@@ -31,15 +32,18 @@ class LoginSubmitControllerTest extends TestCase
     {
         parent::setUp();
 
-        // Mock the AuthenticationService and bind it to the container
-        $this->auth_mock = $this->mock(AuthenticationService::class);
+        // Mock the AuthenticationInterface and bind it to the container
+        $this->auth_mock = $this->mock(AuthenticationInterface::class);
         $this->flash_mock = $this->mock(FlashMessageService::class);
+
+        $this->seed(ClubSeeder::class);
     }
 
     public function test_invoke_handles_successful_authentication_with_active_501st_membership(): void
     {
         // Arrange
         $trooper = Trooper::factory()->create([
+            'approved' => 1,
             'p501' => MembershipStatus::Member,
         ]);
 
@@ -68,6 +72,7 @@ class LoginSubmitControllerTest extends TestCase
     {
         // Arrange
         $trooper = Trooper::factory()->create([
+            'approved' => 1,
             'p501' => MembershipStatus::None,
             'pRebel' => MembershipStatus::Member,
         ]);
@@ -136,6 +141,7 @@ class LoginSubmitControllerTest extends TestCase
     {
         // Arrange
         $trooper = Trooper::factory()->create(['approved' => false]);
+
         $this->auth_mock->shouldNotReceive('authenticate');
         $this->flash_mock->shouldReceive('warning')->once();
 

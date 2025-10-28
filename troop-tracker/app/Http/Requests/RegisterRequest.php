@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\AccountType;
 use App\Enums\AuthenticationStatus;
-use App\Services\AuthenticationService;
+use App\Contracts\AuthenticationInterface;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 use Illuminate\Validation\Rule;
@@ -143,9 +143,9 @@ class RegisterRequest extends FormRequest
         // Replace with actual forum login logic or service
         return loginWithForum($forumid, $password);
     }
-    protected function prepareForValidation(AuthenticationService $auth): void
-    {
-        $this->auth = $auth;
-    }
+    // protected function prepareForValidation(AuthenticationInterface $auth): void
+    // {
+    //     $this->auth = $auth;
+    // }
 
 }

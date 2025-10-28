@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\MembershipStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -56,7 +57,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string|null $note
  * @property Carbon $datecreated
  *
- * @package App\Models\Base
+ * @package App\Models
  */
 class Trooper extends Authenticatable
 {
@@ -125,17 +126,17 @@ class Trooper extends Authenticatable
         'spTrooper' => 'int',
         'spCostume' => 'int',
         'spAward' => 'int',
-        'p501' => 'int',
-        'pRebel' => 'int',
-        'pDroid' => 'int',
-        'pMando' => 'int',
-        'pOther' => 'int',
-        'pSG' => 'int',
-        'pDE' => 'int',
+        'p501' => MembershipStatus::class,
+        'pRebel' => MembershipStatus::class,
+        'pDroid' => MembershipStatus::class,
+        'pMando' => MembershipStatus::class,
+        'pOther' => MembershipStatus::class,
+        'pSG' => MembershipStatus::class,
+        'pDE' => MembershipStatus::class,
         'mandoid' => 'int',
         'de_id' => 'int',
         'last_active' => 'datetime',
-        'approved' => 'int',
+        'approved' => 'bool',
         'subscribe' => 'int',
         'theme' => 'int',
         'supporter' => 'int',
@@ -156,6 +157,11 @@ class Trooper extends Authenticatable
         'econfirm' => 'bool',
         'datecreated' => 'datetime'
     ];
+
+    public function isUnapproved(): bool
+    {
+        return $this->approved == false;
+    }
 }
 
 
