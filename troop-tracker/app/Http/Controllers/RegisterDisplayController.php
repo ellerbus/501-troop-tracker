@@ -22,7 +22,7 @@ class RegisterDisplayController extends Controller
      */
     public function __invoke(Request $request): View
     {
-        $clubs = $this->clubs->findAllActive();
+        $clubs = $this->clubs->findAllActive(include_squads: true);
 
         $data = [
             'clubs' => $clubs

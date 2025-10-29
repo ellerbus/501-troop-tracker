@@ -6,6 +6,8 @@
 
 namespace App\Models\Base;
 
+use App\Models\Squad;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -18,6 +20,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $db_identifier_field
  * @property string $db_identifier_display
  * @property bool $active
+ * 
+ * @property Collection|Squad[] $squads
  *
  * @package App\Models\Base
  */
@@ -29,4 +33,9 @@ class Club extends Model
     protected $casts = [
         'active' => 'bool'
     ];
+
+    public function squads()
+    {
+        return $this->hasMany(Squad::class);
+    }
 }

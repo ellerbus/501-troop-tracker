@@ -16,8 +16,16 @@ class ClubService
      *
      * @return \Illuminate\Database\Eloquent\Collection<int, Club>|Club[]
      */
-    public function findAllActive(): \Illuminate\Database\Eloquent\Collection
+    public function findAllActive(bool $include_squads = false): \Illuminate\Database\Eloquent\Collection
     {
-        return Club::where('active', true)->orderBy('name')->get();
+        $query = Club::where('active', true)->orderBy('name');
+
+        if ($include_squads)
+        {
+            $query->with('squads');
+        }
+
+        return $query->get();
+
     }
 }
