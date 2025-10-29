@@ -26,7 +26,7 @@ class ClubSeeder extends Seeder
             'image_path' => 'images/clubs/rebel-legion.png',
             'db_status_field' => 'pRebel',
             'db_identifier_field' => 'rebelforum',
-            'db_identifier_display' => 'Rebel Legion Forum Username',
+            'db_identifier_display' => 'Forum Username',
             'active' => true
         ]);
         Club::create([
@@ -34,7 +34,7 @@ class ClubSeeder extends Seeder
             'image_path' => 'images/clubs/droid-builders.png',
             'db_status_field' => 'pDroid',
             'db_identifier_field' => 'droidid',
-            'db_identifier_display' => 'Rebel Legion Forum Username',
+            'db_identifier_display' => 'Forum Username',
             'active' => false
         ]);
         Club::create([
@@ -42,7 +42,7 @@ class ClubSeeder extends Seeder
             'image_path' => 'images/clubs/mando-mercs.png',
             'db_status_field' => 'pMando',
             'db_identifier_field' => 'mandoid',
-            'db_identifier_display' => 'Mando Mercs CAT #',
+            'db_identifier_display' => 'CAT #',
             'active' => true
         ]);
         Club::create([
@@ -50,7 +50,7 @@ class ClubSeeder extends Seeder
             'image_path' => 'images/clubs/saber-guild.png',
             'db_status_field' => 'pSG',
             'db_identifier_field' => 'sgid',
-            'db_identifier_display' => 'Saber Guild SG #',
+            'db_identifier_display' => 'SG #',
             'active' => true
         ]);
         Club::create([
@@ -58,7 +58,7 @@ class ClubSeeder extends Seeder
             'image_path' => 'images/clubs/saber-guild.png',
             'db_status_field' => 'pDE',
             'db_identifier_field' => 'de_id',
-            'db_identifier_display' => 'Dark Empire #',
+            'db_identifier_display' => '#',
             'active' => true
         ]);
     }

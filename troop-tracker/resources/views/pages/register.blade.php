@@ -46,16 +46,6 @@
     <br /><br />
 
 
-    <div id="tkid_container">
-      <x-label>
-        TKID (numbers only):
-      </x-label>
-      <x-input type="text"
-               :property="'tkid'" />
-    </div>
-    <br /><br />
-
-
     <x-label :value="config('tracker.forum.display_name') . ' Username:'" />
     <x-input type="text"
              required
@@ -70,7 +60,7 @@
              :property="'forum_password'" />
     <br /><br />
 
-
+    <!-- 
     <x-label>
       Squad/Club:
     </x-label>
@@ -89,9 +79,16 @@
       <option value="13">Dark Empire</option>
       <option value="0">Florida Garrison / 501st Visitor</option>
     </select>
-    <br /><br />
+    <br /><br /> -->
 
+    <p>
+      Select your associated clubs below.
+    </p>
 
+    @foreach ($clubs as $club)
+    @include('partials.register.club', ['club' => $club])
+    @endforeach
+    <!-- 
     <x-label>
       Rebel Legion Forum Username (if applicable):
     </x-label>
@@ -121,7 +118,7 @@
     </x-label>
     <x-input type="text"
              :property="'dark_empire_id'" />
-    <br /><br />
+    <br /><br /> -->
 
 
     <x-submit-button>
@@ -139,18 +136,44 @@
 @section('page-script')
 <script type="text/javascript">
   $(document).ready(function () {
-    $('#account_type').change(function () {
-      const selected = $(this).val();
+    // $('#account_type').change(function () {
+    //   const selected = $(this).val();
 
-      if (selected == '1') {
-        $('#tkid_container').show();
-      } else if (selected == '4') {
-        $('#tkid_container').hide();
+    //   if (selected == '1') {
+    //     $('#tkid_container').show();
+    //   } else if (selected == '4') {
+    //     $('#tkid_container').hide();
+    //   }
+    // });
+
+    // // Optional: trigger on page load to set initial state
+    // $('#account_type').trigger('change');
+    $('input[type="checkbox"][data-club-id]').each(function () {
+      const $checkbox = $(this);
+      const clubId = $checkbox.data('club-id');
+      const $targetDiv = $('.club-' + clubId);
+      const $inputField = $targetDiv.find('input');
+
+      // Initial state
+      if ($checkbox.is(':checked')) {
+        $targetDiv.show();
+        $inputField.prop('disabled', false);
+      } else {
+        $targetDiv.hide();
+        $inputField.prop('disabled', true);
       }
-    });
 
-    // Optional: trigger on page load to set initial state
-    $('#account_type').trigger('change');
+      // Toggle on change
+      $checkbox.on('change', function () {
+        if ($(this).is(':checked')) {
+          $targetDiv.show();
+          $inputField.prop('disabled', false);
+        } else {
+          $targetDiv.hide();
+          $inputField.prop('disabled', true);
+        }
+      });
+    });
   });
 </script>
 @endsection

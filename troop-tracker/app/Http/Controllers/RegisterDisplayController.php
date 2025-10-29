@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Services\ClubService;
 use App\Services\FlashMessageService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -10,7 +11,8 @@ use Illuminate\Http\Request;
 class RegisterDisplayController extends Controller
 {
     public function __construct(
-        private readonly FlashMessageService $flash
+        private readonly FlashMessageService $flash,
+        private readonly ClubService $clubs
     ) {
 
     }
@@ -20,7 +22,13 @@ class RegisterDisplayController extends Controller
      */
     public function __invoke(Request $request): View
     {
-        return view('pages.register');
+        $clubs = $this->clubs->findAllActive();
+
+        $data = [
+            'clubs' => $clubs
+        ];
+
+        return view('pages.register', $data);
     }
 
 
