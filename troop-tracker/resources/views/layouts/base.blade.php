@@ -8,6 +8,8 @@
         content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible"
         content="ie=edge" />
+  <meta name="csrf-token"
+        content="{{ csrf_token() }}">
   <!-- Title -->
   <title>501st Florida Garrison - Troop Tracker</title>
 
@@ -53,7 +55,6 @@
     <div class="tm-main-content">
       <section class="tm-section">
         @include('partials.navbar', ['current_page' => View::yieldContent('current_page')])
-        @include('partials.scripts')
         @include('partials.messages')
 
         <div class="dashboard-row"></div>
@@ -62,50 +63,7 @@
       </section>
 
       @include('partials.footer')
-
-      <script>
-        $(document).ready(function () {
-          // Add rules to clubs - IDs
-          $('#rebelforum').each(function () {
-            $(this).rules('add',
-              {
-                digits: false,
-                required: function () {
-                  return $('#squad').val() == 6;
-                }
-              })
-          });
-          // Add rules to clubs - IDs
-          $('#mandoid').each(function () {
-            $(this).rules('add',
-              {
-                digits: true,
-                required: function () {
-                  return $('#squad').val() == 8;
-                }
-              })
-          });
-          // Add rules to clubs - IDs
-          $('#sgid').each(function () {
-            $(this).rules('add',
-              {
-                digits: true,
-                required: false
-              })
-          });
-          // Add rules to clubs - IDs
-          $('#de_id').each(function () {
-            $(this).rules('add',
-              {
-                digits: true,
-                required: false
-              })
-          });
-        });
-      </script>
-      <!-- External JS File -->
-      <script type="text/javascript"
-              src="script/js/main.js?v=9"></script>
+      @include('partials.scripts')
       @yield('page-script')
 </body>
 

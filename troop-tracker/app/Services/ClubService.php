@@ -12,6 +12,17 @@ use App\Models\Club;
 class ClubService
 {
     /**
+     * Summary of getById
+     * 
+     * @param int $id
+     * @return Club
+     */
+    public function getById(int $id): Club
+    {
+        return Club::findOrFail($id);
+    }
+
+    /**
      * Retrieves all active clubs, ordered by name.
      *
      * @return \Illuminate\Database\Eloquent\Collection<int, Club>|Club[]

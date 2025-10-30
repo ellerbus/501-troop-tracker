@@ -60,66 +60,14 @@
              :property="'forum_password'" />
     <br /><br />
 
-    <!-- 
-    <x-label>
-      Squad/Club:
-    </x-label>
-    <select name="squad"
-            id="squad">
-      <option value="1">Everglades Squad</option>
-      <option value="2">Makaze Squad</option>
-      <option value="3">Parjai Squad</option>
-      <option value="4">Squad 7</option>
-      <option value="5">Tampa Bay Squad</option>
-      <option value="6">Rebel Legion</option>
-      <option value="7">Droid Builders</option>
-      <option value="8">Mando Mercs</option>
-      <option value="9">Other</option>
-      <option value="10">Saber Guild</option>
-      <option value="13">Dark Empire</option>
-      <option value="0">Florida Garrison / 501st Visitor</option>
-    </select>
-    <br /><br /> -->
-
     <p>
       Select your associated clubs below.
     </p>
 
     @foreach ($clubs as $club)
-    @include('partials.register.club', ['club' => $club])
+    @include('pages.auth.partials.club-selection', ['club' => $club])
+    <br />
     @endforeach
-    <!-- 
-    <x-label>
-      Rebel Legion Forum Username (if applicable):
-    </x-label>
-    <x-input type="text"
-             :property="'rebel_legion_username'" />
-    <br /><br />
-
-
-    <x-label>
-      Mando Mercs CAT # (if applicable):
-    </x-label>
-    <x-input type="text"
-             :property="'mando_mercs_id'" />
-    <br /><br />
-
-
-    <x-label>
-      Saber Guild SG # (if applicable):
-    </x-label>
-    <x-input type="text"
-             :property="'saber_guild_id'" />
-    <br /><br />
-
-
-    <x-label>
-      Dark Empire # (if applicable):
-    </x-label>
-    <x-input type="text"
-             :property="'dark_empire_id'" />
-    <br /><br /> -->
-
 
     <x-submit-button>
       Register
@@ -148,32 +96,32 @@
 
     // // Optional: trigger on page load to set initial state
     // $('#account_type').trigger('change');
-    $('input[type="checkbox"][data-club-id]').each(function () {
-      const $checkbox = $(this);
-      const clubId = $checkbox.data('club-id');
-      const $targetDiv = $('.club-' + clubId);
-      const $inputField = $targetDiv.find('input');
+    //$('input[type="checkbox"][data-club-id]').each(function () {
+    //  const $checkbox = $(this);
+    //  const clubId = $checkbox.data('club-id');
+    //  const $targetDiv = $('.club-' + clubId);
+    //  const $inputField = $targetDiv.find('input');
 
-      // Initial state
-      if ($checkbox.is(':checked')) {
-        $targetDiv.show();
-        $inputField.prop('disabled', false);
-      } else {
-        $targetDiv.hide();
-        $inputField.prop('disabled', true);
-      }
+    //  // Initial state
+    //  if ($checkbox.is(':checked')) {
+    //    $targetDiv.show();
+    //    $inputField.prop('disabled', false);
+    // } else {
+    //    $targetDiv.hide();
+    //    $inputField.prop('disabled', true);
+    //  }
 
-      // Toggle on change
-      $checkbox.on('change', function () {
-        if ($(this).is(':checked')) {
-          $targetDiv.show();
-          $inputField.prop('disabled', false);
-        } else {
-          $targetDiv.hide();
-          $inputField.prop('disabled', true);
-        }
-      });
-    });
+    // Toggle on change
+    //$checkbox.on('change', function () {
+    //if ($(this).is(':checked')) {
+    //$targetDiv.show();
+    // $inputField.prop('disabled', false);
+    //} else {
+    //  $targetDiv.hide();
+    //  $inputField.prop('disabled', true);
+    //}
+    //});
+    //});
   });
 </script>
 @endsection

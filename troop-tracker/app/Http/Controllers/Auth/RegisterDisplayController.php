@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Services\ClubService;
@@ -28,7 +28,7 @@ class RegisterDisplayController extends Controller
             'clubs' => $clubs
         ];
 
-        return view('pages.register', $data);
+        return view('pages.auth.register', $data);
     }
 
 

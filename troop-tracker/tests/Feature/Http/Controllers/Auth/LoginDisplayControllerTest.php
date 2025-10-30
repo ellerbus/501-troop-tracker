@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Http\Controllers;
+namespace Tests\Feature\Http\Controllers\Auth;
 
-use App\Services\FlashMessageService;
 use Tests\TestCase;
 
 class LoginDisplayControllerTest extends TestCase

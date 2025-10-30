@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -13,6 +13,6 @@ class LoginDisplayController extends Controller
      */
     public function __invoke(Request $request): View
     {
-        return view('pages.login');
+        return view('pages.auth.login');
     }
 }

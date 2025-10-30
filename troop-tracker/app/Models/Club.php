@@ -9,6 +9,13 @@ class Club extends BaseClub
 {
     use HasFactory;
 
+    /**
+     * Used for UI
+     * 
+     * @var bool
+     */
+    public bool $selected = false;
+
     protected $fillable = [
         'name',
         'image_path',

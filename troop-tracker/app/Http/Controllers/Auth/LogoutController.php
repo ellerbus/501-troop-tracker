@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
@@ -9,13 +9,12 @@ use App\Http\Controllers\Controller;
 use App\Services\FlashMessageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 class LogoutController extends Controller
 {
     public function __construct(
         private readonly FlashMessageService $flash,
     ) {
-
-
     }
 
     /**

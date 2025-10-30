@@ -21,3 +21,57 @@
 
 <!-- LightBox -->
 <script src="script/lib/lightbox.min.js"></script>
+
+<!-- HTMX -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.7/htmx.min.js"></script>
+
+<script>
+  document.addEventListener('htmx:configRequest', function (event) {
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    event.detail.headers['X-CSRF-TOKEN'] = token;
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    // Add rules to clubs - IDs
+    $('#rebelforum').each(function () {
+      $(this).rules('add',
+        {
+          digits: false,
+          required: function () {
+            return $('#squad').val() == 6;
+          }
+        })
+    });
+    // Add rules to clubs - IDs
+    $('#mandoid').each(function () {
+      $(this).rules('add',
+        {
+          digits: true,
+          required: function () {
+            return $('#squad').val() == 8;
+          }
+        })
+    });
+    // Add rules to clubs - IDs
+    $('#sgid').each(function () {
+      $(this).rules('add',
+        {
+          digits: true,
+          required: false
+        })
+    });
+    // Add rules to clubs - IDs
+    $('#de_id').each(function () {
+      $(this).rules('add',
+        {
+          digits: true,
+          required: false
+        })
+    });
+  });
+</script>
+<!-- External JS File -->
+<script type="text/javascript"
+        src="script/js/main.js?v=9"></script>

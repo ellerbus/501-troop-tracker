@@ -2,13 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\AccountType;
-use App\Enums\AuthenticationStatus;
-use App\Contracts\AuthenticationInterface;
 use App\Rules\RegisterWithAtLeastOneClubRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Validator;
-use Illuminate\Validation\Rule;
 
 class RegisterRequest extends FormRequest
 {
