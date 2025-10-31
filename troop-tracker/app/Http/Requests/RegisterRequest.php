@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\RegisterWithAtLeastOneClubRule;
+use App\Rules\ValidSquadForClubRule;
 use App\Services\ClubService;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -41,7 +42,7 @@ class RegisterRequest extends FormRequest
 
         $clubs = app(ClubService::class);
 
-        $active_clubs = $clubs->findAllActive();
+        $active_clubs = $clubs->findAllActive(true);
 
         foreach ($active_clubs as $club)
         {
@@ -52,6 +53,11 @@ class RegisterRequest extends FormRequest
                 $validation = $club->identifier_validation . $required;
 
                 $rules["clubs.{$club->id}.identifier"] = explode('|', $validation);
+
+                if ($club->squads->count() > 0)
+                {
+                    $rules["clubs.{$club->id}.squad_id"] = [new ValidSquadForClubRule($club->id)];
+                }
             }
         }
 

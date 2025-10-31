@@ -20,4 +20,18 @@ class SquadService
     {
         return Squad::where('active', true)->orderBy('name')->get();
     }
+
+    /**
+     * Checks of the given squad exists within the club
+     * 
+     * @param int $squad_id
+     * @param int $club_id
+     * @return bool
+     */
+    public function isActive(int $squad_id, int $club_id): bool
+    {
+        return Squad::where('id', $squad_id)
+            ->where('club_id', $club_id)
+            ->exists();
+    }
 }
