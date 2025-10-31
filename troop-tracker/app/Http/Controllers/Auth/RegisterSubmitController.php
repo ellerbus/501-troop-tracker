@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\AuthenticationStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Contracts\AuthenticationInterface;
@@ -18,74 +19,24 @@ class RegisterSubmitController extends Controller
     ) {
     }
 
-    public function store(RegisterRequest $request): RedirectResponse
+    public function __invoke(RegisterRequest $request): RedirectResponse
     {
-        // $data = $request->validated();
+        $results = $this->auth->verify(
+            username: $request->forum_username,
+            password: $request->forum_password
+        );
 
-        // // Attempt forum login
-        // $forumLogin = $request->attemptForumLogin($data['forumid'], $data['forumpassword']);
+        if ($results != AuthenticationStatus::SUCCESS)
+        {
+            return back()->withErrors(['forum_username' => 'Invalid Credentials']);
+        }
 
-        // if (!($forumLogin['success'] ?? false))
-        // {
-        //     return response()->json(['error' => 'Forum login failed'], 422);
-        // }
+        $this->troopers->register($request->validated());
 
-        // // Normalize phone
-        // $phone = preg_replace('/\D/', '', cleanInput($data['phone'] ?? ''));
+        $this->flash->success('Request submitted successfully! You will receive an e-mail when your request is approved or denied.');
 
-        // // Hash password
-        // $hashedPassword = bcrypt($data['forumpassword']);
+        return back();
 
-        // // Determine permissions
-        // $p501 = in_array($data['squad_request'], config('troopers.valid_squad_ids')) ? $data['accountType'] : 0;
-
-        // // Prepare insert payload
-        // $trooperPayload = [
-        //     'user_id' => $forumLogin['user']['user_id'],
-        //     'name' => $data['name'],
-        //     'tkid' => $data['tkid'] ?? 0,
-        //     'email' => $forumLogin['user']['email'],
-        //     'forum_id' => $data['forumid'],
-        //     'p501' => $p501,
-        //     'phone' => $phone,
-        //     'squad' => $data['squad_request'],
-        //     'password' => $hashedPassword,
-        // ];
-
-        // // Create trooper
-        // $trooper = $this->troopRepo->createTrooper($trooperPayload);
-
-        // // Handle club memberships
-        // foreach (config('troopers.clubs') as $club => $club_value)
-        // {
-        //     $clubField = $club_value['db3'] ?? null;
-        //     $membership = 0;
-
-        //     if ($clubField && ($request->filled($clubField) || is_numeric($request->input($clubField))))
-        //     {
-        //         $membership = $data['accountType'];
-        //     }
-
-        //     if ($club_value['squadID'] === $data['squad_request'])
-        //     {
-        //         $membership = $data['accountType'];
-        //     }
-
-        //     if (!empty($club_value['db']))
-        //     {
-        //         $this->troopRepo->updateTrooperField($trooper->id, $club_value['db'], $membership);
-        //     }
-
-        //     if ($clubField)
-        //     {
-        //         $this->troopRepo->updateTrooperField($trooper->id, $clubField, $request->input($clubField) ?? 0);
-        //     }
-        // }
-
-        // return response()->json([
-        //     'message' => 'Request submitted! You will receive an email when your request is approved or denied.',
-        //     'trooper_id' => $trooper->id,
-        // ]);
     }
 }
 

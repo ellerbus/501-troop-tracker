@@ -22,6 +22,50 @@ class XenforoAuthenticationService implements AuthenticationInterface
      */
     public function authenticate(string $username, string $password): AuthenticationStatus
     {
+        $message = $this->getMessage($username, $password);
+
+        if (isset($message) && isset($message->success) && $message->success)
+        {
+            if (isset($message->user->is_banned) && $message->user->is_banned)
+            {
+                //  banned flag in the message
+                return AuthenticationStatus::BANNED;
+            }
+
+            return AuthenticationStatus::SUCCESS;
+        }
+
+        //  no idea but don't let them in
+        return AuthenticationStatus::FAILURE;
+    }
+
+    /**
+     * Verifies a user against the Xenforo API.
+     *
+     * @param string $username The user's forum username.
+     * @param string $password The user's password.
+     * @return mixed The identifier the verification attempt or null if it fails.
+     */
+    public function verify(string $username, string $password): mixed
+    {
+        $message = $this->getMessage($username, $password);
+
+        if (isset($message) && isset($message->success) && $message->success)
+        {
+            if (isset($message->user->is_banned) && $message->user->is_banned)
+            {
+                return null;
+            }
+
+            return $message->user->id;
+        }
+
+        //  no idea but don't let them in
+        return null;
+    }
+
+    private function getMessage(string $username, string $password): mixed
+    {
         $credentials = [
             'login' => $username,
             'password' => $password,
@@ -36,25 +80,6 @@ class XenforoAuthenticationService implements AuthenticationInterface
 
         $message = json_decode($response->body(), false);
 
-        if (!isset($message))
-        {
-            //  no message
-            return AuthenticationStatus::FAILURE;
-        }
-
-        if (isset($message->success) && $message->success)
-        {
-            //  success flag in the message
-            return AuthenticationStatus::SUCCESS;
-        }
-
-        if (isset($message->user->is_banned) && $message->user->is_banned)
-        {
-            //  banned flag in the message
-            return AuthenticationStatus::BANNED;
-        }
-
-        //  no idea but don't let them in
-        return AuthenticationStatus::FAILURE;
+        return $message;
     }
 }

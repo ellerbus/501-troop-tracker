@@ -4,9 +4,9 @@ namespace App\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use App\Services\SquadService;
+use App\Services\TrooperService;
 
-class ValidSquadForClubRule implements ValidationRule
+class UniqueClubIdentifierRule implements ValidationRule
 {
     public function __construct(private readonly int $club_id)
     {
@@ -19,11 +19,11 @@ class ValidSquadForClubRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $squads = app(SquadService::class);
+        $troopers = app(TrooperService::class);
 
-        if (!$squads->isActive($value, $this->club_id))
+        if (!$troopers->isUniqueClubIdentifier($value, $this->club_id))
         {
-            $fail('Squad selection is invalid.');
+            $fail('Identifier already exists.');
         }
     }
 }

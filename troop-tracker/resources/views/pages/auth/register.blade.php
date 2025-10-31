@@ -29,6 +29,15 @@
 
 
     <x-label>
+      Email:
+    </x-label>
+    <x-input type="text"
+             required
+             :property="'email'" />
+    <br /><br />
+
+
+    <x-label>
       Phone (Optional):
     </x-label>
     <x-input type="text"
