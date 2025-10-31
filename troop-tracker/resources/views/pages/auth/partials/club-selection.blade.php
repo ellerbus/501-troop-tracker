@@ -15,17 +15,12 @@
 
   <x-label for="club-id-{{$club->id}}">
     {{ $club->name }}
-    <span id="spinner-{{ $club->id }}"
-          class="htmx-indicator"
-          style="margin-left: 8px;">
-      <i class="fa fa-spinner fa-spin"></i>
-    </span>
-
+    <x-spinner :id="$club->id" />
   </x-label>
   @if($club->selected)
   <div class="club-{{ $club->id }}">
     <x-label>
-      {{ $club->db_identifier_display }}:
+      {{ $club->identifier_display }}:
     </x-label>
     <x-input type="text"
              disabled="disabled"

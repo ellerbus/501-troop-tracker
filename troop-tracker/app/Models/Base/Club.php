@@ -18,7 +18,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $image_path
  * @property string $db_status_field
  * @property string $db_identifier_field
- * @property string $db_identifier_display
+ * @property string $identifier_display
+ * @property string|null $identifier_validation
  * @property bool $active
  * 
  * @property Collection|Squad[] $squads

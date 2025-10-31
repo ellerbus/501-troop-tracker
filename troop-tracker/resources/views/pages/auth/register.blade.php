@@ -9,8 +9,7 @@
 
   <x-message>
     New to the 501st and/or {{ config('tracker.forum.display_name') }}? Or are you solely a member of another club? Use
-    this form below
-    to start signing up for troops. Command Staff will need to approve your account prior to use.
+    this form below to start signing up for troops. Command Staff will need to approve your account prior to use.
   </x-message>
 
   <form action="{{ route('register') }}"
@@ -79,49 +78,4 @@
 
   </form>
 </div>
-@endsection
-
-@section('page-script')
-<script type="text/javascript">
-  $(document).ready(function () {
-    // $('#account_type').change(function () {
-    //   const selected = $(this).val();
-
-    //   if (selected == '1') {
-    //     $('#tkid_container').show();
-    //   } else if (selected == '4') {
-    //     $('#tkid_container').hide();
-    //   }
-    // });
-
-    // // Optional: trigger on page load to set initial state
-    // $('#account_type').trigger('change');
-    //$('input[type="checkbox"][data-club-id]').each(function () {
-    //  const $checkbox = $(this);
-    //  const clubId = $checkbox.data('club-id');
-    //  const $targetDiv = $('.club-' + clubId);
-    //  const $inputField = $targetDiv.find('input');
-
-    //  // Initial state
-    //  if ($checkbox.is(':checked')) {
-    //    $targetDiv.show();
-    //    $inputField.prop('disabled', false);
-    // } else {
-    //    $targetDiv.hide();
-    //    $inputField.prop('disabled', true);
-    //  }
-
-    // Toggle on change
-    //$checkbox.on('change', function () {
-    //if ($(this).is(':checked')) {
-    //$targetDiv.show();
-    // $inputField.prop('disabled', false);
-    //} else {
-    //  $targetDiv.hide();
-    //  $inputField.prop('disabled', true);
-    //}
-    //});
-    //});
-  });
-</script>
 @endsection

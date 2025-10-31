@@ -18,7 +18,8 @@ class ClubSeeder extends Seeder
             'image_path' => 'images/clubs/501st.png',
             'db_status_field' => 'p501',
             'db_identifier_field' => 'tkid',
-            'db_identifier_display' => 'TKID',
+            'identifier_display' => 'TKID',
+            'identifier_validation' => 'integer|between:1000,99999',
             'active' => true
         ]);
         Club::create([
@@ -26,7 +27,7 @@ class ClubSeeder extends Seeder
             'image_path' => 'images/clubs/rebel-legion.png',
             'db_status_field' => 'pRebel',
             'db_identifier_field' => 'rebelforum',
-            'db_identifier_display' => 'Forum Username',
+            'identifier_display' => 'Forum Username',
             'active' => true
         ]);
         Club::create([
@@ -34,7 +35,7 @@ class ClubSeeder extends Seeder
             'image_path' => 'images/clubs/droid-builders.png',
             'db_status_field' => 'pDroid',
             'db_identifier_field' => 'droidid',
-            'db_identifier_display' => 'Forum Username',
+            'identifier_display' => 'Forum Username',
             'active' => false
         ]);
         Club::create([
@@ -42,7 +43,8 @@ class ClubSeeder extends Seeder
             'image_path' => 'images/clubs/mando-mercs.png',
             'db_status_field' => 'pMando',
             'db_identifier_field' => 'mandoid',
-            'db_identifier_display' => 'CAT #',
+            'identifier_display' => 'CAT #',
+            'identifier_validation' => 'integer',
             'active' => true
         ]);
         Club::create([
@@ -50,7 +52,8 @@ class ClubSeeder extends Seeder
             'image_path' => 'images/clubs/saber-guild.png',
             'db_status_field' => 'pSG',
             'db_identifier_field' => 'sgid',
-            'db_identifier_display' => 'SG #',
+            'identifier_display' => 'SG #',
+            'identifier_validation' => 'integer',
             'active' => true
         ]);
         Club::create([
@@ -58,7 +61,8 @@ class ClubSeeder extends Seeder
             'image_path' => 'images/clubs/saber-guild.png',
             'db_status_field' => 'pDE',
             'db_identifier_field' => 'de_id',
-            'db_identifier_display' => '#',
+            'identifier_display' => '#',
+            'identifier_validation' => 'integer',
             'active' => true
         ]);
     }

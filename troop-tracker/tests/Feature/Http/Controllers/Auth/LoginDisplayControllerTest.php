@@ -13,6 +13,6 @@ class LoginDisplayControllerTest extends TestCase
         $response = $this->get(route('login'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('pages.login');
+        $response->assertViewIs('pages.auth.login');
     }
 }
