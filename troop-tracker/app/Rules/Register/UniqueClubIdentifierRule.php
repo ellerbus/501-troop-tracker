@@ -21,7 +21,7 @@ class UniqueClubIdentifierRule implements ValidationRule
     {
         $troopers = app(TrooperService::class);
 
-        if (!$troopers->isUniqueClubIdentifier($value, $this->club_id))
+        if ($value == null || !$troopers->isUniqueClubIdentifier($value, $this->club_id))
         {
             $fail('Identifier already exists.');
         }

@@ -19,6 +19,8 @@ use Illuminate\Validation\Rule;
  */
 class RegisterRequest extends FormRequest
 {
+    private ?\Illuminate\Support\Collection $active_clubs = null;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -63,10 +65,8 @@ class RegisterRequest extends FormRequest
     {
         if ($this->has('phone'))
         {
-            $phone = $this->input('phone');
-
             $this->merge([
-                'phone' => preg_replace('/\D+/', '', $phone),
+                'phone' => preg_replace('/\D+/', '', $this->input('phone')),
             ]);
         }
     }
@@ -86,9 +86,7 @@ class RegisterRequest extends FormRequest
             'clubs.*.selected' => ['nullable', 'boolean'],
         ];
 
-        $clubs = app(ClubService::class);
-
-        $active_clubs = $clubs->findAllActive(true);
+        $active_clubs = $this->getActiveClubs();
 
         foreach ($active_clubs as $club)
         {
@@ -103,7 +101,10 @@ class RegisterRequest extends FormRequest
 
                 if ($club->squads->count() > 0)
                 {
-                    $rules["clubs.{$club->id}.squad_id"] = [new ValidSquadForClubRule($club->id)];
+                    $rules["clubs.{$club->id}.squad_id"] = [
+                        "required_if:clubs.{$club->id}.selected,1",
+                        new ValidSquadForClubRule($club->id)
+                    ];
                 }
             }
         }
@@ -121,9 +122,11 @@ class RegisterRequest extends FormRequest
      */
     public function withValidator($validator): void
     {
-        $clubs = app(ClubService::class)->findAllActive(true);
+        $active_clubs = $this->getActiveClubs();
 
-        foreach ($clubs as $club)
+        $messages = [];
+
+        foreach ($active_clubs as $club)
         {
             $key = "clubs.{$club->id}.identifier";
 
@@ -135,17 +138,20 @@ class RegisterRequest extends FormRequest
                 {
                     $ruleName = $this->normalizeRuleKey($rule);
 
-                    $validator->setCustomMessages([
-                        "{$key}.{$ruleName}" => "The {$club->identifier_display} for {$club->name} must be {$this->friendlyPhrase($rule)}.",
-                    ]);
+                    $messages["{$key}.{$ruleName}"] = "The {$club->identifier_display} for {$club->name} must be {$this->friendlyPhrase($rule)}.";
+                }
+
+                if ($club->squads->count() > 0)
+                {
+                    $messages["clubs.{$club->id}.squad_id.required_if"] = "Please select a squad for {$club->name} if you’ve chosen it.";
                 }
 
                 // Optional: add a message for the required_if rule
-                $validator->setCustomMessages([
-                    "{$key}.required_if" => "Please enter your {$club->identifier_display} for {$club->name} if selected.",
-                ]);
+                $messages["{$key}.required_if"] = "Please enter your {$club->identifier_display} for {$club->name} if selected.";
             }
         }
+
+        $validator->setCustomMessages($messages);
     }
 
     private function normalizeRuleKey(string $rule): string
@@ -163,5 +169,8 @@ class RegisterRequest extends FormRequest
             default => str_replace(':', ' ', $rule),
         };
     }
-
+    private function getActiveClubs(): \Illuminate\Support\Collection
+    {
+        return $this->active_clubs ??= app(ClubService::class)->findAllActive(true);
+    }
 }

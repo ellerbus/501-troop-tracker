@@ -29,7 +29,6 @@
     <x-input type="text"
              :property="'clubs.' . $club->id . '.identifier'" />
     @if(count($club->squads) > 0)
-    <br /><br />
     <x-select :property="'clubs.' . $club->id . '.squad_id'"
               :options="$club->squads->pluck('name', 'id')->toArray()"
               :placeholder="'-- Select your Squad --'" />

@@ -23,3 +23,4 @@ $bracketed = preg_replace('/\.(\w+)/', '[$1]', $bracketed);
   </option>
   @endforeach
 </select>
+<x-input-error :property="$property" />
