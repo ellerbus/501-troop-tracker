@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Rules;
+namespace App\Rules\Register;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class RegisterWithAtLeastOneClubRule implements ValidationRule
+class AtLeastOneClubSelectedRule implements ValidationRule
 {
     /**
      * Run the validation rule.

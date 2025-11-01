@@ -23,11 +23,17 @@ class ClubService
     }
 
     /**
-     * Retrieves all active clubs, ordered by name.
+     * Retrieves all active clubs, ordered by name - and cached.
      *
      * @return \Illuminate\Database\Eloquent\Collection<int, Club>|Club[]
      */
     public function findAllActive(bool $include_squads = false): \Illuminate\Database\Eloquent\Collection
+    {
+        return once(fn() => $this->queryActiveClubs($include_squads));
+
+    }
+
+    private function queryActiveClubs(bool $include_squads): \Illuminate\Database\Eloquent\Collection
     {
         $query = Club::where('active', true)->orderBy('name');
 
@@ -37,6 +43,5 @@ class ClubService
         }
 
         return $query->get();
-
     }
 }

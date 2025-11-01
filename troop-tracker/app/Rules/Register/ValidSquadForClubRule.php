@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Rules;
+namespace App\Rules\Register;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -21,7 +21,7 @@ class ValidSquadForClubRule implements ValidationRule
     {
         $squads = app(SquadService::class);
 
-        if (!$squads->isActive($value, $this->club_id))
+        if ($value == null || !$squads->isActive($value, $this->club_id))
         {
             $fail('Squad selection is invalid.');
         }

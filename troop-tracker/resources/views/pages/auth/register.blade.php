@@ -4,8 +4,7 @@
 @section('content')
 <x-page-title :title="'Request Access'" />
 
-<div name="requestAccessFormArea"
-     id="requestAccessFormArea">
+<div>
 
   <x-message>
     New to the 501st and/or {{ config('tracker.forum.display_name') }}? Or are you solely a member of another club? Use
@@ -13,11 +12,9 @@
   </x-message>
 
   <form action="{{ route('register') }}"
-        name="requestAccessForm"
-        id="requestAccessForm"
         method="POST"
         novalidate="novalidate">
-
+    @csrf
 
     <x-label>
       First & Last Name (use a nickname if you wish to remain anonymous):
@@ -25,7 +22,7 @@
     <x-input type="text"
              required
              :property="'name'" />
-    <br /><br />
+    <br />
 
 
     <x-label>
@@ -34,7 +31,7 @@
     <x-input type="text"
              required
              :property="'email'" />
-    <br /><br />
+    <br />
 
 
     <x-label>
@@ -43,7 +40,7 @@
     <x-input type="text"
              required
              :property="'phone'" />
-    <br /><br />
+    <br />
 
 
     <x-label>
@@ -51,7 +48,7 @@
     </x-label>
     <x-select :property="'account_type'"
               :options="['1'=>'Regular', '4'=>'Handler']" />
-    <br /><br />
+    <br />
 
 
     <x-label :value="config('tracker.forum.display_name') . ' Username:'" />
@@ -59,14 +56,14 @@
              required
              autofocus
              :property="'forum_username'" />
-    <br /><br />
+    <br />
 
 
     <x-label :value="config('tracker.forum.display_name') . ' Password:'" />
-    <x-input type="text"
+    <x-input type="password"
              required
              :property="'forum_password'" />
-    <br /><br />
+    <br />
 
     <p>
       Select your associated clubs below.

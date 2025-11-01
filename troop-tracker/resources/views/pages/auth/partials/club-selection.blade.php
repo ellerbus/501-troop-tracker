@@ -1,5 +1,9 @@
-<div id="club-selection-{{ $club->id }}">
+@php($is_selected = old("clubs.{$club->id}.selected", $club->selected))
 
+<div id="club-selection-{{ $club->id }}">
+  <input type="hidden"
+         name="clubs[{{ $club->id }}][selected]"
+         value="0" />
   <input type="checkbox"
          id="club-id-{{$club->id}}"
          name="clubs[{{ $club->id }}][selected]"
@@ -11,19 +15,18 @@
          hx-trigger="change"
          hx-include="closest div"
          hx-indicator="#spinner-{{ $club->id }}"
-         @checked(old("clubs.{$club->id}.selected", $club->selected)?'checked':'') />
+         @checked($is_selected?'checked':'') />
 
   <x-label for="club-id-{{$club->id}}">
     {{ $club->name }}
     <x-spinner :id="$club->id" />
   </x-label>
-  @if($club->selected)
+  @if($is_selected)
   <div class="club-{{ $club->id }}">
     <x-label>
       {{ $club->identifier_display }}:
     </x-label>
     <x-input type="text"
-             disabled="disabled"
              :property="'clubs.' . $club->id . '.identifier'" />
     @if(count($club->squads) > 0)
     <br /><br />

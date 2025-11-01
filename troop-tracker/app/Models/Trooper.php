@@ -20,13 +20,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property int $spTrooper
  * @property int $spCostume
  * @property int $spAward
- * @property int $p501
- * @property int $pRebel
- * @property int $pDroid
- * @property int $pMando
- * @property int $pOther
- * @property int|null $pSG
- * @property int|null $pDE
+ * @property MembershipStatus $p501
+ * @property MembershipStatus $pRebel
+ * @property MembershipStatus $pDroid
+ * @property MembershipStatus $pMando
+ * @property MembershipStatus $pOther
+ * @property MembershipStatus|null $pSG
+ * @property MembershipStatus|null $pDE
  * @property string $tkid
  * @property string $forum_id
  * @property string|null $rebelforum
@@ -35,7 +35,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property int $de_id
  * @property string|null $password
  * @property Carbon $last_active
- * @property int $approved
+ * @property bool $approved
  * @property int $subscribe
  * @property int $theme
  * @property int $supporter

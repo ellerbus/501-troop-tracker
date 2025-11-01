@@ -2,20 +2,38 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\RegisterWithAtLeastOneClubRule;
-use App\Rules\ValidSquadForClubRule;
-use App\Rules\UniqueClubIdentifierRule;
+use App\Rules\Register\AtLeastOneClubSelectedRule;
+use App\Rules\Register\ValidSquadForClubRule;
+use App\Rules\Register\UniqueClubIdentifierRule;
 use App\Services\ClubService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * Handles the validation for the user registration form.
+ *
+ * This class defines the base validation rules for user registration and dynamically
+ * adds rules based on the clubs a user selects, including custom rules for
+ * club-specific identifiers and squad selections. It also customizes error messages
+ * for a better user experience.
+ */
 class RegisterRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool Returns true as registration is open to guests.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, mixed> The combined validation rules for the registration form.
+     */
     public function rules(): array
     {
         $rules = [
@@ -31,9 +49,16 @@ class RegisterRequest extends FormRequest
             'forum_password' => ['required', 'string'],
         ];
 
-        return array_merge($rules, $this->getClubValidationRules());
+        $rules = array_merge($rules, $this->getClubValidationRules());
+
+        return $rules;
     }
 
+    /**
+     * Prepare the data for validation.
+     *
+     * This method sanitizes the phone number by removing any non-digit characters.
+     */
     protected function prepareForValidation(): void
     {
         if ($this->has('phone'))
@@ -46,18 +71,18 @@ class RegisterRequest extends FormRequest
         }
     }
 
-
-    // public function messages(): array
-    // {
-    //     return [
-    //         'clubs.*.identifier.max' => 'Club identifiers must be under 255 characters.',
-    //     ];
-    // }
-
+    /**
+     * Generates dynamic validation rules for selected clubs.
+     *
+     * Fetches active clubs and constructs validation rules for their specific identifiers
+     * (e.g., TKID, CAT #) and associated squads, applying custom rule objects.
+     *
+     * @return array<string, mixed> An array of validation rules for the 'clubs' input.
+     */
     private function getClubValidationRules(): array
     {
         $rules = [
-            'clubs' => ['array', new RegisterWithAtLeastOneClubRule()],
+            'clubs' => ['array', new AtLeastOneClubSelectedRule()],
             'clubs.*.selected' => ['nullable', 'boolean'],
         ];
 
@@ -85,4 +110,58 @@ class RegisterRequest extends FormRequest
 
         return $rules;
     }
+
+    /**
+     * Configure the validator instance.
+     *
+     * This method is used to add custom, user-friendly error messages for the
+     * dynamically generated club identifier rules.
+     *
+     * @param \Illuminate\Validation\Validator $validator
+     */
+    public function withValidator($validator): void
+    {
+        $clubs = app(ClubService::class)->findAllActive(true);
+
+        foreach ($clubs as $club)
+        {
+            $key = "clubs.{$club->id}.identifier";
+
+            if (!empty($club->identifier_validation))
+            {
+                $rules = explode('|', $club->identifier_validation);
+
+                foreach ($rules as $rule)
+                {
+                    $ruleName = $this->normalizeRuleKey($rule);
+
+                    $validator->setCustomMessages([
+                        "{$key}.{$ruleName}" => "The {$club->identifier_display} for {$club->name} must be {$this->friendlyPhrase($rule)}.",
+                    ]);
+                }
+
+                // Optional: add a message for the required_if rule
+                $validator->setCustomMessages([
+                    "{$key}.required_if" => "Please enter your {$club->identifier_display} for {$club->name} if selected.",
+                ]);
+            }
+        }
+    }
+
+    private function normalizeRuleKey(string $rule): string
+    {
+        // Laravel uses 'between' not 'between:1000,9999' for message keys
+        return explode(':', $rule)[0];
+    }
+
+    private function friendlyPhrase(string $rule): string
+    {
+        return match ($rule)
+        {
+            'integer' => 'an integer',
+            'string' => 'a valid string',
+            default => str_replace(':', ' ', $rule),
+        };
+    }
+
 }

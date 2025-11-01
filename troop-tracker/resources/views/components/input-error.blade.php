@@ -1,5 +1,6 @@
 @props(['property' => ''])
 
 @error($property)
-<p class="form-text text-danger ps-2">{{ $message }}</p>
+<div class="top-message danger"
+     style="margin-top: 2px; justify-content: left; border-radius: 4px;">{{ $message }}</div>
 @enderror
