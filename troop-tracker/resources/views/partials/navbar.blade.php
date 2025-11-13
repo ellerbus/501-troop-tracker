@@ -1,23 +1,55 @@
-<div class="topnav"
-     id="myTopnav">
-  <a href="{{ url('/') }}"
-     class="{{ $current_page == 'home' ? 'active' : '' }}">Home</a>
-  <a href="{{ config('forum.url') }}"
-     class="{{ $current_page == 'forums' ? 'active' : '' }}">Forums</a>
-  <a href="{{ url('index.php?action=requestaccess') }}"
-     class="{{ $current_page == 'request' ? 'active' : '' }}">Request Access</a>
-  <a href="{{ url('index.php?action=setup') }}"
-     class="{{ $current_page == 'setup' ? 'active' : '' }}">Account Setup</a>
-  <a href="{{ route('faq') }}"
-     class="{{ $current_page == 'faq' ? 'active' : '' }}">FAQ</a>
-  @auth
-  <a href="{{ route('logout') }}"
-     class="{{ $current_page == 'login' ? 'active' : '' }}">Logout</a>
-  @else
-  <a href="{{ route('login') }}"
-     class="{{ $current_page == 'login' ? 'active' : '' }}">Login</a>
-  @endauth
-  <a href="javascript:void(0);"
-     class="icon"
-     onclick="myFunction()"><i class="fa fa-bars"></i></a>
-</div>
+<nav class="navbar navbar-dark navbar-expand-lg bg-black rounded-3 p-0">
+  <div class="container-fluid justify-content-center">
+    <!-- Hamburger toggle -->
+    <button class="navbar-toggler ms-auto me-3 my-2"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#pillNav"
+            aria-controls="pillNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+
+    <div class="collapse navbar-collapse justify-content-center"
+         id="pillNav">
+      <ul class="navbar-nav flex-wrap">
+        <x-nav-link :href="'#'"
+                    :active="request()->routeIs('home')">
+          Home
+        </x-nav-link>
+        <x-nav-link :href="config('forum.url')">
+          Forum
+        </x-nav-link>
+        <x-nav-link :href="route('faq')"
+                    :active="request()->routeIs('faq')">
+          FAQ
+        </x-nav-link>
+
+        @auth
+        <x-nav-link :href="route('account.display')"
+                    :active="request()->routeIs('account.display')">
+          Manage Account
+        </x-nav-link>
+        <x-nav-link :href="route('auth.logout')">
+          Logout
+        </x-nav-link>
+        @else
+        <x-nav-link :href="route('auth.register')"
+                    :active="request()->routeIs('auth.register')">
+          Request Access
+        </x-nav-link>
+        <x-nav-link :href="'#'"
+                    :active="request()->routeIs('x')">
+          Account Setup
+        </x-nav-link>
+        <x-nav-link :href="route('auth.login')"
+                    :active="request()->routeIs('auth.login')">
+          Login
+        </x-nav-link>
+        @endauth
+      </ul>
+    </div>
+  </div>
+</nav>

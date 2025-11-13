@@ -8,104 +8,39 @@
         content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible"
         content="ie=edge" />
+  <meta name="csrf-token"
+        content="{{ csrf_token() }}">
+
   <!-- Title -->
   <title>501st Florida Garrison - Troop Tracker</title>
 
   @include('partials.styles')
-
-  <!-- Setup Variable -->
-  <script>
-    var forumURL = "https://www.fl501st.com/boards/";
-    var placeholder = 1196;
-    var squadIDList = [0, 1, 2, 3, 4, 5];
-    var clubArray = ["pRebel", "pDroid", "pMando", "pOther", "pSG", "pDE"];
-    var clubDBLimitArray = ["limitRebels", "limitDroid", "limitMando", "limitOther", "limitSG", "limitDE"];
-    var clubDB3Array = ["rebelforum", "mandoid", "sgid", "de_id"];
-    // Clear limits
-    function clearLimit() {
-      $("#limitRebels").val(500);
-      $("#limitDroid").val(500);
-      $("#limitMando").val(500);
-      $("#limitOther").val(500);
-      $("#limitSG").val(500);
-      $("#limitDE").val(500);
-    }
-  </script>
-
-  @include('partials.scripts')
-
-  <script>
-    $(function () {
-      $("#datepicker").datetimepicker();
-      $("#datepicker2").datetimepicker();
-      $("#datepicker3").datetimepicker();
-      $("#datepicker4").datetimepicker();
-    });
-  </script>
 </head>
 
-<body class="floridadark">
+<body class="bg-black d-flex flex-column min-vh-100">
 
-  <div class="tm-container">
-    <div class="tm-text-white tm-page-header-container">
-      <img src="images/logo.png" />
+  <div class="container">
+    <div class="text-center py-3">
+      <img src=" {{ url('images/logo.png') }}"
+           alt="501st Florida Garrison Logo"
+           class="img-fluid" />
     </div>
-    <div class="tm-main-content">
-      <section class="tm-section">
-        @include('partials.navbar', ['current_page' => View::yieldContent('current_page')])
-        @include('partials.scripts')
-        @include('partials.messages')
+  </div>
 
-        <div class="dashboard-row"></div>
-        @yield('content')
+  <div class="container rounded-3 shadow-sm p-4 main-content">
+    @include('partials.navbar')
+    @include('partials.bread-crumbs')
+    @include('partials.messages')
+    <div class="row dashboard-row"></div>
 
-      </section>
+    @yield('content')
 
-      @include('partials.footer')
+    @include('partials.footer')
+  </div>
 
-      <script>
-        $(document).ready(function () {
-          // Add rules to clubs - IDs
-          $('#rebelforum').each(function () {
-            $(this).rules('add',
-              {
-                digits: false,
-                required: function () {
-                  return $('#squad').val() == 6;
-                }
-              })
-          });
-          // Add rules to clubs - IDs
-          $('#mandoid').each(function () {
-            $(this).rules('add',
-              {
-                digits: true,
-                required: function () {
-                  return $('#squad').val() == 8;
-                }
-              })
-          });
-          // Add rules to clubs - IDs
-          $('#sgid').each(function () {
-            $(this).rules('add',
-              {
-                digits: true,
-                required: false
-              })
-          });
-          // Add rules to clubs - IDs
-          $('#de_id').each(function () {
-            $(this).rules('add',
-              {
-                digits: true,
-                required: false
-              })
-          });
-        });
-      </script>
-      <!-- External JS File -->
-      <script type="text/javascript"
-              src="script/js/main.js?v=9"></script>
+  @include('partials.scripts')
+  @yield('page-script')
+
 </body>
 
 </html>

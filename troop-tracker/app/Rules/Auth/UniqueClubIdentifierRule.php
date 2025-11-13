@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Rules\Auth;
+
+use App\Models\Club;
+use App\Repositories\TrooperRepository;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
+
+class UniqueClubIdentifierRule implements ValidationRule
+{
+    public function __construct(private readonly Club $club)
+    {
+    }
+
+    /**
+     * Run the validation rule.
+     *
+     * @param  \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     */
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        if (!empty($value))
+        {
+            $troopers = app(TrooperRepository::class);
+
+            if ($troopers->clubIdentifierExists($this->club->id, $value))
+            {
+                $fail("{$this->club->name} ID already exists for .");
+            }
+        }
+    }
+}

@@ -18,8 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // Middleware groups (e.g., 'web', 'api')
         $middleware->web(append: [
             \App\Http\Middleware\FlashMessageMiddleware::class,
+            \App\Http\Middleware\HtmxDispatchHeaderMiddleware::class,
             // ... other web middleware
         ]);
+
+        $middleware->redirectGuestsTo(fn(Illuminate\Http\Request $request) => route('auth.login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void
     {

@@ -14,5 +14,8 @@
     "[html]": {
         "editor.tabSize": 2,
         "editor.insertSpaces": true
-    }
+    },
+    "namespaceResolver.sortOnSave": true,
+    "namespaceResolver.leadingSeparator": false,
+    "namespaceResolver.sortAlphabetically": true
 }

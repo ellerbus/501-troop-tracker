@@ -5484,180 +5484,180 @@ if (isset($_GET['action']) && $_GET['action'] == "editphoto" && loggedIn())
 }
 
 // Show the login page
-if (isset($_GET['action']) && $_GET['action'] == "login" && !loggedIn())
-{
-    echo '
-	<h2 class="tm-section-header">Login</h2>';
+// if (isset($_GET['action']) && $_GET['action'] == "login" && !loggedIn())
+// {
+//     echo '
+// 	<h2 class="tm-section-header">Login</h2>';
 
-    // Display submission for register account, otherwise show the form
-    if (isset($_POST['loginWithTK']))
-    {
-        // Login with forum
-        $forumLogin = loginWithForum($_POST['tkid'], $_POST['password']);
+//     // Display submission for register account, otherwise show the form
+//     if (isset($_POST['loginWithTK']))
+//     {
+//         // Login with forum
+//         $forumLogin = loginWithForum($_POST['tkid'], $_POST['password']);
 
-        // Check credentials
-        if (isset($forumLogin['success']) && $forumLogin['success'] == 1)
-        {
-            // Update username if changed
-            $statement = $conn->prepare("UPDATE troopers SET forum_id = ? WHERE user_id = ?");
-            $statement->bind_param("si", $forumLogin['user']['username'], $forumLogin['user']['user_id']);
-            $statement->execute();
-        }
+//         // Check credentials
+//         if (isset($forumLogin['success']) && $forumLogin['success'] == 1)
+//         {
+//             // Update username if changed
+//             $statement = $conn->prepare("UPDATE troopers SET forum_id = ? WHERE user_id = ?");
+//             $statement->bind_param("si", $forumLogin['user']['username'], $forumLogin['user']['user_id']);
+//             $statement->execute();
+//         }
 
-        // Get data
-        $statement = $conn->prepare("SELECT * FROM troopers WHERE forum_id = ? LIMIT 1");
-        $statement->bind_param("s", $_POST['tkid']);
-        $statement->execute();
+//         // Get data
+//         $statement = $conn->prepare("SELECT * FROM troopers WHERE forum_id = ? LIMIT 1");
+//         $statement->bind_param("s", $_POST['tkid']);
+//         $statement->execute();
 
-        // Trooper count
-        $i = 0;
+//         // Trooper count
+//         $i = 0;
 
-        if ($result = $statement->get_result())
-        {
-            while ($db = mysqli_fetch_object($result))
-            {
-                // Increment trooper count
-                $i++;
+//         if ($result = $statement->get_result())
+//         {
+//             while ($db = mysqli_fetch_object($result))
+//             {
+//                 // Increment trooper count
+//                 $i++;
 
-                // Check if banned
-                if (isset($forumLogin['success']) && $forumLogin['user']['is_banned'] == 1)
-                {
-                    echo '
-					<p>
-						You are currently banned. Please refer to command staff for additional information.
-					</p>';
+//                 // Check if banned
+//                 if (isset($forumLogin['success']) && $forumLogin['user']['is_banned'] == 1)
+//                 {
+//                     echo '
+// 					<p>
+// 						You are currently banned. Please refer to command staff for additional information.
+// 					</p>';
 
-                    break;
-                }
+//                     break;
+//                 }
 
-                // Check if RIP trooper
-                if ($db->permissions == 3)
-                {
-                    echo '
-					<p>
-						You cannot access this account.
-					</p>';
+//                 // Check if RIP trooper
+//                 if ($db->permissions == 3)
+//                 {
+//                     echo '
+// 					<p>
+// 						You cannot access this account.
+// 					</p>';
 
-                    break;
-                }
+//                     break;
+//                 }
 
-                // Check credentials
-                if (isset($forumLogin['success']) && $forumLogin['success'] == 1 || (password_verify($_POST['password'], $db->password) && $db->permissions == 1))
-                {
-                    if ($db->approved != 0)
-                    {
-                        if (canAccess($db->id))
-                        {
-                            // Set session
-                            $_SESSION['id'] = $db->id;
-                            $_SESSION['tkid'] = $db->tkid;
+//                 // Check credentials
+//                 if (isset($forumLogin['success']) && $forumLogin['success'] == 1 || (password_verify($_POST['password'], $db->password) && $db->permissions == 1))
+//                 {
+//                     if ($db->approved != 0)
+//                     {
+//                         if (canAccess($db->id))
+//                         {
+//                             // Set session
+//                             $_SESSION['id'] = $db->id;
+//                             $_SESSION['tkid'] = $db->tkid;
 
-                            // If logged in with forum details, and password does not match
-                            if (isset($forumLogin['success']) && $forumLogin['success'] == 1)
-                            {
-                                // Update password, e-mail, and user ID
-                                $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+//                             // If logged in with forum details, and password does not match
+//                             if (isset($forumLogin['success']) && $forumLogin['success'] == 1)
+//                             {
+//                                 // Update password, e-mail, and user ID
+//                                 $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-                                $statement = $conn->prepare("UPDATE troopers SET password = ?, email = ?, user_id = ? WHERE id = ?");
-                                $statement->bind_param("ssii", $password, $forumLogin['user']['email'], $forumLogin['user']['user_id'], $db->id);
-                                $statement->execute();
-                            }
+//                                 $statement = $conn->prepare("UPDATE troopers SET password = ?, email = ?, user_id = ? WHERE id = ?");
+//                                 $statement->bind_param("ssii", $password, $forumLogin['user']['email'], $forumLogin['user']['user_id'], $db->id);
+//                                 $statement->execute();
+//                             }
 
-                            // Set log in cookie, if set to keep logged in
-                            if (isset($_POST['keepLog']) && $_POST['keepLog'] == 1)
-                            {
-                                // Set cookies
-                                setcookie("TroopTrackerUsername", $db->forum_id, time() + (10 * 365 * 24 * 60 * 60));
-                                setcookie("TroopTrackerPassword", $_POST['password'], time() + (10 * 365 * 24 * 60 * 60));
-                            }
+//                             // Set log in cookie, if set to keep logged in
+//                             if (isset($_POST['keepLog']) && $_POST['keepLog'] == 1)
+//                             {
+//                                 // Set cookies
+//                                 setcookie("TroopTrackerUsername", $db->forum_id, time() + (10 * 365 * 24 * 60 * 60));
+//                                 setcookie("TroopTrackerPassword", $_POST['password'], time() + (10 * 365 * 24 * 60 * 60));
+//                             }
 
-                            // Cookie set
-                            if (isset($_COOKIE["TroopTrackerLastEvent"]))
-                            {
-                                echo '
-								<meta http-equiv="refresh" content="5; URL=index.php?event=' . cleanInput($_COOKIE["TroopTrackerLastEvent"]) . '" />
+//                             // Cookie set
+//                             if (isset($_COOKIE["TroopTrackerLastEvent"]))
+//                             {
+//                                 echo '
+// 								<meta http-equiv="refresh" content="5; URL=index.php?event=' . cleanInput($_COOKIE["TroopTrackerLastEvent"]) . '" />
 
-								<div style="margin-top: 25px; color: green; text-align: center; font-weight: bold;">
-								You have now logged in!
-								<br /><br />
-								<a href="index.php?event=' . cleanInput($_COOKIE["TroopTrackerLastEvent"]) . '">Click here to view the event</a> or you will be redirected shortly.
-								</div>';
+// 								<div style="margin-top: 25px; color: green; text-align: center; font-weight: bold;">
+// 								You have now logged in!
+// 								<br /><br />
+// 								<a href="index.php?event=' . cleanInput($_COOKIE["TroopTrackerLastEvent"]) . '">Click here to view the event</a> or you will be redirected shortly.
+// 								</div>';
 
-                                // Clear cookie
-                                setcookie("TroopTrackerLastEvent", "", time() - 3600);
-                            }
-                            else
-                            {
-                                // Cookie not set
-                                echo '
-								<div style="margin-top: 25px; color: green; text-align: center; font-weight: bold;">
-								You have now logged in!
-								<br /><br />
-								<a href="index.php">Click here to go home.</a>
-								</div>';
-                            }
-                        }
-                        else
-                        {
-                            echo '
-							Your account is retired. Please contact your squad / club leader for further instructions on how to get re-approved.';
-                        }
-                    }
-                    else
-                    {
-                        echo '
-						Your access has not been approved yet.';
-                    }
-                }
-                else
-                {
-                    echo '
-					<p>
-						Incorrect username or password. <a href="login">Try again?</a>
-					</p>
+//                                 // Clear cookie
+//                                 setcookie("TroopTrackerLastEvent", "", time() - 3600);
+//                             }
+//                             else
+//                             {
+//                                 // Cookie not set
+//                                 echo '
+// 								<div style="margin-top: 25px; color: green; text-align: center; font-weight: bold;">
+// 								You have now logged in!
+// 								<br /><br />
+// 								<a href="index.php">Click here to go home.</a>
+// 								</div>';
+//                             }
+//                         }
+//                         else
+//                         {
+//                             echo '
+// 							Your account is retired. Please contact your squad / club leader for further instructions on how to get re-approved.';
+//                         }
+//                     }
+//                     else
+//                     {
+//                         echo '
+// 						Your access has not been approved yet.';
+//                     }
+//                 }
+//                 else
+//                 {
+//                     echo '
+// 					<p>
+// 						Incorrect username or password. <a href="login">Try again?</a>
+// 					</p>
 
-					<p>
-						If you are unable to access your account, please contact the ' . garrison . ' Webmaster, or post a help request on the forums. Your FL Garrison boards name may not match the Troop Tracker records.
-					</p>';
-                }
-            }
-        }
+// 					<p>
+// 						If you are unable to access your account, please contact the ' . garrison . ' Webmaster, or post a help request on the forums. Your FL Garrison boards name may not match the Troop Tracker records.
+// 					</p>';
+//                 }
+//             }
+//         }
 
-        // An account does not exist
-        if ($i == 0)
-        {
-            echo '
-			<p>Account not found. <a href="login">Try again?</a></p>
-			
-			<p>Please contact the Garrison Webmaster or post a help request on the forums, if you continue to have issues. Your FL Garrison boards name may not match the Troop Tracker records.</p>';
-        }
-    }
-    else
-    {
-        echo '
-		<form action="login" method="POST" name="loginForm" id="loginForm">
-			<p>Board Name:</p>
-			<input type="text" name="tkid" id="tkid" />
+//         // An account does not exist
+//         if ($i == 0)
+//         {
+//             echo '
+// 			<p>Account not found. <a href="login">Try again?</a></p>
 
-			<p>Password:</p>
-			<input type="password" name="password" id="password" />
-			
-			<br /><br />
-			
-			<input type="checkbox" name="keepLog" value="1" /> Keep me logged in
+// 			<p>Please contact the Garrison Webmaster or post a help request on the forums, if you continue to have issues. Your FL Garrison boards name may not match the Troop Tracker records.</p>';
+//         }
+//     }
+//     else
+//     {
+//         echo '
+// 		<form action="login" method="POST" name="loginForm" id="loginForm">
+// 			<p>Board Name:</p>
+// 			<input type="text" name="tkid" id="tkid" />
 
-			<br /><br />
+// 			<p>Password:</p>
+// 			<input type="password" name="password" id="password" />
 
-			<input type="submit" value="Login!" name="loginWithTK" />
-		</form>
-		
-		<p>
-			<small>
-				<b>Remember:</b><br />Login with your ' . garrison . ' board username and password.
-			</small>
-		</p>';
-    }
-}
+// 			<br /><br />
+
+// 			<input type="checkbox" name="keepLog" value="1" /> Keep me logged in
+
+// 			<br /><br />
+
+// 			<input type="submit" value="Login!" name="loginWithTK" />
+// 		</form>
+
+// 		<p>
+// 			<small>
+// 				<b>Remember:</b><br />Login with your ' . garrison . ' board username and password.
+// 			</small>
+// 		</p>';
+//     }
+// }
 
 // Show the setup page
 if (isset($_GET['action']) && $_GET['action'] == "setup" && !isSignUpClosed() && !loggedIn())
