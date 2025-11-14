@@ -1,6 +1,6 @@
-<x-transmission-bar :id="'favorite-costumes'" />
+<x-transmission-bar :id="'trooper-costumes'" />
 
-<div id="favorite-costumes-form-container">
+<div id="trooper-costumes-form-container">
 
   <form method="POST"
         novalidate="novalidate">
@@ -16,11 +16,11 @@
                       :options="$clubs->pluck('name', 'id')->toArray()"
                       :value="$selected_club->id ?? -1"
                       :placeholder="'-- Select your Club --'"
-                      hx-get="{{ route('account.favorite-costumes-htmx') }}"
+                      hx-get="{{ route('account.trooper-costumes-htmx') }}"
                       hx-trigger="change"
                       hx-select="#costume-select-container"
                       hx-target="#costume-select-container"
-                      hx-indicator="#transmission-bar-favorite-costumes" />
+                      hx-indicator="#transmission-bar-trooper-costumes" />
       @endif
     </x-input-container>
 
@@ -30,17 +30,17 @@
                       :options="$costumes"
                       :value="-1"
                       :placeholder="'-- Select your Costume --'"
-                      hx-post="{{ route('account.favorite-costumes-htmx') }}"
-                      hx-select="#favorite-costumes-table"
-                      hx-target="#favorite-costumes-table"
+                      hx-post="{{ route('account.trooper-costumes-htmx') }}"
+                      hx-select="#trooper-costumes-table"
+                      hx-target="#trooper-costumes-table"
                       hx-swap="outerHTML"
-                      hx-indicator="#transmission-bar-favorite-costumes"
+                      hx-indicator="#transmission-bar-trooper-costumes"
                       hx-include="closest form" />
       @endif
     </x-input-container>
   </form>
 
-  <x-table id="favorite-costumes-table">
+  <x-table id="trooper-costumes-table">
     <thead>
       <tr>
         <th>
@@ -51,18 +51,18 @@
         </th>
       </tr>
     </thead>
-    @forelse($favorites as $favorite)
+    @forelse($trooper_costumes as $trooper_costume)
     <tr>
       <td>
-        {{ $favorite->getCostumeName() }}
+        {{ $trooper_costume->fullCostumeName() }}
       </td>
       <td class="text-end">
         <x-button class="btn-outline-danger"
-                  hx-delete="{{ route('account.favorite-costumes-htmx', ['costume_id' => $favorite->costumeid]) }}"
-                  hx-select="#favorite-costumes-table"
-                  hx-target="#favorite-costumes-table"
+                  hx-delete="{{ route('account.trooper-costumes-htmx', ['costume_id' => $trooper_costume->id]) }}"
+                  hx-select="#trooper-costumes-table"
+                  hx-target="#trooper-costumes-table"
                   hx-swap="outerHTML"
-                  hx-indicator="#transmission-bar-favorite-costumes">
+                  hx-indicator="#transmission-bar-trooper-costumes">
           <i class="fa fw fa-times"></i>
         </x-button>
       </td>
@@ -70,7 +70,7 @@
     @empty
     <tr>
       <td colspan="2">
-        No Favorites Yet
+        No Troopers Yet
       </td>
     </tr>
     @endforelse

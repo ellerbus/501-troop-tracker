@@ -1,0 +1,89 @@
+<?php
+
+/**
+ * Created by Reliese Model.
+ */
+
+namespace App\Models\Base;
+
+use App\Models\Trooper;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Class TrooperAchievement
+ * 
+ * @property int $id
+ * @property int $trooper_id
+ * @property int $trooper_rank
+ * @property bool $trooped_all_squads
+ * @property bool $first_troop_completed
+ * @property bool $trooped_10
+ * @property bool $trooped_25
+ * @property bool $trooped_50
+ * @property bool $trooped_75
+ * @property bool $trooped_100
+ * @property bool $trooped_150
+ * @property bool $trooped_200
+ * @property bool $trooped_250
+ * @property bool $trooped_300
+ * @property bool $trooped_400
+ * @property bool $trooped_500
+ * @property bool $trooped_501
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * 
+ * @property Trooper $trooper
+ *
+ * @package App\Models\Base
+ */
+class TrooperAchievement extends Model
+{
+    const ID = 'id';
+    const TROOPER_ID = 'trooper_id';
+    const TROOPER_RANK = 'trooper_rank';
+    const TROOPED_ALL_SQUADS = 'trooped_all_squads';
+    const FIRST_TROOP_COMPLETED = 'first_troop_completed';
+    const TROOPED_10 = 'trooped_10';
+    const TROOPED_25 = 'trooped_25';
+    const TROOPED_50 = 'trooped_50';
+    const TROOPED_75 = 'trooped_75';
+    const TROOPED_100 = 'trooped_100';
+    const TROOPED_150 = 'trooped_150';
+    const TROOPED_200 = 'trooped_200';
+    const TROOPED_250 = 'trooped_250';
+    const TROOPED_300 = 'trooped_300';
+    const TROOPED_400 = 'trooped_400';
+    const TROOPED_500 = 'trooped_500';
+    const TROOPED_501 = 'trooped_501';
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+    protected $table = 'tt_trooper_achievements';
+
+    protected $casts = [
+        self::ID => 'int',
+        self::TROOPER_ID => 'int',
+        self::TROOPER_RANK => 'int',
+        self::TROOPED_ALL_SQUADS => 'bool',
+        self::FIRST_TROOP_COMPLETED => 'bool',
+        self::TROOPED_10 => 'bool',
+        self::TROOPED_25 => 'bool',
+        self::TROOPED_50 => 'bool',
+        self::TROOPED_75 => 'bool',
+        self::TROOPED_100 => 'bool',
+        self::TROOPED_150 => 'bool',
+        self::TROOPED_200 => 'bool',
+        self::TROOPED_250 => 'bool',
+        self::TROOPED_300 => 'bool',
+        self::TROOPED_400 => 'bool',
+        self::TROOPED_500 => 'bool',
+        self::TROOPED_501 => 'bool',
+        self::CREATED_AT => 'datetime',
+        self::UPDATED_AT => 'datetime'
+    ];
+
+    public function trooper()
+    {
+        return $this->belongsTo(Trooper::class);
+    }
+}

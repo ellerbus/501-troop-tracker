@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\ClubRepository;
+use App\Models\Club;
 use App\Services\FlashMessageService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -17,11 +17,9 @@ class RegisterDisplayController extends Controller
 {
     /**
      * @param FlashMessageService $flash The flash message service.
-     * @param ClubRepository $clubs The club repository.
      */
     public function __construct(
         private readonly FlashMessageService $flash,
-        private readonly ClubRepository $clubs
     ) {
     }
 
@@ -33,7 +31,7 @@ class RegisterDisplayController extends Controller
      */
     public function __invoke(Request $request): View
     {
-        $clubs = $this->clubs->findAllActive(include_squads: true);
+        $clubs = Club::active(include_squads: true)->get();
 
         $data = [
             'clubs' => $clubs

@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Enums\MembershipStatus;
+use App\Models\Club;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\TrooperClub>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ClubCostume>ClubCostumeFactory
  */
-class TrooperClubFactory extends Factory
+class ClubCostumeFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +18,8 @@ class TrooperClubFactory extends Factory
     public function definition(): array
     {
         return [
-            'membership_status' => MembershipStatus::Member
+            'name' => fake()->name(),
+            'club_id' => Club::factory()
         ];
     }
 }

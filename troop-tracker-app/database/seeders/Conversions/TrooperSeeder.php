@@ -64,7 +64,8 @@ class TrooperSeeder extends Seeder
 
             $query->select($columns)
                 ->from('troopers')
-                ->whereNotNull('email')->whereNotExists(function ($sub)
+                ->whereNotNull('email')
+                ->whereNotExists(function ($sub)
                 {
                     $sub->select(DB::raw(1))
                         ->from('tt_troopers')

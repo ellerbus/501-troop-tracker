@@ -12,7 +12,7 @@
 
 - **Troop Tracker Rank:** #1435  
 - **501st Member Since:** May 26, 2025  
-- **Favorite Costume (501st):** Shadow Guard: TFU  
+- **Trooper Costume (501st):** Shadow Guard: TFU  
 - **Total Finished Troops:** 1  
 - **Troops (Last 365 Days):** 1  
 - **Volunteer Hours:** 0  

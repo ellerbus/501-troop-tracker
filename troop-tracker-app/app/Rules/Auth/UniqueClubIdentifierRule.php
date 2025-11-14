@@ -4,7 +4,6 @@ namespace App\Rules\Auth;
 
 use App\Models\Club;
 use App\Models\TrooperClub;
-use App\Repositories\TrooperRepository;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 

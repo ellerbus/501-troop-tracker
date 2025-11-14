@@ -3,7 +3,7 @@
 namespace App\Rules\Auth;
 
 use App\Models\Club;
-use App\Repositories\SquadRepository;
+use App\Models\Squad;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
@@ -22,9 +22,9 @@ class ValidSquadForClubRule implements ValidationRule
     {
         if (!empty($value))
         {
-            $squads = app(SquadRepository::class);
+            $count = Squad::active($this->club->id, $value)->count() > 0;
 
-            if ($squads->isNotActive($value, $this->club->id))
+            if ($count == 0)
             {
                 $fail('Squad selection is invalid.');
             }

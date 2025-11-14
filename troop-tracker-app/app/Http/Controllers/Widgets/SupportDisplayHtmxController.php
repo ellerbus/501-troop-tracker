@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Widgets;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\DonationRepository;
-use App\Repositories\SettingRepository;
+use App\Models\Donation;
+use App\Models\Setting;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
@@ -15,15 +15,6 @@ use Illuminate\Http\Request;
  */
 class SupportDisplayHtmxController extends Controller
 {
-    /**
-     * @param SettingRepository $settings The setting repository.
-     * @param DonationRepository $donations The donation repository.
-     */
-    public function __construct(
-        private readonly SettingRepository $settings,
-        private readonly DonationRepository $donations,
-    ) {
-    }
 
     /**
      * Handle the incoming request to display the support widget.
@@ -33,19 +24,19 @@ class SupportDisplayHtmxController extends Controller
      */
     public function __invoke(Request $request): View
     {
-        $settings = $this->settings->get();
+        $settings = Setting::first();
 
-        $donations = $this->donations->getCurrentMonthTotal();
+        $donations = Donation::getMonthlyTotal();
 
         $progress = 0;
 
-        if (isset($settings->supportgoal))
+        if (isset($settings->support_goal))
         {
-            $progress = $donations / $settings->supportgoal;
+            $progress = $donations / $settings->support_goal;
         }
 
         $data = [
-            'goal' => $settings->supportgoal ?? 0,
+            'goal' => $settings->support_goal ?? 0,
             'progress' => number_format($progress * 100, 0),
             'message' => $this->getMessage()
         ];

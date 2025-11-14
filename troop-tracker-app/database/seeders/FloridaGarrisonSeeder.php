@@ -7,6 +7,8 @@ namespace Database\Seeders;
 use Database\Seeders\ClubSeeder;
 use Database\Seeders\Conversions\ClubCostumeSeeder;
 use Database\Seeders\Conversions\DonationSeeder;
+use Database\Seeders\Conversions\EventSeeder;
+use Database\Seeders\Conversions\EventTrooperSeeder;
 use Database\Seeders\Conversions\SettingSeeder;
 use Database\Seeders\Conversions\TrooperClubSeeder;
 use Database\Seeders\Conversions\TrooperCostumeSeeder;
@@ -35,5 +37,8 @@ class FloridaGarrisonSeeder extends Seeder
         $this->call(TrooperSquadSeeder::class);
         $this->call(TrooperCostumeSeeder::class);
         $this->call(DonationSeeder::class);
+        $this->call(TrooperSquadSeeder::class);
+        $this->call(EventSeeder::class);
+        $this->call(EventTrooperSeeder::class);
     }
 }

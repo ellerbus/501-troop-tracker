@@ -26,9 +26,9 @@
     </div>
   </x-card>
 
-  <!-- Favorite Costumes -->
-  <x-card :label="'Favorite Costumes'">
-    <div hx-get="{{ route('account.favorite-costumes-htmx') }}"
+  <!-- Trooper Costumes -->
+  <x-card :label="'Trooper Costumes'">
+    <div hx-get="{{ route('account.trooper-costumes-htmx') }}"
          hx-trigger="load"
          hx-swap="outerHTML">
       <x-loading />

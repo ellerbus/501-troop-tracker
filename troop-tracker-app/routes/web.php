@@ -1,19 +1,21 @@
 <?php
 
 use App\Http\Controllers\Account\AccountDisplayController;
-use App\Http\Controllers\Account\FavoriteCostumesDeleteHtmxController;
-use App\Http\Controllers\Account\FavoriteCostumesDisplayHtmxController;
-use App\Http\Controllers\Account\FavoriteCostumesSubmitHtmxController;
 use App\Http\Controllers\Account\NotificationsDisplayHtmxController;
 use App\Http\Controllers\Account\NotificationsSubmitHtmxController;
 use App\Http\Controllers\Account\ProfileDisplayHtmxController;
 use App\Http\Controllers\Account\ProfileSubmitHtmxController;
+use App\Http\Controllers\Account\TrooperCostumesDeleteHtmxController;
+use App\Http\Controllers\Account\TrooperCostumesDisplayHtmxController;
+use App\Http\Controllers\Account\TrooperCostumesSubmitHtmxController;
 use App\Http\Controllers\Auth\LoginDisplayController;
 use App\Http\Controllers\Auth\LoginSubmitController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterDisplayController;
 use App\Http\Controllers\AUth\RegisterHtmxController;
 use App\Http\Controllers\Auth\RegisterSubmitController;
+use App\Http\Controllers\Dashboard\DashboardDisplayController;
+use App\Http\Controllers\Dashboard\TrooperAchievementsHtmxController;
 use App\Http\Controllers\FaqDisplayController;
 use App\Http\Controllers\Widgets\SupportDisplayHtmxController;
 use Illuminate\Support\Facades\Route;
@@ -45,7 +47,24 @@ Route::prefix('account')
         Route::post('/profile-htmx', ProfileSubmitHtmxController::class)->name('profile-htmx.submit');
         Route::get('/notifications-htmx', NotificationsDisplayHtmxController::class)->name('notifications-htmx');
         Route::post('/notifications-htmx', NotificationsSubmitHtmxController::class);
-        Route::get('/favorite-costumes-htmx', FavoriteCostumesDisplayHtmxController::class)->name('favorite-costumes-htmx');
-        Route::post('/favorite-costumes-htmx', FavoriteCostumesSubmitHtmxController::class);
-        Route::delete('/favorite-costumes-htmx', FavoriteCostumesDeleteHtmxController::class);
+        Route::get('/trooper-costumes-htmx', TrooperCostumesDisplayHtmxController::class)->name('trooper-costumes-htmx');
+        Route::post('/trooper-costumes-htmx', TrooperCostumesSubmitHtmxController::class);
+        Route::delete('/trooper-costumes-htmx', TrooperCostumesDeleteHtmxController::class);
+    });
+
+//  DASHBOARD
+Route::prefix('dashboard')
+    ->name('dashboard.')
+    ->middleware('auth')
+    ->group(function ()
+    {
+        Route::get('/', DashboardDisplayController::class)->name('display');
+        Route::get('/achievements-htmx', TrooperAchievementsHtmxController::class)->name('achievements-htmx');
+        // Route::post('/profile-htmx', ProfileSubmitHtmxController::class);
+        // Route::post('/profile-htmx', ProfileSubmitHtmxController::class)->name('profile-htmx.submit');
+        // Route::get('/notifications-htmx', NotificationsDisplayHtmxController::class)->name('notifications-htmx');
+        // Route::post('/notifications-htmx', NotificationsSubmitHtmxController::class);
+        // Route::get('/trooper-costumes-htmx', TrooperCostumesDisplayHtmxController::class)->name('trooper-costumes-htmx');
+        // Route::post('/trooper-costumes-htmx', TrooperCostumesSubmitHtmxController::class);
+        // Route::delete('/trooper-costumes-htmx', TrooperCostumesDeleteHtmxController::class);
     });

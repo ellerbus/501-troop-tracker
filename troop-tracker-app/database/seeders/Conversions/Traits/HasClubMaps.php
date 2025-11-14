@@ -8,7 +8,7 @@ use App\Models\Club;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
-trait HasMappedClubs
+trait HasClubMaps
 {
 
     protected function getClubMap(): array

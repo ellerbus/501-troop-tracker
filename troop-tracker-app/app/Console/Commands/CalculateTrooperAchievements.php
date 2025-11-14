@@ -1,0 +1,75 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Console\Commands;
+
+use App\Models\EventTrooper;
+use App\Models\TrooperAchievement;
+use Illuminate\Console\Command;
+
+/**
+ * This file is used for auto accepting unconfirmed troops every 6 months to clear up the database
+ */
+class CalculateTrooperAchievements extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'app:calculate-trooper-achievements';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Calculate trooper achievements.';
+
+
+    /**
+     * Execute the console command.
+     */
+    public function handle()
+    {
+        $trooper_events = $this->getTrooperEvents();
+
+        for ($i = 0, $len = $trooper_events->count(); $i < $len; $i++)
+        {
+            $trooper_event = $trooper_events[$i];
+            $count = $trooper_event->event_count ?? 0;
+
+            $where = [TrooperAchievement::TROOPER_ID => $trooper_events[$i]->trooper_id];
+
+            $values = [
+                TrooperAchievement::TROOPER_RANK => ($i + 1),
+                TrooperAchievement::FIRST_TROOP_COMPLETED => $count >= 1,
+                TrooperAchievement::TROOPED_10 => $count >= 10,
+                TrooperAchievement::TROOPED_25 => $count >= 25,
+                TrooperAchievement::TROOPED_50 => $count >= 50,
+                TrooperAchievement::TROOPED_75 => $count >= 75,
+                TrooperAchievement::TROOPED_100 => $count >= 100,
+                TrooperAchievement::TROOPED_150 => $count >= 150,
+                TrooperAchievement::TROOPED_200 => $count >= 200,
+                TrooperAchievement::TROOPED_250 => $count >= 250,
+                TrooperAchievement::TROOPED_300 => $count >= 300,
+                TrooperAchievement::TROOPED_400 => $count >= 400,
+                TrooperAchievement::TROOPED_500 => $count >= 500,
+                TrooperAchievement::TROOPED_501 => $count >= 501,
+            ];
+
+            TrooperAchievement::updateOrCreate($where, $values);
+        }
+    }
+
+    private function getTrooperEvents()
+    {
+        $trooper_events = EventTrooper::selectRaw('trooper_id, COUNT(*) as event_count')
+            ->groupBy('trooper_id')
+            ->orderByDesc('event_count')
+            ->get();
+
+        return $trooper_events;
+    }
+}

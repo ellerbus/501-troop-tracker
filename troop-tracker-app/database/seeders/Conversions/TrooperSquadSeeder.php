@@ -6,15 +6,15 @@ namespace Database\Seeders\Conversions;
 
 use App\Enums\MembershipStatus;
 use App\Models\TrooperSquad;
-use Database\Seeders\Conversions\Traits\HasMappedEnums;
-use Database\Seeders\Conversions\Traits\HasMappedSquads;
+use Database\Seeders\Conversions\Traits\HasEnumMaps;
+use Database\Seeders\Conversions\Traits\HasSquadMaps;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class TrooperSquadSeeder extends Seeder
 {
-    use HasMappedEnums;
-    use HasMappedSquads;
+    use HasEnumMaps;
+    use HasSquadMaps;
 
     /**
      * Run the database seeds.

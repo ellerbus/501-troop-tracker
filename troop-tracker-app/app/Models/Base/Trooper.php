@@ -8,7 +8,10 @@ namespace App\Models\Base;
 
 use App\Models\Club;
 use App\Models\Donation;
+use App\Models\Event;
+use App\Models\EventTrooper;
 use App\Models\Squad;
+use App\Models\TrooperAchievement;
 use App\Models\TrooperClub;
 use App\Models\TrooperCostume;
 use App\Models\TrooperSquad;
@@ -37,6 +40,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $updated_at
  * 
  * @property Collection|Donation[] $donations
+ * @property Collection|Event[] $events
+ * @property TrooperAchievement|null $trooper_achievement
  * @property Collection|Club[] $clubs
  * @property Collection|TrooperCostume[] $trooper_costumes
  * @property Collection|Squad[] $squads
@@ -77,6 +82,18 @@ class Trooper extends Model
     public function donations()
     {
         return $this->hasMany(Donation::class);
+    }
+
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'tt_event_troopers')
+                    ->withPivot(EventTrooper::ID, EventTrooper::COSTUME_ID, EventTrooper::BACKUP_COSTUME_ID, EventTrooper::ADDED_BY_TROOPER_ID, EventTrooper::STATUS)
+                    ->withTimestamps();
+    }
+
+    public function trooper_achievement()
+    {
+        return $this->hasOne(TrooperAchievement::class);
     }
 
     public function clubs()

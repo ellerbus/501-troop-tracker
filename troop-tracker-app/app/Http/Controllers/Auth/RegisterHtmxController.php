@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\AUth;
 
 use App\Models\Club;
-use App\Repositories\ClubRepository;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
@@ -15,9 +14,8 @@ use Illuminate\Http\Request;
 class RegisterHtmxController
 {
     /**
-     * @param ClubRepository $clubs The club repository.
      */
-    public function __construct(private readonly ClubRepository $clubs)
+    public function __construct()
     {
     }
 

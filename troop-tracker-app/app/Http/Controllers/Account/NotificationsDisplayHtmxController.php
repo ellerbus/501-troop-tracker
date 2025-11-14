@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
-use App\Models\Base\Club;
-use App\Models\Base\TrooperClub;
-use App\Models\Base\TrooperSquad;
+use App\Models\Club;
 use App\Models\Squad;
-use App\Repositories\ClubRepository;
-use App\Repositories\TrooperRepository;
+use App\Models\Trooper;
+use App\Models\TrooperClub;
+use App\Models\TrooperSquad;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,16 +19,6 @@ use Illuminate\Support\Facades\Auth;
  */
 class NotificationsDisplayHtmxController extends Controller
 {
-    /**
-     * @param TrooperRepository $troopers The trooper repository.
-     * @param ClubRepository $clubs The club repository.
-     */
-    public function __construct(
-        private readonly TrooperRepository $troopers,
-        private readonly ClubRepository $clubs)
-    {
-    }
-
     /**
      * Handle the incoming request to display the notification settings.
      *
@@ -45,9 +34,9 @@ class NotificationsDisplayHtmxController extends Controller
 
     private function getTrooperNotifications(): array
     {
-        $trooper = $this->troopers->getById(Auth::user()->id);
+        $trooper = Trooper::findOrFail(Auth::user()->id);
 
-        $clubs = $this->clubs->findAllActive(include_squads: true);
+        $clubs = Club::active(include_squads: true)->get();
 
         $trooper_clubs = $trooper->clubs()
             ->wherePivot(TrooperClub::NOTIFY, true)

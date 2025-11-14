@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\Club;
 use App\Models\Trooper;
-use App\Repositories\ClubRepository;
 use App\Rules\Auth\AtLeastOneClubSelectedRule;
 use App\Rules\Auth\UniqueClubIdentifierRule;
 use App\Rules\Auth\ValidSquadForClubRule;
@@ -174,6 +174,6 @@ class RegisterRequest extends FormRequest
 
     private function getActiveClubs(): Collection
     {
-        return $this->active_clubs ??= app(ClubRepository::class)->findAllActive(include_squads: true);
+        return $this->active_clubs ??= Club::active(include_squads: true)->get();
     }
 }

@@ -13,8 +13,6 @@ use App\Models\Squad;
 use App\Models\Trooper;
 use App\Models\TrooperClub;
 use App\Models\TrooperSquad;
-use App\Repositories\ClubRepository;
-use App\Repositories\TrooperRepository;
 use App\Services\FlashMessageService;
 use Illuminate\Http\RedirectResponse;
 
@@ -26,13 +24,10 @@ class RegisterSubmitController extends Controller
     /**
      * @param AuthenticationInterface $auth The authentication service.
      * @param FlashMessageService $flash The flash message service.
-     * @param TrooperRepository $troopers The trooper repository.
      */
     public function __construct(
         private readonly AuthenticationInterface $auth,
         private readonly FlashMessageService $flash,
-        private readonly TrooperRepository $troopers,
-        private readonly ClubRepository $clubs,
     ) {
     }
 
@@ -86,7 +81,7 @@ class RegisterSubmitController extends Controller
             {
                 // You’ll need to map club-specific fields to trooper columns
                 // Example: if club uses 'tkid' as identifier field
-                $club = $this->clubs->getById($club_id);
+                $club = Club::find($club_id);
 
                 if ($club && !empty($club_data['identifier']))
                 {

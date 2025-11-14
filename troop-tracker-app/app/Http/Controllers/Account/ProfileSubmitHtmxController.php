@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Account\ProfileRequest;
-use App\Repositories\TrooperRepository;
+use App\Models\Trooper;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -20,13 +20,6 @@ use Illuminate\Validation\ValidationException;
 class ProfileSubmitHtmxController extends Controller
 {
     /**
-     * @param TrooperRepository $troopers The trooper repository.
-     */
-    public function __construct(private readonly TrooperRepository $troopers)
-    {
-    }
-
-    /**
      * Handle the incoming request to update the user's profile.
      *
      * @param ProfileRequest $request The validated profile form request.
@@ -34,7 +27,7 @@ class ProfileSubmitHtmxController extends Controller
      */
     public function __invoke(ProfileRequest $request): Response|View
     {
-        $trooper = $this->troopers->getById(Auth::user()->id);
+        $trooper = Trooper::findOrFail(Auth::user()->id);
 
         try
         {
@@ -72,35 +65,3 @@ class ProfileSubmitHtmxController extends Controller
         }
     }
 }
-
-
-/*
-    public function update(Request $request, Chirp $chirp): RedirectResponse|Response
-    {
-        $this->authorize('update', $chirp);
-
-        try {
-            $validated = $request->validate([
-                'message' => 'required|string|max:255',
-            ]);
-
-            $chirp->update($validated);
-
-            if ($request->header('HX-Request')) {
-                return response()->view('components.chirps.single', [
-                    'chirp' => $chirp,
-                ]);
-            }
-
-            return redirect(route('chirps.index'));
-        } catch (ValidationException $e) {
-            if (!$request->header('HX-Request')) {
-                throw $e;
-            }
-
-            return response()->view('components.chirps.edit', [
-                'chirp' => $chirp,
-                'errors' => collect($e->errors()),
-            ]);
-        }
-    } */

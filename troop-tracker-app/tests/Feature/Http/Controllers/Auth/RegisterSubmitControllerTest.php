@@ -4,8 +4,6 @@ namespace Tests\Feature\Http\Controllers\Auth;
 
 use App\Contracts\AuthenticationInterface;
 use App\Models\Club;
-use App\Repositories\TrooperRepository;
-use App\Services\FlashMessageService;
 use Database\Seeders\ClubSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;

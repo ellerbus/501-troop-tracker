@@ -7,7 +7,7 @@ namespace Database\Seeders\Conversions\Traits;
 use App\Models\Squad;
 use Illuminate\Support\Facades\DB;
 
-trait HasMappedSquads
+trait HasSquadMaps
 {
     /**
      * Maps legacy squad names to their database ID and metadata.

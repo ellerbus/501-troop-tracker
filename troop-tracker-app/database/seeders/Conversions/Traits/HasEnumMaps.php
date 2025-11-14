@@ -6,7 +6,7 @@ namespace Database\Seeders\Conversions\Traits;
 
 use App\Enums\MembershipStatus;
 
-trait HasMappedEnums
+trait HasEnumMaps
 {
     protected function mapLegacyStatus(int $value): string
     {

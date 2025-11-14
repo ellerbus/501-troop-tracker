@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Database\Seeders\Conversions;
 
 use App\Models\TrooperClub;
-use Database\Seeders\Conversions\Traits\HasMappedClubs;
-use Database\Seeders\Conversions\Traits\HasMappedEnums;
+use Database\Seeders\Conversions\Traits\HasClubMaps;
+use Database\Seeders\Conversions\Traits\HasEnumMaps;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class TrooperClubSeeder extends Seeder
 {
-    use HasMappedEnums;
-    use HasMappedClubs;
+    use HasEnumMaps;
+    use HasClubMaps;
 
     /**
      * Run the database seeds.

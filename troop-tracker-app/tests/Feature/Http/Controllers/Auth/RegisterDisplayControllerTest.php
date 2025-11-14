@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Repositories\ClubRepository;
 use Database\Seeders\ClubSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;

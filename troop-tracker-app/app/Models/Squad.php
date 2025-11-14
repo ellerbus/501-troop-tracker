@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Models\Base\Squad as BaseSquad;
+use App\Models\Scopes\HasSquadScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Squad extends BaseSquad
 {
     use HasFactory;
+    use HasSquadScopes;
 
     protected $fillable = [
         self::CLUB_ID,

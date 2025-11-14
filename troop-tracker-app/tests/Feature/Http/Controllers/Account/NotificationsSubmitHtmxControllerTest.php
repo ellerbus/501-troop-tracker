@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers\Account;
 
 use App\Models\Club;
-use App\Models\Squad;
 use App\Models\Trooper;
 use Database\Seeders\ClubSeeder;
 use Database\Seeders\SquadSeeder;

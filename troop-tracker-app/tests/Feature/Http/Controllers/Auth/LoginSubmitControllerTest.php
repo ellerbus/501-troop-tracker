@@ -12,7 +12,6 @@ use App\Models\Club;
 use App\Models\Trooper;
 use Database\Seeders\ClubSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 use Mockery\MockInterface;
 use Tests\TestCase;
 

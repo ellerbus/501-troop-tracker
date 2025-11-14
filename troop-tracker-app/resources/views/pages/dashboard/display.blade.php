@@ -6,6 +6,15 @@
   Dashboard
 </x-page-title>
 
+<x-card :label="'Trooper Achievements'">
+  <div hx-get="{{ route('dashboard.achievements-htmx', ['trooper_id' => $trooper->id]) }}"
+       hx-trigger="load"
+       hx-swap="outerHTML">
+    <x-loading />
+  </div>
+</x-card>
+
+{{--
 @include('pages.dashboard.overview')
 @include('pages.dashboard.troop-breakdown')
 
@@ -148,5 +157,6 @@
   </div>
 
 </div>
+--}}
 
 @endsection

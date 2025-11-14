@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\ClubRepository;
-use App\Repositories\TrooperRepository;
+use App\Models\Club;
+use App\Models\Trooper;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -17,15 +17,6 @@ use Illuminate\Support\Facades\Auth;
  */
 class NotificationsSubmitHtmxController extends Controller
 {
-    /**
-     * @param TrooperRepository $troopers The trooper repository.
-     */
-    public function __construct(
-        private readonly ClubRepository $clubs,
-        private readonly TrooperRepository $troopers)
-    {
-    }
-
     /**
      * Handle the incoming request to update notification settings.
      *
@@ -48,9 +39,9 @@ class NotificationsSubmitHtmxController extends Controller
 
     private function updateTrooperNotifications(array $data): array
     {
-        $clubs = $this->clubs->findAllActive(include_squads: true);
+        $clubs = Club::active(include_squads: true)->get();
 
-        $trooper = $this->troopers->getById(Auth::user()->id);
+        $trooper = Trooper::findOrFail(Auth::user()->id);
 
         $data['instant_notification'] = $data['instant_notification'] ?? false;
         $data['attendance_notification'] = $data['attendance_notification'] ?? false;

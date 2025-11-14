@@ -9,15 +9,10 @@ use App\Enums\AuthenticationStatus;
 use App\Enums\MembershipStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Models\Club;
 use App\Models\Trooper;
-use App\Models\TrooperClub;
-use App\Repositories\ClubRepository;
-use App\Repositories\TrooperRepository;
 use App\Services\FlashMessageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 
 /**
  * Handles the submission of the login form, authenticates the user, and manages the session.
@@ -27,14 +22,10 @@ class LoginSubmitController extends Controller
     /**
      * @param FlashMessageService $flash The flash message service.
      * @param AuthenticationInterface $auth The authentication service.
-     * @param ClubRepository $clubs The club repository.
-     * @param TrooperRepository $troopers The trooper repository.
      */
     public function __construct(
         private readonly FlashMessageService $flash,
         private readonly AuthenticationInterface $auth,
-        private readonly ClubRepository $clubs,
-        private readonly TrooperRepository $troopers,
     ) {
     }
 
@@ -47,7 +38,7 @@ class LoginSubmitController extends Controller
     public function __invoke(LoginRequest $request): RedirectResponse
     {
         //  trooper existance is checked via LoginRequest
-        $trooper = $this->troopers->getByForumUsername($request->username);
+        $trooper = Trooper::query()->byUsername($request->username)->first();
 
         if ($trooper->isUnapproved())
         {

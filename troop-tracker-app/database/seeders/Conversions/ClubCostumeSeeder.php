@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Database\Seeders\Conversions;
 
 use App\Models\ClubCostume;
-use Database\Seeders\Conversions\Traits\HasMappedClubs;
+use Database\Seeders\Conversions\Traits\HasClubMaps;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class ClubCostumeSeeder extends Seeder
 {
-    use HasMappedClubs;
+    use HasClubMaps;
 
     /**
      * Run the database seeds.

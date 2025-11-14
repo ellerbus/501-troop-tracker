@@ -6,6 +6,7 @@
 
 namespace App\Models\Base;
 
+use App\Models\ClubCostume;
 use App\Models\Squad;
 use App\Models\Trooper;
 use App\Models\TrooperClub;
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
+ * @property Collection|ClubCostume[] $club_costumes
  * @property Collection|Squad[] $squads
  * @property Collection|Trooper[] $troopers
  *
@@ -51,6 +53,11 @@ class Club extends Model
         self::UPDATED_AT => 'datetime'
     ];
 
+    public function club_costumes()
+    {
+        return $this->hasMany(ClubCostume::class);
+    }
+
     public function squads()
     {
         return $this->hasMany(Squad::class);
@@ -59,7 +66,7 @@ class Club extends Model
     public function troopers()
     {
         return $this->belongsToMany(Trooper::class, 'tt_trooper_clubs')
-                    ->withPivot(TrooperClub::ID, TrooperClub::IDENTIFIER, TrooperClub::NOTIFY, TrooperClub::STATUS)
-                    ->withTimestamps();
+            ->withPivot(TrooperClub::ID, TrooperClub::IDENTIFIER, TrooperClub::NOTIFY, TrooperClub::STATUS)
+            ->withTimestamps();
     }
 }
