@@ -13,7 +13,7 @@
   <p class="mb-0">
     <a href="https://github.com/MattDrennan/501-troop-tracker"
        target="_blank">
-      <img src="{{ url('images/github.png') }}"
+      <img src="{{ url('img/github.png') }}"
            alt="GitHub"
            title="Help contribute to the Troop Tracker project!"
            class="img-fluid" />

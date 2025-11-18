@@ -30,6 +30,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $trooped_400
  * @property bool $trooped_500
  * @property bool $trooped_501
+ * @property float $volunteer_hours
+ * @property float $direct_funds
+ * @property float $indirect_funds
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
@@ -56,6 +59,9 @@ class TrooperAchievement extends Model
     const TROOPED_400 = 'trooped_400';
     const TROOPED_500 = 'trooped_500';
     const TROOPED_501 = 'trooped_501';
+    const VOLUNTEER_HOURS = 'volunteer_hours';
+    const DIRECT_FUNDS = 'direct_funds';
+    const INDIRECT_FUNDS = 'indirect_funds';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
     protected $table = 'tt_trooper_achievements';
@@ -78,6 +84,9 @@ class TrooperAchievement extends Model
         self::TROOPED_400 => 'bool',
         self::TROOPED_500 => 'bool',
         self::TROOPED_501 => 'bool',
+        self::VOLUNTEER_HOURS => 'float',
+        self::DIRECT_FUNDS => 'float',
+        self::INDIRECT_FUNDS => 'float',
         self::CREATED_AT => 'datetime',
         self::UPDATED_AT => 'datetime'
     ];

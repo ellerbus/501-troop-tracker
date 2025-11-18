@@ -42,13 +42,22 @@ class TrooperSquadSeeder extends Seeder
                     $status = MembershipStatus::Member;
                 }
 
-                TrooperSquad::firstOrCreate([
-                    TrooperSquad::TROOPER_ID => $trooper->id,
-                    TrooperSquad::SQUAD_ID => $squad['id'],
-                ], [
-                    TrooperSquad::NOTIFY => $notify,
-                    TrooperSquad::STATUS => $status,
-                ]);
+                $t = TrooperSquad::where(TrooperSquad::TROOPER_ID, $trooper->id)
+                    ->where(TrooperSquad::SQUAD_ID, $squad['id'])
+                    ->first();
+
+                if ($t == null)
+                {
+                    $t = new TrooperSquad();
+
+                    $t->trooper_id = $trooper->id;
+                    $t->squad_id = $squad['id'];
+                }
+
+                $t->notify = $notify;
+                $t->status = $status;
+
+                $t->save();
             }
         }
     }

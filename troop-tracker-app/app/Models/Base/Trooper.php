@@ -6,14 +6,18 @@
 
 namespace App\Models\Base;
 
+use App\Models\Award;
 use App\Models\Club;
-use App\Models\Donation;
 use App\Models\Event;
 use App\Models\EventTrooper;
+use App\Models\EventUpload;
+use App\Models\EventUploadTag;
 use App\Models\Squad;
 use App\Models\TrooperAchievement;
+use App\Models\TrooperAward;
 use App\Models\TrooperClub;
 use App\Models\TrooperCostume;
+use App\Models\TrooperDonation;
 use App\Models\TrooperSquad;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -39,11 +43,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
- * @property Collection|Donation[] $donations
  * @property Collection|Event[] $events
+ * @property Collection|EventUploadTag[] $event_upload_tags
+ * @property Collection|EventUpload[] $event_uploads
  * @property TrooperAchievement|null $trooper_achievement
+ * @property Collection|Award[] $awards
  * @property Collection|Club[] $clubs
  * @property Collection|TrooperCostume[] $trooper_costumes
+ * @property Collection|TrooperDonation[] $trooper_donations
  * @property Collection|Squad[] $squads
  *
  * @package App\Models\Base
@@ -79,11 +86,6 @@ class Trooper extends Model
         self::UPDATED_AT => 'datetime'
     ];
 
-    public function donations()
-    {
-        return $this->hasMany(Donation::class);
-    }
-
     public function events()
     {
         return $this->belongsToMany(Event::class, 'tt_event_troopers')
@@ -91,9 +93,26 @@ class Trooper extends Model
                     ->withTimestamps();
     }
 
+    public function event_upload_tags()
+    {
+        return $this->hasMany(EventUploadTag::class);
+    }
+
+    public function event_uploads()
+    {
+        return $this->hasMany(EventUpload::class);
+    }
+
     public function trooper_achievement()
     {
         return $this->hasOne(TrooperAchievement::class);
+    }
+
+    public function awards()
+    {
+        return $this->belongsToMany(Award::class, 'tt_trooper_awards')
+                    ->withPivot(TrooperAward::ID)
+                    ->withTimestamps();
     }
 
     public function clubs()
@@ -106,6 +125,11 @@ class Trooper extends Model
     public function trooper_costumes()
     {
         return $this->hasMany(TrooperCostume::class);
+    }
+
+    public function trooper_donations()
+    {
+        return $this->hasMany(TrooperDonation::class);
     }
 
     public function squads()

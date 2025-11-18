@@ -36,15 +36,22 @@ class EventTrooperSeeder extends Seeder
 
         foreach ($sign_ups as $sign_up)
         {
-            EventTrooper::firstOrCreate([
-                EventTrooper::EVENT_ID => $sign_up->troopid,
-                EventTrooper::TROOPER_ID => $sign_up->trooperid,
-            ], [
-                EventTrooper::COSTUME_ID => in_array($sign_up->costume, $costumes) ? $sign_up->costume : null,
-                EventTrooper::BACKUP_COSTUME_ID => in_array($sign_up->costume_backup, $costumes) ? $sign_up->costume_backup : null,
-                EventTrooper::STATUS => $status_map[$sign_up->status],
-            ]);
-        }
+            $e = EventTrooper::where(EventTrooper::EVENT_ID, $sign_up->troopid)
+                ->where(EventTrooper::TROOPER_ID, $sign_up->trooperid)
+                ->first();
 
+            if ($e == null)
+            {
+                $e = new EventTrooper();
+            }
+
+            $e->event_id = $sign_up->troopid;
+            $e->trooper_id = $sign_up->trooperid;
+            $e->costume_id = in_array($sign_up->costume, $costumes) ? $sign_up->costume : null;
+            $e->backup_costume_id = in_array($sign_up->costume_backup, $costumes) ? $sign_up->costume_backup : null;
+            $e->status = $status_map[$sign_up->status];
+
+            $e->save();
+        }
     }
 }

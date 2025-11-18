@@ -6,17 +6,10 @@
   Dashboard
 </x-page-title>
 
-<x-card :label="'Trooper Achievements'">
-  <div hx-get="{{ route('dashboard.achievements-htmx', ['trooper_id' => $trooper->id]) }}"
-       hx-trigger="load"
-       hx-swap="outerHTML">
-    <x-loading />
-  </div>
-</x-card>
-
-{{--
 @include('pages.dashboard.overview')
-@include('pages.dashboard.troop-breakdown')
+@include('pages.dashboard.achievements', ['trooper_achievement' => $trooper->trooper_achievement])
+@include('pages.dashboard.club-breakdown')
+@include('pages.dashboard.costume-breakdown')
 
 <!-- Navigation Tabs -->
 <ul class="nav nav-tabs mb-4"
@@ -38,19 +31,22 @@
   <li class="nav-item">
     <a class="nav-link"
        data-bs-toggle="tab"
-       href="#awards">Awards
+       href="#awards">
+      Awards
     </a>
   </li>
   <li class="nav-item">
     <a class="nav-link"
        data-bs-toggle="tab"
-       href="#photos">Tagged Photos
+       href="#photos">
+      Tagged Photos
     </a>
   </li>
   <li class="nav-item">
     <a class="nav-link"
        data-bs-toggle="tab"
-       href="#donations">Donations
+       href="#donations">
+      Support Donations
     </a>
   </li>
   <li class="nav-item">
@@ -93,7 +89,7 @@
   <div class="tab-pane fade"
        id="awards">
     <x-card :label="'Awards'">
-      <div hx-get="{{ route('dashboard.trooper-awards-htmx', ['trooper_id' => $trooper->id]) }}"
+      <div hx-get="{{ route('dashboard.awards-htmx', ['trooper_id' => $trooper->id]) }}"
            hx-trigger="load"
            hx-swap="outerHTML">
         <x-loading />
@@ -104,23 +100,25 @@
   <!-- Tagged Photos -->
   <div class="tab-pane fade"
        id="photos">
-    <div class="card mb-4">
-      <div class="card-header">Tagged Photos</div>
-      <div class="card-body">
-        <p>No tagged photos to display.</p>
+    <x-card :label="'Tagged Photos'">
+      <div hx-get="{{ route('dashboard.tagged-uploads-htmx', ['trooper_id' => $trooper->id]) }}"
+           hx-trigger="load"
+           hx-swap="outerHTML">
+        <x-loading />
       </div>
-    </div>
+    </x-card>
   </div>
 
   <!-- Donations -->
   <div class="tab-pane fade"
        id="donations">
-    <div class="card mb-4">
-      <div class="card-header">Donations</div>
-      <div class="card-body">
-        <p>No donations yet!</p>
+    <x-card :label="'Support Donations'">
+      <div hx-get="{{ route('dashboard.donations-htmx', ['trooper_id' => $trooper->id]) }}"
+           hx-trigger="load"
+           hx-swap="outerHTML">
+        <x-loading />
       </div>
-    </div>
+    </x-card>
   </div>
 
   <!-- Costumes -->
@@ -157,6 +155,5 @@
   </div>
 
 </div>
---}}
 
 @endsection

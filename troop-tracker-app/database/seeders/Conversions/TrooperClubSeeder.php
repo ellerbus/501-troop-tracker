@@ -44,14 +44,23 @@ class TrooperClubSeeder extends Seeder
                 $notify = $trooper->{'esquad' . $value} == 1;
                 $status = $this->mapLegacyStatus($trooper->{$permissions});
 
-                TrooperClub::firstOrCreate([
-                    TrooperClub::TROOPER_ID => $trooper->id,
-                    TrooperClub::CLUB_ID => $club['id'],
-                ], [
-                    TrooperClub::IDENTIFIER => $identifier,
-                    TrooperClub::NOTIFY => $notify,
-                    TrooperClub::STATUS => $status
-                ]);
+                $t = TrooperClub::where(TrooperClub::TROOPER_ID, $trooper->id)
+                    ->where(TrooperClub::CLUB_ID, $club['id'])
+                    ->first();
+
+                if ($t == null)
+                {
+                    $t = new TrooperClub();
+
+                    $t->trooper_id = $trooper->id;
+                    $t->club_id = $club['id'];
+                }
+
+                $t->identifier = $identifier;
+                $t->notify = $notify;
+                $t->status = $status;
+
+                $t->save();
             }
         }
     }

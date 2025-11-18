@@ -15,7 +15,11 @@ use App\Http\Controllers\Auth\RegisterDisplayController;
 use App\Http\Controllers\AUth\RegisterHtmxController;
 use App\Http\Controllers\Auth\RegisterSubmitController;
 use App\Http\Controllers\Dashboard\DashboardDisplayController;
-use App\Http\Controllers\Dashboard\TrooperAchievementsHtmxController;
+use App\Http\Controllers\Dashboard\HistoricalTroopsHtmxController;
+use App\Http\Controllers\Dashboard\TaggedUploadsHtmxController;
+use App\Http\Controllers\Dashboard\TrooperAwardsHtmxController;
+use App\Http\Controllers\Dashboard\TrooperDonationsHtmxController;
+use App\Http\Controllers\Dashboard\UpcomingTroopsHtmxController;
 use App\Http\Controllers\FaqDisplayController;
 use App\Http\Controllers\Widgets\SupportDisplayHtmxController;
 use Illuminate\Support\Facades\Route;
@@ -59,12 +63,9 @@ Route::prefix('dashboard')
     ->group(function ()
     {
         Route::get('/', DashboardDisplayController::class)->name('display');
-        Route::get('/achievements-htmx', TrooperAchievementsHtmxController::class)->name('achievements-htmx');
-        // Route::post('/profile-htmx', ProfileSubmitHtmxController::class);
-        // Route::post('/profile-htmx', ProfileSubmitHtmxController::class)->name('profile-htmx.submit');
-        // Route::get('/notifications-htmx', NotificationsDisplayHtmxController::class)->name('notifications-htmx');
-        // Route::post('/notifications-htmx', NotificationsSubmitHtmxController::class);
-        // Route::get('/trooper-costumes-htmx', TrooperCostumesDisplayHtmxController::class)->name('trooper-costumes-htmx');
-        // Route::post('/trooper-costumes-htmx', TrooperCostumesSubmitHtmxController::class);
-        // Route::delete('/trooper-costumes-htmx', TrooperCostumesDeleteHtmxController::class);
+        Route::get('/upcoming-troops-htmx', UpcomingTroopsHtmxController::class)->name('upcoming-troops-htmx');
+        Route::get('/historical-troops-htmx', HistoricalTroopsHtmxController::class)->name('historical-troops-htmx');
+        Route::get('/donations-htmx', TrooperDonationsHtmxController::class)->name('donations-htmx');
+        Route::get('/awards-htmx', TrooperAwardsHtmxController::class)->name('awards-htmx');
+        Route::get('/tagged-uploads-htmx', TaggedUploadsHtmxController::class)->name('tagged-uploads-htmx');
     });

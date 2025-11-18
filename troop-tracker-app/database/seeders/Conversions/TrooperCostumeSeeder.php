@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Conversions;
 
+use App\Models\Trooper;
 use App\Models\TrooperCostume;
 use Database\Seeders\Conversions\Traits\HasEnumMaps;
 use Illuminate\Database\Seeder;
@@ -26,10 +27,19 @@ class TrooperCostumeSeeder extends Seeder
 
         foreach ($favorites as $favorite)
         {
-            TrooperCostume::firstOrCreate([
-                TrooperCostume::TROOPER_ID => $favorite->trooperid,
-                TrooperCostume::COSTUME_ID => $favorite->costumeid,
-            ], []);
+            $t = TrooperCostume::where(TrooperCostume::TROOPER_ID, $favorite->trooperid)
+                ->where(TrooperCostume::COSTUME_ID, $favorite->costumeid)
+                ->first();
+
+            if ($t == null)
+            {
+                $t = new TrooperCostume();
+
+                $t->trooper_id = $favorite->trooperid;
+                $t->costume_id = $favorite->costumeid;
+
+                $t->save();
+            }
         }
     }
 }

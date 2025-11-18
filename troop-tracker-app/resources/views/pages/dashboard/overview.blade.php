@@ -5,8 +5,8 @@
 
     <!-- Column A: Image + Boards Link -->
     <div class="col-md-4 col-lg-3 text-center text-md-start align-self-start mb-3">
-      @if($image_url)
-      <img src="{{ $image_url }}"
+      @if(isset($image_url))
+      <img src="#"
            class="img-fluid rounded mb-3"
            alt="Profile Picture">
       @endif
@@ -23,8 +23,6 @@
     <div class="col-md-8 col-lg-6 align-self-start">
       <h4 class="mb-2 text-upper">
         {{ $trooper->name }}
-        <br />
-        <span class="text-muted">IC{{ $trooper->tkid }}</span>
       </h4>
       <x-table>
         <tr>
@@ -34,24 +32,29 @@
         <tr>
           <th>Trooper Rank:</th>
           <td>
-            @if($trooper_rank > 0)
-            # <x-number-format :value="$trooper_rank" />
+            @if(isset($trooper->trooper_rank))
+            <x-number-format :value="$trooper->trooper_achievement->trooper_rank"
+                             :prefix="'#'" />
             @else
-            n/a
+            <span class="text-muted">
+              N/A
+            </span>
             @endif
           </td>
         </tr>
         <tr>
           <th>Volunteer Hours</th>
-          <td><x-number-format :value="$volunteer_hours" /></td>
+          <td><x-number-format :value="$trooper->trooper_achievement->volunteer_hours" /></td>
         </tr>
         <tr>
           <th>Direct Donations</th>
-          <td><x-currency-format :value="$direct_funds" /></td>
+          <td><x-number-format :value="$trooper->trooper_achievement->direct_funds"
+                             :prefix="'$'" /></td>
         </tr>
         <tr>
           <th>Indirect Donations</th>
-          <td><x-currency-format :value="$indirect_funds" /></td>
+          <td><x-number-format :value="$trooper->trooper_achievement->indirect_funds"
+                             :prefix="'$'" /></td>
         </tr>
       </x-table>
 

@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Contracts\ForumInterface;
 use App\Http\Controllers\Controller;
+use App\Models\Club;
+use App\Models\EventTrooper;
 use App\Models\Trooper;
 use App\Services\BreadCrumbService;
 use App\Services\FlashMessageService;
@@ -13,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -47,7 +50,7 @@ class DashboardDisplayController extends Controller
     {
         $trooper_id = (int) $request->get('trooper_id', Auth::user()->id);
 
-        $trooper = Trooper::findOrFail($trooper_id);
+        $trooper = Trooper::with('trooper_achievement')->findOrFail($trooper_id);
 
         if ($trooper_id == Auth::user()->id)
         {
@@ -59,20 +62,28 @@ class DashboardDisplayController extends Controller
 
         $data = [
             'trooper' => $trooper,
-            // 'trooper_rank' => $this->stats->getTrooperRanking($trooper->id),
-            // 'image_url' => $this->forum->getAvatarUrl($trooper->user_id),
-            // 'total_troops' => $this->stats->getTroopCountSince($trooper->id, null),
-            // 'total_troops_since' => $this->stats->getTroopCountSince($trooper->id, $year_ago),
-            // 'total_troops_club' => $this->stats->getTroopCountsByClub($trooper->id),
-            // 'favorite_costume' => $this->stats->getFavoriteCostumeForTrooper($trooper->id),
-            // 'volunteer_hours' => $this->stats->getTotalCharityHoursForTrooper($trooper->id),
+            'total_troops_by_club' => $this->getTroopsByClub($trooper),
+            'total_troops_by_costume' => EventTrooper::costumeCountByTrooper($trooper->id),
         ];
 
-        // $funds = $this->stats->getTotalCharityFundsForTrooper($trooper->id);
-
-        // $data['direct_funds'] = $funds['direct'];
-        // $data['indirect_funds'] = $funds['indirect'];
-
         return view('pages.dashboard.display', $data);
+    }
+
+    private function getTroopsByClub(Trooper $trooper): Collection
+    {
+        $clubs = Club::active()->get();
+
+        $troops_by_club = EventTrooper::clubCountByTrooper($trooper->id);
+
+        foreach ($clubs as $club)
+        {
+            if (isset($troops_by_club[$club->id]))
+            {
+                $club->troop_count = $troops_by_club[$club->id];
+            }
+        }
+
+        return $clubs;
+
     }
 }

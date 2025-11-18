@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $event_id
  * @property int $trooper_id
- * @property int $costume_id
+ * @property int|null $costume_id
  * @property int|null $backup_costume_id
  * @property int|null $added_by_trooper_id
  * @property string $status
@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $updated_at
  * 
  * @property Trooper $trooper
- * @property ClubCostume $club_costume
+ * @property ClubCostume|null $club_costume
  * @property Event $event
  *
  * @package App\Models\Base

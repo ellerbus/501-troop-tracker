@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Conversions;
 
+use App\Enums\MembershipStatus;
+use App\Enums\Permissions;
 use App\Models\Trooper;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,63 +17,36 @@ class TrooperSeeder extends Seeder
      */
     public function run(): void
     {
-        // Copy data from legacy troopers to tt_troopers
-        DB::table('tt_troopers')->insertUsing([
-            Trooper::ID,
-            Trooper::NAME,
-            Trooper::EMAIL,
-            Trooper::PHONE,
-            Trooper::USERNAME,
-            Trooper::PASSWORD,
-            Trooper::LAST_ACTIVE_AT,
-            Trooper::APPROVED,
-            Trooper::CREATED_AT,
-            Trooper::INSTANT_NOTIFICATION,
-            Trooper::ATTENDANCE_NOTIFICATION,
-            Trooper::COMMAND_STAFF_NOTIFICATION,
-            Trooper::PERMISSIONS,
-        ], function ($query)
+        $legacy_troopers = DB::table('troopers')->get();
+
+        foreach ($legacy_troopers as $trooper)
         {
-            $columns = [
-                'id',
-                'name',
-                'email',
-                'phone',
-                'forum_id',
-                DB::raw("
-                    CASE
-                        WHEN password IS NULL THEN UUID()
-                        ELSE password
-                    END AS password
-                "),
-                'last_active',
-                'approved',
-                'datecreated',
-                'efast',
-                'econfirm',
-                'ecommandnotify',
-                DB::raw("
-                    CASE permissions
-                        WHEN 0 THEN 'member'
-                        WHEN 1 THEN 'admin'
-                        WHEN 2 THEN 'moderator'
-                        WHEN 3 THEN 'retired'
-                        ELSE 'none'
-                    END AS permissions
-                "),
+            $t = Trooper::find($trooper->id) ?? new Trooper(['id' => $trooper->id]);
 
-            ];
+            $t->name = $trooper->name;
+            $t->phone = $trooper->phone;
+            $t->username = $trooper->forum_id;
+            $t->email = $trooper->email ?? '^' . uniqid();
+            $t->password = $trooper->password ?? '^' . uniqid();
 
-            $query->select($columns)
-                ->from('troopers')
-                ->whereNotNull('email')
-                ->whereNotExists(function ($sub)
-                {
-                    $sub->select(DB::raw(1))
-                        ->from('tt_troopers')
-                        ->whereColumn('tt_troopers.id', 'troopers.id');
-                });
+            $t->last_active_at = $trooper->last_active;
+            $t->approved = $trooper->approved;
+            $t->created_at = $trooper->datecreated;
 
-        });
+            $t->instant_notification = $trooper->efast;
+            $t->attendance_notification = $trooper->econfirm;
+            $t->command_staff_notification = $trooper->ecommandnotify;
+
+            $t->permissions = match ((int) $trooper->permissions)
+            {
+                0 => Permissions::Member,
+                1 => Permissions::Admin,
+                2 => Permissions::Moderator,
+                3 => Permissions::Retired,
+                default => Permissions::None,
+            };
+
+            $t->save();
+        }
     }
 }

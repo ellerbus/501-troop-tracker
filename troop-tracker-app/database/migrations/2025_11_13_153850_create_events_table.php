@@ -19,6 +19,17 @@ return new class extends Migration
             $table->string('name', 256);
             $table->dateTime('starts_at')->nullable()->index();
             $table->dateTime('ends_at')->nullable()->index();
+            $table->boolean('closed')->default(false);
+
+            $table->integer('charity_direct_funds')->default(0);
+            $table->integer('charity_indirect_funds')->default(0);
+            $table->string('charity_name')->nullable();
+            $table->integer('charity_hours')->nullable();
+            //$table->text('charity_note')->nullable();
+
+            $table->boolean('limit_participants')->default(true);
+            $table->integer('total_troopers_allowed')->nullable();
+            $table->integer('total_handlers_allowed')->nullable();
 
             // $table->string('venue')->nullable();
             // $table->string('website', 500)->nullable();
@@ -40,17 +51,8 @@ return new class extends Migration
             // $table->string('label', 100)->nullable();
             // $table->text('postComment')->nullable();
             // $table->text('notes')->nullable();
-            $table->boolean('limit_participants')->default(true);
-            $table->integer('total_troopers_allowed')->nullable();
-            $table->integer('total_handlers_allowed')->nullable();
             // $table->integer('friendLimit')->default(4);
             // $table->tinyInteger('allowTentative')->default(1);
-            // $table->boolean('closed')->default(false);
-            // $table->integer('charityDirectFunds')->default(0);
-            // $table->integer('charityIndirectFunds')->default(0);
-            // $table->string('charityName')->nullable();
-            // $table->integer('charityAddHours')->nullable();
-            // $table->text('charityNote')->nullable();
             // $table->integer('link')->default(0)->index();
             // $table->integer('link2')->default(0)->index();
 

@@ -33,12 +33,20 @@ class CalculateTrooperAchievements extends Command
      */
     public function handle()
     {
+        $this->storeAchievements();
+    }
+
+    private function storeAchievements(): void
+    {
         $trooper_events = $this->getTrooperEvents();
 
         for ($i = 0, $len = $trooper_events->count(); $i < $len; $i++)
         {
             $trooper_event = $trooper_events[$i];
-            $count = $trooper_event->event_count ?? 0;
+            $count = $trooper_event->event_count;
+            $hours = $trooper_event->total_hours;
+            $direct_funds = $trooper_event->total_direct;
+            $indirect_funds = $trooper_event->total_indirect;
 
             $where = [TrooperAchievement::TROOPER_ID => $trooper_events[$i]->trooper_id];
 
@@ -57,6 +65,9 @@ class CalculateTrooperAchievements extends Command
                 TrooperAchievement::TROOPED_400 => $count >= 400,
                 TrooperAchievement::TROOPED_500 => $count >= 500,
                 TrooperAchievement::TROOPED_501 => $count >= 501,
+                TrooperAchievement::VOLUNTEER_HOURS => $hours,
+                TrooperAchievement::DIRECT_FUNDS => $direct_funds,
+                TrooperAchievement::INDIRECT_FUNDS => $indirect_funds,
             ];
 
             TrooperAchievement::updateOrCreate($where, $values);
@@ -65,8 +76,16 @@ class CalculateTrooperAchievements extends Command
 
     private function getTrooperEvents()
     {
-        $trooper_events = EventTrooper::selectRaw('trooper_id, COUNT(*) as event_count')
-            ->groupBy('trooper_id')
+        $select = 'tt_event_troopers.trooper_id, ' .
+            'COUNT(1) as event_count, ' .
+            'SUM(tt_events.charity_direct_funds) as total_direct, ' .
+            'SUM(tt_events.charity_indirect_funds) as total_indirect, ' .
+            'SUM(TIMESTAMPDIFF(HOUR, tt_events.starts_at, tt_events.ends_at) + tt_events.charity_hours) as total_hours';
+
+        $trooper_events = EventTrooper::selectRaw($select)
+            ->join('tt_events', 'tt_event_troopers.event_id', '=', 'tt_events.id')
+            ->where('tt_events.closed', true)
+            ->groupBy('tt_event_troopers.trooper_id')
             ->orderByDesc('event_count')
             ->get();
 

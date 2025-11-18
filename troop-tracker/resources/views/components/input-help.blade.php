@@ -1,1 +1,0 @@
-<span class="form-text text-muted ps-2">{{ $slot }}</span>

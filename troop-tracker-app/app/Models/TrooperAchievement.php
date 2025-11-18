@@ -22,6 +22,9 @@ class TrooperAchievement extends BaseTrooperAchievement
         self::TROOPED_300,
         self::TROOPED_400,
         self::TROOPED_500,
-        self::TROOPED_501
+        self::TROOPED_501,
+        self::VOLUNTEER_HOURS,
+        self::DIRECT_FUNDS,
+        self::INDIRECT_FUNDS
     ];
 }

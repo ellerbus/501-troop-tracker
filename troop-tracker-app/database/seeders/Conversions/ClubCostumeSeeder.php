@@ -31,12 +31,19 @@ class ClubCostumeSeeder extends Seeder
                 continue;
             }
 
-            ClubCostume::firstOrCreate([
-                ClubCostume::NAME => $costume->costume,
-                ClubCostume::CLUB_ID => $club['id'],
-            ], [
-                ClubCostume::ID => $costume->id,
-            ]);
+            $c = ClubCostume::where(ClubCostume::NAME, $costume->costume)
+                ->where(ClubCostume::CLUB_ID, $club['id'])
+                ->first();
+
+            if ($c == null)
+            {
+                $c = new ClubCostume(['id' => $costume->id]);
+            }
+
+            $c->name = $costume->costume;
+            $c->club_id = $club['id'];
+
+            $c->save();
         }
     }
 }

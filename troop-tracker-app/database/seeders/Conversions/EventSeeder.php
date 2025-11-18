@@ -20,46 +20,28 @@ class EventSeeder extends Seeder
     {
         $squad_maps = $this->getSquadMap();
 
-        $cases = collect($squad_maps)->map(function ($value, $legacy)
+        $legacy_events = DB::table('events')->get();
+
+        foreach ($legacy_events as $event)
         {
-            return "WHEN '{$legacy}' THEN {$value['id']}";
-        })->implode(' ');
+            $e = Event::find($event->id) ?? new Event(['id' => $event->id]);
 
-        $squad_case_map = DB::raw("CASE squad {$cases} ELSE NULL END");
+            $e->name = $event->name;
+            //$e->squad_id = $squad_maps[$event->squad_id] ?? null;
+            $e->starts_at = $event->dateStart;
+            $e->ends_at = $event->dateEnd;
 
-        // Copy data from legacy events to tt_events
-        DB::table('tt_events')->insertUsing([
-            Event::ID,
-            Event::NAME,
-            Event::SQUAD_ID,
-            Event::STARTS_AT,
-            Event::ENDS_AT,
-            Event::LIMIT_PARTICIPANTS,
-            Event::TOTAL_TROOPERS_ALLOWED,
-            Event::TOTAL_HANDLERS_ALLOWED,
+            $e->limit_participants = $event->limitedEvent ?? false;
+            $e->total_troopers_allowed = $event->limitedEvent ? $event->limitTotalTroopers : null;
+            $e->total_handlers_allowed = $event->limitedEvent ? $event->limitHandlers : null;
+            $e->closed = $event->closed;
 
-        ], function ($query) use ($squad_case_map)
-        {
-            $columns = [
-                'id',
-                'name',
-                $squad_case_map,
-                'dateStart',
-                'dateEnd',
-                DB::raw('CASE WHEN limitedEvent IS NULL THEN 0 ELSE limitedEvent END'),
-                'limitTotalTroopers',
-                'limitHandlers',
-            ];
+            $e->charity_direct_funds = $event->charityDirectFunds;
+            $e->charity_indirect_funds = $event->charityIndirectFunds;
+            $e->charity_name = $event->charityName;
+            $e->charity_hours = $event->charityAddHours;
 
-            $query->select($columns)
-                ->from('events')
-                ->whereNotExists(function ($sub)
-                {
-                    $sub->select(DB::raw(1))
-                        ->from('tt_events')
-                        ->whereColumn('tt_events.id', 'events.id');
-                });
-
-        });
+            $e->save();
+        }
     }
 }

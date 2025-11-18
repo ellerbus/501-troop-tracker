@@ -20,7 +20,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             // $table->dateTime('member_since');
-            $table->integer('trooper_rank');
+            $table->integer('trooper_rank')->nullable();
 
             // Squad completion
             $table->boolean('trooped_all_squads')->default(false);
@@ -42,32 +42,9 @@ return new class extends Migration
             $table->boolean('trooped_500')->default(false);
             $table->boolean('trooped_501')->default(false);
 
-            /*
-
-            ---
-
-            ### 🏅 Trooper Achievement Icons (Font Awesome 6.x)
-
-            | Achievement                         | Icon Class                     | Suggested Tooltip                     |
-            |-------------------------------------|--------------------------------|----------------------------------------|
-            | Trooped every squad                 | `fa-solid fa-network-wired`    | "Trooped every squad in the system"    |
-            | First troop completed               | `fa-solid fa-flag-checkered`   | "First troop completed"                |
-            | 10 troops                           | `fa-solid fa-shield-halved`    | "10 successful missions"               |
-            | 25 troops                           | `fa-solid fa-user-shield`      | "25 deployments logged"                |
-            | 50 troops                           | `fa-solid fa-medal`            | "50 confirmed appearances"             |
-            | 75 troops                           | `fa-solid fa-star-half-stroke` | "75 missions completed"                |
-            | 100 troops                          | `fa-solid fa-star`             | "100 trooper events"                   |
-            | 150 troops                          | `fa-solid fa-trophy`           | "150 events trooped"                   |
-            | 200 troops                          | `fa-solid fa-trophy-star`      | "200 elite missions"                   |
-            | 250 troops                          | `fa-solid fa-award`            | "250 deployments"                      |
-            | 300 troops                          | `fa-solid fa-certificate`      | "300 confirmed appearances"            |
-            | 400 troops                          | `fa-solid fa-crown`            | "400 legendary missions"               |
-            | 500 troops                          | `fa-solid fa-gem`              | "500 elite trooper events"             |
-            | 501 troops                          | `fa-solid fa-helmet-safety`    | "501st Legion Master Trooper"          |
-
-            ---
-
-             */
+            $table->float('volunteer_hours')->default(0);
+            $table->float('direct_funds')->default(0);
+            $table->float('indirect_funds')->default(0);
 
             $table->timestamps();
 

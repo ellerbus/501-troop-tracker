@@ -16,15 +16,20 @@ class SettingSeeder extends Seeder
      */
     public function run(): void
     {
-        $legacy_settings = DB::table('settings')->get();
+        $settings = DB::table('settings')->get();
 
-        foreach ($legacy_settings as $setting)
+        foreach ($settings as $setting)
         {
-            DB::table('tt_settings')->insert([
-                Setting::SUPPORT_GOAL => $setting->supportgoal,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
+            $s = Setting::first();
+
+            if ($s == null)
+            {
+                $s = new Setting();
+            }
+
+            $s->support_goal = $setting->supportgoal;
+
+            $s->save();
         }
     }
 }

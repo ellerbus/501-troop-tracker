@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\EventSignUpRepository;
+use App\Models\EventTrooper;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,11 +15,6 @@ use Illuminate\Support\Facades\Auth;
  */
 class UpcomingTroopsHtmxController extends Controller
 {
-    public function __construct(
-        private readonly EventSignUpRepository $signups
-    ) {
-    }
-
     /**
      * Handle the incoming request to display the dashboard page.
      *
@@ -30,8 +25,10 @@ class UpcomingTroopsHtmxController extends Controller
     {
         $trooper_id = (int) $request->get('trooper_id', Auth::user()->id);
 
+        $troops = EventTrooper::upcomingByTrooper($trooper_id)->get()->sortBy(fn($et) => $et->event->ends_at);
+
         $data = [
-            'upcoming_troops' => $this->signups->getUpcomingTroops($trooper_id)
+            'upcoming_troops' => $troops,
         ];
 
         return view('pages.dashboard.upcoming-troops', $data);

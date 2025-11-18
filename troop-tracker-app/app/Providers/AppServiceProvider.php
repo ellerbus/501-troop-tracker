@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Trooper;
+use App\Observers\TrooperObserver;
 use App\Services\BreadCrumbService;
 use Illuminate\Database\Migrations\DatabaseMigrationRepository;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
@@ -32,5 +34,7 @@ class AppServiceProvider extends ServiceProvider
                 'tt_migrations'
             );
         });
+
+        Trooper::observe(TrooperObserver::class);
     }
 }
