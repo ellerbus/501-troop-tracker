@@ -31,15 +31,15 @@ class TrooperCostumesSubmitHtmxController extends Controller
         $trooper = Trooper::findOrFail(Auth::user()->id);
 
         $club_id = (int) $request->input('club_id', -1);
-        $costume_id = (int) $request->input('costume_id', -1);
+        $club_costume_id = (int) $request->input('club_costume_id', -1);
 
-        if ($club_id > -1 && $costume_id > -1)
+        if ($club_id > -1 && $club_costume_id > -1)
         {
             $club = $trooper->assignedClubs($club_id)->first();
 
             if (isset($club))
             {
-                $costume = $club->club_costumes()->where(ClubCostume::ID, $costume_id)->first();
+                $costume = $club->club_costumes()->where(ClubCostume::ID, $club_costume_id)->first();
 
                 if (isset($costume))
                 {

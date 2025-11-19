@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Club;
+use App\Models\Squad;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,10 +19,11 @@ class SquadFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => '501st-' . uniqid(),
-            'image_path_lg' => '',
-            'image_path_sm' => '',
-            'active' => true
+            Squad::NAME => '501st-' . uniqid(),
+            Squad::IMAGE_PATH_LG => '',
+            Squad::IMAGE_PATH_SM => '',
+            Squad::ACTIVE => true,
+            Squad::CLUB_ID => Club::factory()
         ];
     }
 }

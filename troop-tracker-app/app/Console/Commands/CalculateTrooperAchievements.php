@@ -7,9 +7,14 @@ namespace App\Console\Commands;
 use App\Models\EventTrooper;
 use App\Models\TrooperAchievement;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 
 /**
- * This file is used for auto accepting unconfirmed troops every 6 months to clear up the database
+ * Artisan command to calculate and store trooper achievements based on their event history.
+ *
+ * This command aggregates event data for each trooper, such as total troops,
+ * volunteer hours, and funds raised, and then updates their corresponding
+ * achievements in the database.
  */
 class CalculateTrooperAchievements extends Command
 {
@@ -30,12 +35,23 @@ class CalculateTrooperAchievements extends Command
 
     /**
      * Execute the console command.
+     *
+     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $this->storeAchievements();
     }
 
+    /**
+     * Fetches trooper event statistics and stores their achievements.
+     *
+     * This method iterates through each trooper's aggregated event data,
+     * determines which achievements they have earned, and updates the
+     * `trooper_achievements` table accordingly.
+     *
+     * @return void
+     */
     private function storeAchievements(): void
     {
         $trooper_events = $this->getTrooperEvents();
@@ -74,7 +90,12 @@ class CalculateTrooperAchievements extends Command
         }
     }
 
-    private function getTrooperEvents()
+    /**
+     * Retrieves aggregated event data for all troopers.
+     *
+     * @return Collection
+     */
+    private function getTrooperEvents(): Collection
     {
         $select = 'tt_event_troopers.trooper_id, ' .
             'COUNT(1) as event_count, ' .

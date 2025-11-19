@@ -48,7 +48,7 @@ class TrooperCostumesDisplayHtmxControllerTest extends TestCase
         ]);
 
         // Create a trooper costume for the trooper
-        TrooperCostume::factory()->create(['trooper_id' => $this->trooper->id, 'costume_id' => $this->costume->id]);
+        TrooperCostume::factory()->create(['trooper_id' => $this->trooper->id, 'club_costume_id' => $this->costume->id]);
     }
 
     public function test_invoke_without_club_id_returns_correct_view_and_data(): void

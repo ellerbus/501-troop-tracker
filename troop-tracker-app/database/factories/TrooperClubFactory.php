@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\MembershipStatus;
 use App\Models\Trooper;
+use App\Models\TrooperClub;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,9 +20,9 @@ class TrooperClubFactory extends Factory
     public function definition(): array
     {
         return [
-            'trooper_id' => Trooper::factory(),
-            'identifier' => 'TK' . uniqid(),
-            'status' => MembershipStatus::Member
+            TrooperClub::TROOPER_ID => Trooper::factory(),
+            TrooperClub::IDENTIFIER => 'TK' . uniqid(),
+            TrooperClub::STATUS => MembershipStatus::Member
         ];
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Account\ProfileSubmitHtmxController;
 use App\Http\Controllers\Account\TrooperCostumesDeleteHtmxController;
 use App\Http\Controllers\Account\TrooperCostumesDisplayHtmxController;
 use App\Http\Controllers\Account\TrooperCostumesSubmitHtmxController;
+use App\Http\Controllers\Admin\AdminDisplayController;
 use App\Http\Controllers\Auth\LoginDisplayController;
 use App\Http\Controllers\Auth\LoginSubmitController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -69,3 +70,13 @@ Route::prefix('dashboard')
         Route::get('/awards-htmx', TrooperAwardsHtmxController::class)->name('awards-htmx');
         Route::get('/tagged-uploads-htmx', TaggedUploadsHtmxController::class)->name('tagged-uploads-htmx');
     });
+
+//  ADMIN
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth', 'check.permission:moderator,admin'])
+    ->group(function ()
+    {
+        Route::get('/', AdminDisplayController::class)->name('display');
+    });
+

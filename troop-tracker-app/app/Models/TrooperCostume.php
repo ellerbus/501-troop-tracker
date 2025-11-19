@@ -11,6 +11,6 @@ class TrooperCostume extends BaseTrooperCostume
 
     protected $fillable = [
         self::TROOPER_ID,
-        self::COSTUME_ID
+        self::CLUB_COSTUME_ID
     ];
 }

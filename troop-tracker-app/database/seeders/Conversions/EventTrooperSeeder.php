@@ -47,8 +47,8 @@ class EventTrooperSeeder extends Seeder
 
             $e->event_id = $sign_up->troopid;
             $e->trooper_id = $sign_up->trooperid;
-            $e->costume_id = in_array($sign_up->costume, $costumes) ? $sign_up->costume : null;
-            $e->backup_costume_id = in_array($sign_up->costume_backup, $costumes) ? $sign_up->costume_backup : null;
+            $e->club_costume_id = in_array($sign_up->costume, $costumes) ? $sign_up->costume : null;
+            $e->backup_club_costume_id = in_array($sign_up->costume_backup, $costumes) ? $sign_up->costume_backup : null;
             $e->status = $status_map[$sign_up->status];
 
             $e->save();

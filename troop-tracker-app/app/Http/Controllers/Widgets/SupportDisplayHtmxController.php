@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Widgets;
 
 use App\Http\Controllers\Controller;
-use App\Models\Donation;
 use App\Models\Setting;
+use App\Models\TrooperDonation;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
@@ -26,7 +26,7 @@ class SupportDisplayHtmxController extends Controller
     {
         $settings = Setting::first();
 
-        $donations = Donation::getMonthlyTotal();
+        $donations = TrooperDonation::forMonth()->sum(TrooperDonation::AMOUNT);
 
         $progress = 0;
 

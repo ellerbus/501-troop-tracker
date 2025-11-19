@@ -7,6 +7,8 @@
 namespace App\Models\Base;
 
 use App\Models\Club;
+use App\Models\EventCostume;
+use App\Models\EventTrooper;
 use App\Models\TrooperCostume;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -22,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $updated_at
  * 
  * @property Club $club
+ * @property Collection|EventCostume[] $event_costumes
+ * @property Collection|EventTrooper[] $event_troopers
  * @property Collection|TrooperCostume[] $trooper_costumes
  *
  * @package App\Models\Base
@@ -47,8 +51,18 @@ class ClubCostume extends Model
         return $this->belongsTo(Club::class);
     }
 
+    public function event_costumes()
+    {
+        return $this->hasMany(EventCostume::class);
+    }
+
+    public function event_troopers()
+    {
+        return $this->hasMany(EventTrooper::class);
+    }
+
     public function trooper_costumes()
     {
-        return $this->hasMany(TrooperCostume::class, TrooperCostume::COSTUME_ID);
+        return $this->hasMany(TrooperCostume::class);
     }
 }

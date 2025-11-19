@@ -31,7 +31,7 @@ class EventUploadTagSeeder extends Seeder
         {
             $e = EventUploadTag::find($tag->id) ?? new EventUploadTag(['id' => $tag->id]);
 
-            $e->upload_id = $tag->photoid;
+            $e->event_upload_id = $tag->photoid;
             $e->trooper_id = $tag->trooperid;
 
             $e->save();

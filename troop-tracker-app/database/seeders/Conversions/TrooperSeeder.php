@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders\Conversions;
 
 use App\Enums\MembershipStatus;
-use App\Enums\Permissions;
+use App\Enums\TrooperPermissions;
 use App\Models\Trooper;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -39,11 +39,11 @@ class TrooperSeeder extends Seeder
 
             $t->permissions = match ((int) $trooper->permissions)
             {
-                0 => Permissions::Member,
-                1 => Permissions::Admin,
-                2 => Permissions::Moderator,
-                3 => Permissions::Retired,
-                default => Permissions::None,
+                0 => TrooperPermissions::Member,
+                1 => TrooperPermissions::Admin,
+                2 => TrooperPermissions::Moderator,
+                3 => TrooperPermissions::Retired,
+                default => TrooperPermissions::None,
             };
 
             $t->save();

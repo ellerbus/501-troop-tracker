@@ -35,7 +35,6 @@
                     :value="$phone" />
     </x-input-container>
 
-    {{--
     <x-submit-container>
       <span class="float-start">
         <a href="{{ route('dashboard.display') }}"
@@ -47,6 +46,5 @@
         Save
       </x-submit-button>
     </x-submit-container>
-    --}}
   </form>
 </div>

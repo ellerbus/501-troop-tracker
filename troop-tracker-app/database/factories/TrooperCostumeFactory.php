@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\ClubCostume;
 use App\Models\Trooper;
+use App\Models\TrooperCostume;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,8 +20,8 @@ class TrooperCostumeFactory extends Factory
     public function definition(): array
     {
         return [
-            'trooper_id' => Trooper::factory(),
-            'costume_id' => ClubCostume::factory(),
+            TrooperCostume::TROOPER_ID => Trooper::factory(),
+            TrooperCostume::CLUB_COSTUME_ID => ClubCostume::factory(),
         ];
     }
 }

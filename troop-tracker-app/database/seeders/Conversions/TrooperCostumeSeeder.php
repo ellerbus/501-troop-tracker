@@ -28,7 +28,7 @@ class TrooperCostumeSeeder extends Seeder
         foreach ($favorites as $favorite)
         {
             $t = TrooperCostume::where(TrooperCostume::TROOPER_ID, $favorite->trooperid)
-                ->where(TrooperCostume::COSTUME_ID, $favorite->costumeid)
+                ->where(TrooperCostume::CLUB_COSTUME_ID, $favorite->costumeid)
                 ->first();
 
             if ($t == null)
@@ -36,7 +36,7 @@ class TrooperCostumeSeeder extends Seeder
                 $t = new TrooperCostume();
 
                 $t->trooper_id = $favorite->trooperid;
-                $t->costume_id = $favorite->costumeid;
+                $t->club_costume_id = $favorite->costumeid;
 
                 $t->save();
             }

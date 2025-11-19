@@ -15,7 +15,7 @@ return new class extends Migration
         {
             $table->id();
 
-            $table->foreignId('upload_id')
+            $table->foreignId('event_upload_id')
                 ->constrained('tt_event_uploads')
                 ->cascadeOnDelete();
 

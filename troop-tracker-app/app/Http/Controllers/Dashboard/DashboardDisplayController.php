@@ -7,11 +7,11 @@ namespace App\Http\Controllers\Dashboard;
 use App\Contracts\ForumInterface;
 use App\Http\Controllers\Controller;
 use App\Models\Club;
+use App\Models\ClubCostume;
 use App\Models\EventTrooper;
 use App\Models\Trooper;
 use App\Services\BreadCrumbService;
 use App\Services\FlashMessageService;
-use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +19,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Displays the main dashboard management page.
+ * Handles the display of the main trooper dashboard.
+ *
+ * This controller gathers various statistics for a trooper, such as troop counts by club and costume, and displays them.
  */
 class DashboardDisplayController extends Controller
 {
@@ -58,32 +60,58 @@ class DashboardDisplayController extends Controller
             $this->crumbs->add('Dashboard');
         }
 
-        $year_ago = Carbon::now()->subYear();
-
         $data = [
             'trooper' => $trooper,
             'total_troops_by_club' => $this->getTroopsByClub($trooper),
-            'total_troops_by_costume' => EventTrooper::costumeCountByTrooper($trooper->id),
+            'total_troops_by_costume' => $this->getTroopsByCostume($trooper),
         ];
 
         return view('pages.dashboard.display', $data);
     }
 
+    /**
+     * Retrieves the total troop count for a trooper, grouped by club.
+     *
+     * This method only includes clubs the trooper has trooped with and orders
+     * them by the number of appearances.
+     *
+     * @param Trooper $trooper The trooper to calculate statistics for.
+     * @return Collection A collection of Club models, each with a `troop_count` attribute.
+     */
     private function getTroopsByClub(Trooper $trooper): Collection
     {
-        $clubs = Club::active()->get();
+        $trooper_id = $trooper->id;
 
-        $troops_by_club = EventTrooper::clubCountByTrooper($trooper->id);
+        return Club::whereHas('club_costumes.event_troopers', fn($q) => $q->where(EventTrooper::TROOPER_ID, $trooper_id))
+            ->withCount([
+                'event_troopers as troop_count' => fn($query) =>
+                    $query->where(EventTrooper::TROOPER_ID, $trooper_id)
+            ])
+            ->orderBy('troop_count', 'desc')
+            ->get();
+    }
 
-        foreach ($clubs as $club)
-        {
-            if (isset($troops_by_club[$club->id]))
-            {
-                $club->troop_count = $troops_by_club[$club->id];
-            }
-        }
+    /**
+     * Retrieves the total troop count for a trooper, grouped by costume.
+     *
+     * This method only includes costumes the trooper has actually worn and orders
+     * them by the number of appearances. It excludes 'N/A' costumes.
+     *
+     * @param Trooper $trooper The trooper to calculate statistics for.
+     * @return Collection A collection of ClubCostume models, each with a `troop_count` attribute.
+     */
+    private function getTroopsByCostume(Trooper $trooper): Collection
+    {
+        $trooper_id = $trooper->id;
 
-        return $clubs;
-
+        return ClubCostume::whereHas('event_troopers', fn($q) => $q->where(EventTrooper::TROOPER_ID, $trooper_id))
+            ->with('club')
+            ->withCount([
+                'event_troopers as troop_count' => fn($q) =>
+                    $q->where(EventTrooper::TROOPER_ID, $trooper_id)
+            ])
+            ->whereNot(ClubCostume::NAME, 'N/A')
+            ->orderBy('troop_count', 'desc')
+            ->get();
     }
 }

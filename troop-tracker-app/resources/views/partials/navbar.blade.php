@@ -29,6 +29,13 @@
           FAQ
         </x-nav-link>
 
+        @permission('admin')
+        <x-nav-link :href="route('admin.display')"
+                    :active="request()->routeIs('admin.display')">
+          Command Staff
+        </x-nav-link>
+        @endpermission
+
         @auth
         <x-nav-link :href="route('account.display')"
                     :active="request()->routeIs('account.display')">

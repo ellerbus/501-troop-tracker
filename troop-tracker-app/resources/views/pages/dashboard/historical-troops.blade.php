@@ -16,19 +16,21 @@
         --}}
       </td>
       <td>
-        {{ $troop->event->name }}
+        {{ $troop->name }}
       </td>
       <td class="text-center text-nowrap">
-        <x-date-format :value="$troop->event->starts_at"
+        <x-date-format :value="$troop->starts_at"
                        :format="'M j, Y'" />
       </td>
       <td>
-        @if(isset($troop->club_costume))
-        <x-costume-name :club="$troop->club_costume->club->name"
-                        :costume="$troop->club_costume->name" />
+        @foreach($troop->event_troopers as $trooper)
+        @if(isset($trooper->club_costume) && $trooper->club_costume->name != 'N/A')
+        <x-costume-name :club="$trooper->club_costume->club->name"
+                        :costume="$trooper->club_costume->name" />
         @else
         <span class="text-muted">N/A</span>
         @endif
+        @endforeach
       </td>
     </tr>
     @empty

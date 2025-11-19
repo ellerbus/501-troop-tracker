@@ -22,11 +22,11 @@ return new class extends Migration
                 ->constrained('tt_troopers')
                 ->cascadeOnDelete();
 
-            $table->foreignId('costume_id')
+            $table->foreignId('club_costume_id')
                 ->nullable()
                 ->constrained('tt_club_costumes')
                 ->cascadeOnDelete();
-            $table->foreignId('backup_costume_id')
+            $table->foreignId('backup_club_costume_id')
                 ->nullable()
                 ->constrained('tt_club_costumes')
                 ->cascadeOnDelete();

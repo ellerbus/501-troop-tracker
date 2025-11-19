@@ -16,7 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\FlashMessageMiddleware::class,
             \App\Http\Middleware\HtmxDispatchHeaderMiddleware::class,
             \App\Http\Middleware\UpdateLastActiveMiddleware::class,
-            // ... other web middleware
+        ]);
+
+        $middleware->alias([
+            'check.permission' => \App\Http\Middleware\CheckTrooperPermission::class
         ]);
 
         $middleware->redirectGuestsTo(fn(Illuminate\Http\Request $request) => route('auth.login'));

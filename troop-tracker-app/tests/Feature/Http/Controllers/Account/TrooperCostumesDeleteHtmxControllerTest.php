@@ -40,7 +40,7 @@ class TrooperCostumesDeleteHtmxControllerTest extends TestCase
 
         $this->trooper_costume = TrooperCostume::factory()->create([
             'trooper_id' => $this->trooper->id,
-            'costume_id' => $this->costume->id,
+            'club_costume_id' => $this->costume->id,
         ]);
     }
 
@@ -49,13 +49,13 @@ class TrooperCostumesDeleteHtmxControllerTest extends TestCase
         // Assert pre-condition
         $this->assertDatabaseHas('tt_trooper_costumes', [
             'trooper_id' => $this->trooper->id,
-            'costume_id' => $this->costume->id,
+            'club_costume_id' => $this->costume->id,
         ]);
 
         // Act
         $response = $this->actingAs($this->trooper)
             ->delete(route('account.trooper-costumes-htmx'), [
-                'costume_id' => $this->costume->id,
+                'club_costume_id' => $this->costume->id,
             ]);
 
         // Assert
@@ -68,7 +68,7 @@ class TrooperCostumesDeleteHtmxControllerTest extends TestCase
 
         $this->assertDatabaseMissing('tt_trooper_costumes', [
             'trooper_id' => $this->trooper->id,
-            'costume_id' => $this->costume->id,
+            'club_costume_id' => $this->costume->id,
         ]);
     }
 }

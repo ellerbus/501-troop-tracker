@@ -7,10 +7,19 @@ namespace App\Http\Controllers;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
+/**
+ * Displays the Frequently Asked Questions (FAQ) page.
+ *
+ * This controller is responsible for gathering data for the FAQ page,
+ * which primarily consists of a list of tutorial videos.
+ */
 class FaqDisplayController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Handle the incoming request to display the FAQ page.
+     *
+     * @param Request $request The incoming HTTP request.
+     * @return View The rendered FAQ page view.
      */
     public function __invoke(Request $request): View
     {

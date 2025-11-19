@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $id
  * @property int $event_id
- * @property int $costume_id
+ * @property int $club_costume_id
  * @property bool $requested
  * @property bool $excluded
  * @property Carbon|null $created_at
@@ -31,7 +31,7 @@ class EventCostume extends Model
 {
     const ID = 'id';
     const EVENT_ID = 'event_id';
-    const COSTUME_ID = 'costume_id';
+    const CLUB_COSTUME_ID = 'club_costume_id';
     const REQUESTED = 'requested';
     const EXCLUDED = 'excluded';
     const CREATED_AT = 'created_at';
@@ -41,7 +41,7 @@ class EventCostume extends Model
     protected $casts = [
         self::ID => 'int',
         self::EVENT_ID => 'int',
-        self::COSTUME_ID => 'int',
+        self::CLUB_COSTUME_ID => 'int',
         self::REQUESTED => 'bool',
         self::EXCLUDED => 'bool',
         self::CREATED_AT => 'datetime',
@@ -50,7 +50,7 @@ class EventCostume extends Model
 
     public function club_costume()
     {
-        return $this->belongsTo(ClubCostume::class, \App\Models\EventCostume::COSTUME_ID);
+        return $this->belongsTo(ClubCostume::class);
     }
 
     public function event()

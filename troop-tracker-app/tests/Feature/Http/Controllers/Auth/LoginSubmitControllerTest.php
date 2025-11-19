@@ -7,7 +7,7 @@ namespace Tests\Feature\Http\Controllers\Auth;
 use App\Contracts\AuthenticationInterface;
 use App\Enums\AuthenticationStatus;
 use App\Enums\MembershipStatus;
-use App\Enums\Permissions;
+use App\Enums\TrooperPermissions;
 use App\Models\Club;
 use App\Models\Trooper;
 use Database\Seeders\ClubSeeder;
@@ -137,7 +137,7 @@ class LoginSubmitControllerTest extends TestCase
     public function test_invoke_handles_retired_user_via_permissions_column(): void
     {
         // Arrange
-        $trooper = Trooper::factory()->create(['permissions' => Permissions::Retired]);
+        $trooper = Trooper::factory()->create(['permissions' => TrooperPermissions::Retired]);
 
         // Act
         $response = $this->post(route('auth.login'), [

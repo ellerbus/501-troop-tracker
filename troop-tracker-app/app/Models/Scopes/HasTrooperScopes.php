@@ -14,9 +14,9 @@ trait HasTrooperScopes
     /**
      * Scope a query to find a trooper by their username.
      *
-     * @param Builder $query The Eloquent query builder.
+     * @param Builder<self> $query The Eloquent query builder.
      * @param string $username The username to search for.
-     * @return Builder
+     * @return Builder<self>
      */
     protected function scopeByUsername(Builder $query, string $username): Builder
     {

@@ -59,6 +59,6 @@ class EventUpload extends Model
 
     public function event_upload_tags()
     {
-        return $this->hasMany(EventUploadTag::class, EventUploadTag::UPLOAD_ID);
+        return $this->hasMany(EventUploadTag::class);
     }
 }

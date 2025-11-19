@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Club;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,11 +18,11 @@ class ClubFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => '501st-' . uniqid(),
-            'identifier_display' => 'TKID',
-            'image_path_lg' => '',
-            'image_path_sm' => '',
-            'active' => true
+            Club::NAME => '501st-' . uniqid(),
+            Club::IDENTIFIER_DISPLAY => 'TKID',
+            Club::IMAGE_PATH_LG => '',
+            Club::IMAGE_PATH_SM => '',
+            Club::ACTIVE => true
         ];
     }
 }

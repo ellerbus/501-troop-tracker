@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('event_id')
                 ->constrained('tt_events')
                 ->cascadeOnDelete();
-            $table->foreignId('costume_id')
+            $table->foreignId('club_costume_id')
                 ->constrained('tt_club_costumes')
                 ->cascadeOnDelete();
 
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Prevent duplicate entries
-            $table->unique(columns: ['event_id', 'costume_id']);
+            $table->unique(columns: ['event_id', 'club_costume_id']);
         });
     }
 

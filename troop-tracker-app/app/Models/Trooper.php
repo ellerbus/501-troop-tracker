@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Enums\MembershipStatus;
-use App\Enums\Permissions;
+use App\Enums\TrooperPermissions;
 use App\Models\Base\Trooper as BaseTrooper;
 use App\Models\Scopes\HasTrooperScopes;
 use Illuminate\Auth\Authenticatable;
@@ -43,7 +43,7 @@ class Trooper extends BaseTrooper implements
     protected function casts()
     {
         return array_merge($this->casts, [
-            self::PERMISSIONS => Permissions::class,
+            self::PERMISSIONS => TrooperPermissions::class,
         ]);
     }
 
@@ -52,17 +52,36 @@ class Trooper extends BaseTrooper implements
         return !$this->approved;
     }
 
-    public function attachCostume(int $costume_id): void
+    public function attachClub(int $club_id, string $identifier, MembershipStatus $status): void
     {
-        $this->trooper_costumes()->create([
-            TrooperCostume::COSTUME_ID => $costume_id,
+        $this->clubs()->attach($club_id, [
+            TrooperClub::IDENTIFIER => $identifier,
+            TrooperClub::STATUS => $status,
+            TrooperClub::NOTIFY => true
         ]);
     }
 
-    public function detachCostume(int $costume_id): void
+    public function detachClub(int $club_id, MembershipStatus $status = MembershipStatus::None): void
     {
         $this->trooper_costumes()
-            ->where(TrooperCostume::COSTUME_ID, $costume_id)
+            ->where(TrooperCostume::CLUB_COSTUME_ID, $club_id)
+            ->update([
+                TrooperClub::STATUS => $status,
+            ]);
+    }
+
+
+    public function attachCostume(int $club_costume_id): void
+    {
+        $this->trooper_costumes()->create([
+            TrooperCostume::CLUB_COSTUME_ID => $club_costume_id,
+        ]);
+    }
+
+    public function detachCostume(int $club_costume_id): void
+    {
+        $this->trooper_costumes()
+            ->where(TrooperCostume::CLUB_COSTUME_ID, $club_costume_id)
             ->delete();
     }
 

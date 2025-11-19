@@ -7,6 +7,8 @@
 namespace App\Models\Base;
 
 use App\Models\ClubCostume;
+use App\Models\Event;
+use App\Models\EventClub;
 use App\Models\Squad;
 use App\Models\Trooper;
 use App\Models\TrooperClub;
@@ -28,6 +30,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $updated_at
  * 
  * @property Collection|ClubCostume[] $club_costumes
+ * @property Collection|Event[] $events
  * @property Collection|Squad[] $squads
  * @property Collection|Trooper[] $troopers
  *
@@ -58,6 +61,13 @@ class Club extends Model
         return $this->hasMany(ClubCostume::class);
     }
 
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'tt_event_clubs')
+                    ->withPivot(EventClub::ID, EventClub::TROOPERS_ALLOWED, EventClub::HANDLERS_ALLOWED)
+                    ->withTimestamps();
+    }
+
     public function squads()
     {
         return $this->hasMany(Squad::class);
@@ -66,7 +76,7 @@ class Club extends Model
     public function troopers()
     {
         return $this->belongsToMany(Trooper::class, 'tt_trooper_clubs')
-            ->withPivot(TrooperClub::ID, TrooperClub::IDENTIFIER, TrooperClub::NOTIFY, TrooperClub::STATUS)
-            ->withTimestamps();
+                    ->withPivot(TrooperClub::ID, TrooperClub::IDENTIFIER, TrooperClub::NOTIFY, TrooperClub::STATUS)
+                    ->withTimestamps();
     }
 }

@@ -6,15 +6,18 @@ namespace App\Models\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * Trait containing local scopes for the Squad model.
+ */
 trait HasSquadScopes
 {
     /**
-     * Scope a query to only include active squads.
+     * Scope a query to only include active squads, with optional filtering by club or squad ID.
      *
-     * @param Builder $query
-     * @param int $club_id Optional club ID to filter squads by.
-     * @param int $squad_id Optional squad ID to filter by.
-     * @return Builder
+     * @param Builder<self> $query The Eloquent query builder.
+     * @param int|null $club_id Optional club ID to filter squads by.
+     * @param int|null $squad_id Optional squad ID to filter by.
+     * @return Builder<self>
      */
     protected function scopeActive(Builder $query, int $club_id = null, int $squad_id = null): Builder
     {

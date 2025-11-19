@@ -49,13 +49,6 @@
       Support Donations
     </a>
   </li>
-  <li class="nav-item">
-    <a class="nav-link"
-       data-bs-toggle="tab"
-       href="#costumes">
-      Costumes
-    </a>
-  </li>
 </ul>
 
 <!-- Tab Content -->
@@ -119,39 +112,6 @@
         <x-loading />
       </div>
     </x-card>
-  </div>
-
-  <!-- Costumes -->
-  <div class="tab-pane fade"
-       id="costumes">
-    <div class="card mb-4">
-      <div class="card-header">Costumes</div>
-      <div class="card-body">
-        <h5>501st</h5>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <p>Imperial Crew: Bridge Crew</p>
-            <img src="https://via.placeholder.com/150"
-                 class="img-fluid rounded"
-                 alt="Costume">
-          </div>
-          <div class="col-md-6">
-            <p>Shadow Guard: TFU</p>
-            <img src="https://via.placeholder.com/150"
-                 class="img-fluid rounded"
-                 alt="Costume">
-          </div>
-        </div>
-        <h5>Rebel Legion</h5>
-        <p>No Rebel Legion costumes to display.</p>
-        <h5>Mando Mercs</h5>
-        <p>No Mando Mercs costumes to display.</p>
-        <h5>Saber Guild</h5>
-        <p>No Saber Guild costumes to display.</p>
-        <h5>Droid Builders</h5>
-        <p>No Droid Builder droids to display.</p>
-      </div>
-    </div>
   </div>
 
 </div>

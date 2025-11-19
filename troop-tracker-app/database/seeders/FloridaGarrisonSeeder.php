@@ -50,6 +50,10 @@ class FloridaGarrisonSeeder extends Seeder
         $this->call(AwardSeeder::class);
         $this->call(TrooperAwardSeeder::class);
 
+        if (config('app.debug'))
+        {
+            $this->call(ActorSeeder::class);
+        }
 
         Artisan::call('app:calculate-trooper-achievements');
     }

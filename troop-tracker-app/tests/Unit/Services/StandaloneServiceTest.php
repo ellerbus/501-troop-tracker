@@ -9,6 +9,7 @@ use App\Models\Trooper;
 use App\Services\StandaloneService;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class StandaloneServiceTest extends TestCase
@@ -39,11 +40,11 @@ class StandaloneServiceTest extends TestCase
         // Arrange
         Trooper::factory()->create([
             'username' => 'testuser',
-            'password' => password_hash('password123', PASSWORD_DEFAULT),
+            'password' => Hash::make('password123'),
         ]);
 
         // Act
-        $result = $this->subject->authenticate('testuser', 'password123');
+        $result = $this->subject->authenticate('testuser', 'password1234');
 
         // Assert
         // This test asserts the current behavior. The `authenticate` method incorrectly
@@ -57,7 +58,7 @@ class StandaloneServiceTest extends TestCase
         // Arrange
         $trooper = Trooper::factory()->create([
             'username' => 'testuser',
-            'password' => password_hash('password123', PASSWORD_DEFAULT),
+            'password' => Hash::make('password123'),
         ]);
 
         // Act
@@ -73,7 +74,7 @@ class StandaloneServiceTest extends TestCase
         // Arrange
         Trooper::factory()->create([
             'username' => 'testuser',
-            'password' => password_hash('password123', PASSWORD_DEFAULT),
+            'password' => Hash::make('password123'),
         ]);
 
         // Act

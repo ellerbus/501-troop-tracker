@@ -26,7 +26,7 @@
 
     <x-input-container id="costume-select-container">
       @if(!empty($selected_club))
-      <x-input-select :property="'costume_id'"
+      <x-input-select :property="'club_costume_id'"
                       :options="$costumes"
                       :value="-1"
                       :placeholder="'-- Select your Costume --'"
@@ -58,7 +58,7 @@
       </td>
       <td class="text-end">
         <x-button class="btn-outline-danger"
-                  hx-delete="{{ route('account.trooper-costumes-htmx', ['costume_id' => $trooper_costume->id]) }}"
+                  hx-delete="{{ route('account.trooper-costumes-htmx', ['club_costume_id' => $trooper_costume->id]) }}"
                   hx-select="#trooper-costumes-table"
                   hx-target="#trooper-costumes-table"
                   hx-swap="outerHTML"
@@ -70,7 +70,7 @@
     @empty
     <tr>
       <td colspan="2">
-        No Troopers Yet
+        No Favorite Costumes ... Yet!
       </td>
     </tr>
     @endforelse

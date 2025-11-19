@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\Permissions;
+use App\Enums\TrooperPermissions;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('username', 128);
             $table->string('password', 256);
             $table->dateTime('last_active_at')->nullable();
-            $table->string('permissions', 16)->default(Permissions::None->value);
+            $table->string('permissions', 16)->default(TrooperPermissions::None->value);
             $table->string('approved', 16)->default(false);
 
             $table->boolean('instant_notification')->default(true);

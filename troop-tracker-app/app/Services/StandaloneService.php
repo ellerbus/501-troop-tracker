@@ -9,6 +9,7 @@ use App\Contracts\ForumInterface;
 use App\Enums\AuthenticationStatus;
 use App\Models\Trooper;
 use Exception;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Provides authentication and forum-related services for a standalone application instance
@@ -37,13 +38,9 @@ class StandaloneService implements AuthenticationInterface, ForumInterface
      */
     public function authenticate(string $username, string $password): AuthenticationStatus
     {
-        $pwd = password_hash($password, PASSWORD_DEFAULT);
+        $trooper = Trooper::where(Trooper::USERNAME, $username)->first();
 
-        $exists = Trooper::where('forum_id', $username)
-            ->where('password', $pwd)
-            ->exists();
-
-        if ($exists)
+        if ($trooper && Hash::check($password, $trooper->password))
         {
             return AuthenticationStatus::SUCCESS;
         }
@@ -62,7 +59,7 @@ class StandaloneService implements AuthenticationInterface, ForumInterface
     {
         $trooper = Trooper::where(Trooper::USERNAME, $username)->first();
 
-        if ($trooper && password_verify($password, $trooper->password))
+        if ($trooper && Hash::check($password, $trooper->password))
         {
             return $trooper;
         }

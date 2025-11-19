@@ -15,6 +15,7 @@ use App\Models\TrooperClub;
 use App\Models\TrooperSquad;
 use App\Services\FlashMessageService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Handles the submission of the user registration form.
@@ -66,9 +67,8 @@ class RegisterSubmitController extends Controller
         $trooper->name = $data['name'];
         $trooper->email = $data['email'];
         $trooper->phone = $data['phone'] ?? null;
-        //$trooper->user_id = $auth_user_id;
         $trooper->username = $data['username'];
-        $trooper->password = password_hash($data['password'], PASSWORD_DEFAULT);
+        $trooper->password = Hash::make($data['password']);
 
         $trooper->save();
 

@@ -94,7 +94,7 @@ class Event extends Model
     public function troopers()
     {
         return $this->belongsToMany(Trooper::class, 'tt_event_troopers')
-                    ->withPivot(EventTrooper::ID, EventTrooper::COSTUME_ID, EventTrooper::BACKUP_COSTUME_ID, EventTrooper::ADDED_BY_TROOPER_ID, EventTrooper::STATUS)
+                    ->withPivot(EventTrooper::ID, EventTrooper::CLUB_COSTUME_ID, EventTrooper::BACKUP_CLUB_COSTUME_ID, EventTrooper::ADDED_BY_TROOPER_ID, EventTrooper::STATUS)
                     ->withTimestamps();
     }
 

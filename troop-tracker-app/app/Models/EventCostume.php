@@ -6,10 +6,10 @@ use App\Models\Base\EventCostume as BaseEventCostume;
 
 class EventCostume extends BaseEventCostume
 {
-	protected $fillable = [
-		self::EVENT_ID,
-		self::COSTUME_ID,
-		self::REQUESTED,
-		self::EXCLUDED
-	];
+    protected $fillable = [
+        self::EVENT_ID,
+        self::CLUB_COSTUME_ID,
+        self::REQUESTED,
+        self::EXCLUDED
+    ];
 }

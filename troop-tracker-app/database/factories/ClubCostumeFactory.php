@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Club;
+use App\Models\ClubCostume;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,8 +19,8 @@ class ClubCostumeFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'club_id' => Club::factory()
+            ClubCostume::NAME => fake()->name(),
+            ClubCostume::CLUB_ID => Club::factory()
         ];
     }
 }

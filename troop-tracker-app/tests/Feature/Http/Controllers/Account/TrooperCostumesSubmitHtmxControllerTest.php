@@ -47,12 +47,12 @@ class TrooperCostumesSubmitHtmxControllerTest extends TestCase
         // Arrange
         $this->assertDatabaseMissing('tt_trooper_costumes', [
             'trooper_id' => $this->trooper->id,
-            'costume_id' => $this->assigned_club_costume->id,
+            'club_costume_id' => $this->assigned_club_costume->id,
         ]);
 
         $request_data = [
             'club_id' => $this->assigned_club->id,
-            'costume_id' => $this->assigned_club_costume->id,
+            'club_costume_id' => $this->assigned_club_costume->id,
         ];
 
         // Act
@@ -70,7 +70,7 @@ class TrooperCostumesSubmitHtmxControllerTest extends TestCase
 
         $this->assertDatabaseHas('tt_trooper_costumes', [
             'trooper_id' => $this->trooper->id,
-            'costume_id' => $this->assigned_club_costume->id,
+            'club_costume_id' => $this->assigned_club_costume->id,
         ]);
     }
 
@@ -79,7 +79,7 @@ class TrooperCostumesSubmitHtmxControllerTest extends TestCase
         // Arrange
         $request_data = [
             'club_id' => $this->unassigned_club->id,
-            'costume_id' => $this->unassigned_club_costume->id,
+            'club_costume_id' => $this->unassigned_club_costume->id,
         ];
 
         // Act
@@ -96,7 +96,7 @@ class TrooperCostumesSubmitHtmxControllerTest extends TestCase
 
         $this->assertDatabaseMissing('tt_trooper_costumes', [
             'trooper_id' => $this->trooper->id,
-            'costume_id' => $this->unassigned_club_costume->id,
+            'club_costume_id' => $this->unassigned_club_costume->id,
         ]);
     }
 }

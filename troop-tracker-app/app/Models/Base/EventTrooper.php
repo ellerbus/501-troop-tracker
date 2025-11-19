@@ -18,8 +18,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $event_id
  * @property int $trooper_id
- * @property int|null $costume_id
- * @property int|null $backup_costume_id
+ * @property int|null $club_costume_id
+ * @property int|null $backup_club_costume_id
  * @property int|null $added_by_trooper_id
  * @property string $status
  * @property Carbon|null $created_at
@@ -36,8 +36,8 @@ class EventTrooper extends Model
     const ID = 'id';
     const EVENT_ID = 'event_id';
     const TROOPER_ID = 'trooper_id';
-    const COSTUME_ID = 'costume_id';
-    const BACKUP_COSTUME_ID = 'backup_costume_id';
+    const CLUB_COSTUME_ID = 'club_costume_id';
+    const BACKUP_CLUB_COSTUME_ID = 'backup_club_costume_id';
     const ADDED_BY_TROOPER_ID = 'added_by_trooper_id';
     const STATUS = 'status';
     const CREATED_AT = 'created_at';
@@ -48,8 +48,8 @@ class EventTrooper extends Model
         self::ID => 'int',
         self::EVENT_ID => 'int',
         self::TROOPER_ID => 'int',
-        self::COSTUME_ID => 'int',
-        self::BACKUP_COSTUME_ID => 'int',
+        self::CLUB_COSTUME_ID => 'int',
+        self::BACKUP_CLUB_COSTUME_ID => 'int',
         self::ADDED_BY_TROOPER_ID => 'int',
         self::CREATED_AT => 'datetime',
         self::UPDATED_AT => 'datetime'
@@ -62,7 +62,7 @@ class EventTrooper extends Model
 
     public function club_costume()
     {
-        return $this->belongsTo(ClubCostume::class, \App\Models\EventTrooper::COSTUME_ID);
+        return $this->belongsTo(ClubCostume::class);
     }
 
     public function event()
