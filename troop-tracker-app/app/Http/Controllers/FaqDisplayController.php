@@ -36,7 +36,7 @@ class FaqDisplayController extends Controller
                 'mDeJaANqLIk' => 'How to add someone to a troop without them being a member or having tracker access',
                 '-pXqGZLiVpM' => 'How to search for troops and troop counts',
                 '17UPK4AoKxg' => 'How to view past troops',
-                'H-nnM5jndZA' => 'How to sort by squad',
+                'H-nnM5jndZA' => 'How to sort by unit',
                 'Rn3EnhudHyc' => 'How to show troops your signed up for',
                 '02ERoFw7XlY' => 'How to use calendar view',
                 'y_I8ssRjek8' => 'How to search troops on the homepage',

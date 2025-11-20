@@ -11,16 +11,17 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Donation
+ * Class TrooperDonation
  * 
  * @property int $id
  * @property int $trooper_id
  * @property float $amount
  * @property string $txn_id
  * @property string $txn_type
- * @property Carbon $donated_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property int|null $created_id
+ * @property int|null $updated_id
  * 
  * @property Trooper $trooper
  *
@@ -35,6 +36,8 @@ class TrooperDonation extends Model
     const TXN_TYPE = 'txn_type';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
+    const CREATED_ID = 'created_id';
+    const UPDATED_ID = 'updated_id';
     protected $table = 'tt_trooper_donations';
 
     protected $casts = [
@@ -42,7 +45,9 @@ class TrooperDonation extends Model
         self::TROOPER_ID => 'int',
         self::AMOUNT => 'float',
         self::CREATED_AT => 'datetime',
-        self::UPDATED_AT => 'datetime'
+        self::UPDATED_AT => 'datetime',
+        self::CREATED_ID => 'int',
+        self::UPDATED_ID => 'int'
     ];
 
     public function trooper()

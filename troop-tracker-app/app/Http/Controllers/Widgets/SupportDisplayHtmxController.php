@@ -24,19 +24,19 @@ class SupportDisplayHtmxController extends Controller
      */
     public function __invoke(Request $request): View
     {
-        $settings = Setting::first();
-
         $donations = TrooperDonation::forMonth()->sum(TrooperDonation::AMOUNT);
+
+        $support_goal = setting('support_goal', 0);
 
         $progress = 0;
 
-        if (isset($settings->support_goal))
+        if ($support_goal > 0)
         {
-            $progress = $donations / $settings->support_goal;
+            $progress = $donations / $support_goal;
         }
 
         $data = [
-            'goal' => $settings->support_goal ?? 0,
+            'goal' => $support_goal,
             'progress' => number_format($progress * 100, 0),
             'message' => $this->getMessage()
         ];

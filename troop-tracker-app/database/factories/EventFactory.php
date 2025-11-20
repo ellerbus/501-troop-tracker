@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Event;
-use App\Models\Squad;
+use App\Models\Unit;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -28,7 +28,6 @@ class EventFactory extends Factory
             Event::LIMIT_PARTICIPANTS => $this->faker->boolean(),
             Event::TOTAL_TROOPERS_ALLOWED => $this->faker->numberBetween(10, 50),
             Event::TOTAL_HANDLERS_ALLOWED => $this->faker->numberBetween(2, 5),
-            Event::SQUAD_ID => Squad::factory(),
             Event::CLOSED => false,
         ];
     }

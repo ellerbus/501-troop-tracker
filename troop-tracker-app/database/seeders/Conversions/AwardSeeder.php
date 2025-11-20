@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Seeders\Conversions;
 
 use App\Models\Award;
-use App\Models\Event;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 

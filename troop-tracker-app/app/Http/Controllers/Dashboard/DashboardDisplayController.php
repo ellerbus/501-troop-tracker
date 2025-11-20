@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Contracts\ForumInterface;
 use App\Http\Controllers\Controller;
-use App\Models\Club;
+use App\Models\Organization;
 use App\Models\ClubCostume;
 use App\Models\EventTrooper;
 use App\Models\Trooper;
@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Auth;
 /**
  * Handles the display of the main trooper dashboard.
  *
- * This controller gathers various statistics for a trooper, such as troop counts by club and costume, and displays them.
+ * This controller gathers various statistics for a trooper, such as troop counts by organization and costume, and displays them.
  */
 class DashboardDisplayController extends Controller
 {
@@ -70,19 +70,19 @@ class DashboardDisplayController extends Controller
     }
 
     /**
-     * Retrieves the total troop count for a trooper, grouped by club.
+     * Retrieves the total troop count for a trooper, grouped by organization.
      *
-     * This method only includes clubs the trooper has trooped with and orders
+     * This method only includes organizations the trooper has trooped with and orders
      * them by the number of appearances.
      *
      * @param Trooper $trooper The trooper to calculate statistics for.
-     * @return Collection A collection of Club models, each with a `troop_count` attribute.
+     * @return Collection A collection of Organization models, each with a `troop_count` attribute.
      */
     private function getTroopsByClub(Trooper $trooper): Collection
     {
         $trooper_id = $trooper->id;
 
-        return Club::whereHas('club_costumes.event_troopers', fn($q) => $q->where(EventTrooper::TROOPER_ID, $trooper_id))
+        return Organization::whereHas('club_costumes.event_troopers', fn($q) => $q->where(EventTrooper::TROOPER_ID, $trooper_id))
             ->withCount([
                 'event_troopers as troop_count' => fn($query) =>
                     $query->where(EventTrooper::TROOPER_ID, $trooper_id)
@@ -105,7 +105,7 @@ class DashboardDisplayController extends Controller
         $trooper_id = $trooper->id;
 
         return ClubCostume::whereHas('event_troopers', fn($q) => $q->where(EventTrooper::TROOPER_ID, $trooper_id))
-            ->with('club')
+            ->with('organization')
             ->withCount([
                 'event_troopers as troop_count' => fn($q) =>
                     $q->where(EventTrooper::TROOPER_ID, $trooper_id)

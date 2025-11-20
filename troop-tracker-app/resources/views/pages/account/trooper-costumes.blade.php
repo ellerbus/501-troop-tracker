@@ -6,16 +6,16 @@
         novalidate="novalidate">
     @csrf
 
-    <x-input-container id="club-select-container">
-      @if($clubs->count() == 0)
+    <x-input-container id="organization-select-container">
+      @if($organizations->count() == 0)
       <x-message :type="'danger'">
-        You do not have any assigned clubs
+        You do not have any assigned organizations
       </x-message>
       @else
       <x-input-select :property="'club_id'"
-                      :options="$clubs->pluck('name', 'id')->toArray()"
+                      :options="$organizations->pluck('name', 'id')->toArray()"
                       :value="$selected_club->id ?? -1"
-                      :placeholder="'-- Select your Club --'"
+                      :placeholder="'-- Select your Organization --'"
                       hx-get="{{ route('account.trooper-costumes-htmx') }}"
                       hx-trigger="change"
                       hx-select="#costume-select-container"

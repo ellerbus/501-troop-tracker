@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('txn_type', 128)->default('');
 
             $table->timestamps();
+            $table->trooperstamps();
 
             // Prevent duplicate entries
             $table->unique(columns: ['txn_id']);

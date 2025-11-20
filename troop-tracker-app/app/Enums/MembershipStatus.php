@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Enums;
 
 /**
- * Defines the membership status of a trooper within a club.
+ * Defines the membership status of a trooper within a organization.
  */
 enum MembershipStatus: string
 {
     /**
-     * Not a member of the club.
+     * Not a member of the organization.
      */
     case None = 'none';
 

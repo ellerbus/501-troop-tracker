@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders\Conversions;
 
 use App\Enums\TrooperEventStatus;
-use App\Models\ClubCostume;
-use App\Models\Event;
+use App\Models\Costume;
 use App\Models\EventTrooper;
 use Database\Seeders\Conversions\Traits\HasSquadMaps;
 use Illuminate\Database\Seeder;
@@ -21,7 +20,7 @@ class EventTrooperSeeder extends Seeder
      */
     public function run(): void
     {
-        $costumes = ClubCostume::all()->pluck(ClubCostume::ID)->toArray();
+        $costumes = Costume::all()->pluck(Costume::ID)->toArray();
 
         $status_map = array_values(array_filter(
             TrooperEventStatus::cases(),
@@ -47,8 +46,8 @@ class EventTrooperSeeder extends Seeder
 
             $e->event_id = $sign_up->troopid;
             $e->trooper_id = $sign_up->trooperid;
-            $e->club_costume_id = in_array($sign_up->costume, $costumes) ? $sign_up->costume : null;
-            $e->backup_club_costume_id = in_array($sign_up->costume_backup, $costumes) ? $sign_up->costume_backup : null;
+            $e->costume_id = in_array($sign_up->costume, $costumes) ? $sign_up->costume : null;
+            $e->backup_costume_id = in_array($sign_up->costume_backup, $costumes) ? $sign_up->costume_backup : null;
             $e->status = $status_map[$sign_up->status];
 
             $e->save();

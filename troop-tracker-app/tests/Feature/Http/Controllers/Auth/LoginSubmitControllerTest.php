@@ -8,9 +8,9 @@ use App\Contracts\AuthenticationInterface;
 use App\Enums\AuthenticationStatus;
 use App\Enums\MembershipStatus;
 use App\Enums\TrooperPermissions;
-use App\Models\Club;
+use App\Models\Organization;
 use App\Models\Trooper;
-use Database\Seeders\ClubSeeder;
+use Database\Seeders\OrganizationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
 use Tests\TestCase;
@@ -24,8 +24,8 @@ class LoginSubmitControllerTest extends TestCase
      */
     private MockInterface $auth_mock;
 
-    private Club $the_501st;
-    private Club $the_rebels;
+    private Organization $the_501st;
+    private Organization $the_rebels;
 
     protected function setUp(): void
     {
@@ -34,10 +34,10 @@ class LoginSubmitControllerTest extends TestCase
         // Mock the AuthenticationInterface and bind it to the container
         $this->auth_mock = $this->mock(AuthenticationInterface::class);
 
-        $this->seed(ClubSeeder::class);
+        $this->seed(OrganizationSeeder::class);
 
-        $this->the_501st = Club::where('name', '501st')->first();
-        $this->the_rebels = Club::where('name', 'Rebel Legion')->first();
+        $this->the_501st = Organization::where('name', '501st Legion')->first();
+        $this->the_rebels = Organization::where('name', 'Rebel Legion')->first();
     }
 
     public function test_invoke_handles_successful_authentication_with_active_501st_membership(): void
@@ -47,12 +47,12 @@ class LoginSubmitControllerTest extends TestCase
             'approved' => 1,
         ]);
 
-        $trooper->clubs()->attach($this->the_501st->id, [
+        $trooper->organizations()->attach($this->the_501st->id, [
             'identifier' => '12345',
             'status' => MembershipStatus::Member,
         ]);
 
-        $trooper->clubs()->attach($this->the_rebels->id, [
+        $trooper->organizations()->attach($this->the_rebels->id, [
             'identifier' => '12345',
             'status' => MembershipStatus::None,
         ]);
@@ -70,7 +70,7 @@ class LoginSubmitControllerTest extends TestCase
 
         // Assert
         $this->assertAuthenticatedAs($trooper);
-        $response->assertRedirect('/index.php');
+        $response->assertRedirect('account');
         $response->assertSessionHasNoErrors();
     }
 
@@ -158,12 +158,12 @@ class LoginSubmitControllerTest extends TestCase
             'approved' => 1,
         ]);
 
-        $trooper->clubs()->attach($this->the_501st->id, [
+        $trooper->organizations()->attach($this->the_501st->id, [
             'identifier' => '12345',
             'status' => MembershipStatus::Retired,
         ]);
 
-        $trooper->clubs()->attach($this->the_rebels->id, [
+        $trooper->organizations()->attach($this->the_rebels->id, [
             'identifier' => '12345',
             'status' => MembershipStatus::None,
         ]);

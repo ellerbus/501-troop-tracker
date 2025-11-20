@@ -36,7 +36,7 @@ class TrooperCostumesDeleteHtmxController extends Controller
         }
 
         $data = [
-            'clubs' => collect(),
+            'organizations' => collect(),
             'selected_club' => null,
             'costumes' => collect(),
             'trooper_costumes' => $trooper->costumes(),

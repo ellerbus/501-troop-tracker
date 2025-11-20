@@ -3,11 +3,10 @@
 namespace App\Providers;
 
 use App\Enums\TrooperPermissions;
-use App\Models\Trooper;
-use App\Observers\TrooperObserver;
 use App\Services\BreadCrumbService;
 use Illuminate\Database\Migrations\DatabaseMigrationRepository;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -44,9 +43,13 @@ class AppServiceProvider extends ServiceProvider
         });
 
         //
-        //    OBSERVER BOOTS
+        //  DATABASE MIGRATION MACRO
         //
-        Trooper::observe(TrooperObserver::class);
+        Blueprint::macro('trooperstamps', function ()
+        {
+            $this->unsignedBigInteger('created_id')->nullable();
+            $this->unsignedBigInteger('updated_id')->nullable();
+        });
 
         //
         //  BLADE BOOTS

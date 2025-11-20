@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Conversions\Traits;
 
-use App\Models\Squad;
+use App\Models\Unit;
 use Illuminate\Support\Facades\DB;
 
 trait HasSquadMaps
@@ -54,7 +54,7 @@ trait HasSquadMaps
 
         foreach ($legacy_squads as $name => $meta)
         {
-            $squad = Squad::where(Squad::NAME, $name)->first();
+            $squad = Unit::firstWhere(Unit::NAME, $name);
 
             if ($squad)
             {

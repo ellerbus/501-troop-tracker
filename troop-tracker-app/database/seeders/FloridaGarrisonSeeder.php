@@ -4,20 +4,19 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use Database\Seeders\ClubSeeder;
 use Database\Seeders\Conversions\AwardSeeder;
-use Database\Seeders\Conversions\ClubCostumeSeeder;
+use Database\Seeders\Conversions\CostumeSeeder;
 use Database\Seeders\Conversions\EventSeeder;
 use Database\Seeders\Conversions\EventTrooperSeeder;
 use Database\Seeders\Conversions\EventUploadSeeder;
 use Database\Seeders\Conversions\SettingSeeder;
 use Database\Seeders\Conversions\TrooperAwardSeeder;
-use Database\Seeders\Conversions\TrooperClubSeeder;
 use Database\Seeders\Conversions\TrooperCostumeSeeder;
 use Database\Seeders\Conversions\TrooperDonationSeeder;
+use Database\Seeders\Conversions\TrooperOrganizationSeeder;
+use Database\Seeders\Conversions\TrooperRegionSeeder;
 use Database\Seeders\Conversions\TrooperSeeder;
-use Database\Seeders\Conversions\TrooperSquadSeeder;
-use Database\Seeders\SquadSeeder;
+use Database\Seeders\Conversions\TrooperUnitSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
@@ -31,17 +30,17 @@ class FloridaGarrisonSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(ClubSeeder::class);
-        $this->call(SquadSeeder::class);
-        $this->call(ClubCostumeSeeder::class);
+        $this->call(OrganizationSeeder::class);
+        $this->call(RegionSeeder::class);
+        $this->call(UnitSeeder::class);
 
         $this->call(SettingSeeder::class);
         $this->call(TrooperSeeder::class);
-        $this->call(TrooperClubSeeder::class);
-        $this->call(TrooperSquadSeeder::class);
-        $this->call(TrooperCostumeSeeder::class);
         $this->call(TrooperDonationSeeder::class);
-        $this->call(TrooperSquadSeeder::class);
+        $this->call(TrooperOrganizationSeeder::class);
+        $this->call(TrooperRegionSeeder::class);
+        $this->call(TrooperUnitSeeder::class);
+        $this->call(TrooperCostumeSeeder::class);
 
         $this->call(EventSeeder::class);
         $this->call(EventUploadSeeder::class);

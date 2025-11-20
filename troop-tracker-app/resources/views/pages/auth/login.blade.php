@@ -11,13 +11,23 @@
       @csrf
 
       <x-input-container>
-        <x-label :value="config('tracker.forum.name') . ' Username:'" />
+        <x-label>
+          @if(config('tracker.plugins.type') != 'standalone')
+          {{ config('tracker.forum.name') }}
+          @endif
+          Username:
+        </x-label>
         <x-input-text autofocus
                       :property="'username'" />
       </x-input-container>
 
       <x-input-container>
-        <x-label :value="config('tracker.forum.name') . ' Password:'" />
+        <x-label>
+          @if(config('tracker.plugins.type') != 'standalone')
+          {{ config('tracker.forum.name') }}
+          @endif
+          Password:
+        </x-label>
         <x-input-password :property="'password'" />
       </x-input-container>
 

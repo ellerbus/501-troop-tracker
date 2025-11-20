@@ -36,6 +36,9 @@
             "Tests\\": "tests/"
         }
     },
+    "files": [
+        "app/helpers.php"
+    ],
     "scripts": {
         "setup": [
             "composer install",

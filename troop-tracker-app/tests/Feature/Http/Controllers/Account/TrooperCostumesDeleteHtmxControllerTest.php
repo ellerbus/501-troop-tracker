@@ -8,7 +8,7 @@ use App\Enums\MembershipStatus;
 use App\Models\ClubCostume;
 use App\Models\Trooper;
 use App\Models\TrooperCostume;
-use Database\Seeders\ClubSeeder;
+use Database\Seeders\OrganizationSeeder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -25,7 +25,7 @@ class TrooperCostumesDeleteHtmxControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed(ClubSeeder::class);
+        $this->seed(OrganizationSeeder::class);
 
         $this->costume = ClubCostume::factory()->create([
             'club_id' => 1,
@@ -33,7 +33,7 @@ class TrooperCostumesDeleteHtmxControllerTest extends TestCase
         ]);
 
         $this->trooper = Trooper::factory()->create();
-        $this->trooper->clubs()->attach($this->costume->club->id, [
+        $this->trooper->organizations()->attach($this->costume->organization->id, [
             'identifier' => 'TK000',
             'status' => MembershipStatus::Member
         ]);

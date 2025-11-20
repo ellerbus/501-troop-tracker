@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Http\Controllers\Auth;
 
-use App\Models\Club;
-use Database\Seeders\ClubSeeder;
+use App\Models\Organization;
+use Database\Seeders\OrganizationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,30 +17,30 @@ class RegisterHtmxControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed(ClubSeeder::class);
+        $this->seed(OrganizationSeeder::class);
     }
 
     public function test_invoke_returns_partial_view_with_club_selected(): void
     {
-        // Arrange: Create a club and define the input data for selection.
-        $club = Club::find(1);
+        // Arrange: Create a organization and define the input data for selection.
+        $organization = Organization::find(1);
         $input_data = [
-            'clubs' => [
-                $club->id => ['selected' => '1'],
+            'organizations' => [
+                $organization->id => ['selected' => '1'],
             ],
         ];
 
         // Act: Simulate an HTMX POST request to the controller's route.
         // We assume a route is defined, e.g., 'auth.register-htmx'
         $response = $this->withHeaders(['HX-Request' => 'true'])
-            ->post(route('auth.register-htmx', ['club' => $club->id]), $input_data);
+            ->post(route('auth.register-htmx', ['organization' => $organization->id]), $input_data);
 
         // Assert: Check for a successful response and the correct view.
         $response->assertOk();
-        $response->assertViewIs('pages.auth.club-selection');
+        $response->assertViewIs('pages.auth.organization-selection');
 
-        // Assert that the 'club' object passed to the view has 'selected' set to true.
-        $response->assertViewHas('club', function ($view_club)
+        // Assert that the 'organization' object passed to the view has 'selected' set to true.
+        $response->assertViewHas('organization', function ($view_club)
         {
             return $view_club->selected === true;
         });
@@ -46,24 +48,24 @@ class RegisterHtmxControllerTest extends TestCase
 
     public function test_invoke_returns_partial_view_with_club_not_selected(): void
     {
-        // Arrange: Create a club and define input data where the club is not selected.
-        $club = Club::find(1);
+        // Arrange: Create a organization and define input data where the organization is not selected.
+        $organization = Organization::find(1);
         $input_data = [
-            'clubs' => [
-                $club->id => ['selected' => '0'], // or null/not present
+            'organizations' => [
+                $organization->id => ['selected' => '0'], // or null/not present
             ],
         ];
 
         // Act: Simulate an HTMX POST request.
         $response = $this->withHeaders(['HX-Request' => 'true'])
-            ->post(route('auth.register-htmx', ['club' => $club->id]), $input_data);
+            ->post(route('auth.register-htmx', ['organization' => $organization->id]), $input_data);
 
         // Assert: Check for a successful response and the correct view.
         $response->assertOk();
-        $response->assertViewIs('pages.auth.club-selection');
+        $response->assertViewIs('pages.auth.organization-selection');
 
-        // Assert that the 'club' object passed to the view has 'selected' set to false.
-        $response->assertViewHas('club', function ($view_club)
+        // Assert that the 'organization' object passed to the view has 'selected' set to false.
+        $response->assertViewHas('organization', function ($view_club)
         {
             return $view_club->selected === false;
         });

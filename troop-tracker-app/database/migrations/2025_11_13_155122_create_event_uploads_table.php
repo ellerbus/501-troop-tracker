@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('filename', 128);
 
             $table->timestamps();
+            $table->trooperstamps();
         });
     }
 

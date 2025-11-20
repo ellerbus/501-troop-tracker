@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $trooper_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property int|null $created_id
+ * @property int|null $updated_id
  * 
  * @property EventUpload $event_upload
  * @property Trooper $trooper
@@ -32,6 +34,8 @@ class EventUploadTag extends Model
     const TROOPER_ID = 'trooper_id';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
+    const CREATED_ID = 'created_id';
+    const UPDATED_ID = 'updated_id';
     protected $table = 'tt_event_upload_tags';
 
     protected $casts = [
@@ -39,7 +43,9 @@ class EventUploadTag extends Model
         self::EVENT_UPLOAD_ID => 'int',
         self::TROOPER_ID => 'int',
         self::CREATED_AT => 'datetime',
-        self::UPDATED_AT => 'datetime'
+        self::UPDATED_AT => 'datetime',
+        self::CREATED_ID => 'int',
+        self::UPDATED_ID => 'int'
     ];
 
     public function event_upload()

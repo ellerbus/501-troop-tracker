@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Account;
 
-use App\Models\Club;
+use App\Models\Organization;
 use App\Models\Trooper;
-use Database\Seeders\ClubSeeder;
-use Database\Seeders\SquadSeeder;
+use Database\Seeders\OrganizationSeeder;
+use Database\Seeders\UnitSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -19,8 +19,8 @@ class NotificationsSubmitHtmxControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed(ClubSeeder::class);
-        $this->seed(SquadSeeder::class);
+        $this->seed(OrganizationSeeder::class);
+        $this->seed(UnitSeeder::class);
     }
 
     public function test_invoke_updates_notifications_and_returns_view_with_flash_message(): void
@@ -33,21 +33,21 @@ class NotificationsSubmitHtmxControllerTest extends TestCase
             'command_staff_notification' => 1,
         ]);
 
-        $clubs = Club::where('active', true)->get();
+        $organizations = Organization::where('active', true)->get();
 
-        $club = $clubs->firstWhere('id', '1');
+        $organization = $organizations->firstWhere('id', '1');
 
-        $squad = $club->squads->firstWhere('id', '1');
+        $unit = $organization->units->firstWhere('id', '1');
 
         $request_data = [
             'instant_notification' => '1',
             'attendance_notification' => '0',
             'command_staff_notification' => '1',
-            'clubs' => [
-                $club->id => ['notification' => '1'],
+            'organizations' => [
+                $organization->id => ['notification' => '1'],
             ],
-            'squads' => [
-                $squad->id => ['notification' => '1'],
+            'units' => [
+                $unit->id => ['notification' => '1'],
             ],
         ];
 
@@ -63,7 +63,7 @@ class NotificationsSubmitHtmxControllerTest extends TestCase
         $response->assertOk();
         $response->assertViewIs('pages.account.notifications');
         $response->assertViewHasAll([
-            'clubs',
+            'organizations',
             'instant_notification',
             'attendance_notification',
             'command_staff_notification',
@@ -74,7 +74,7 @@ class NotificationsSubmitHtmxControllerTest extends TestCase
         $this->assertEquals('1', $view_data['instant_notification']);
         $this->assertEquals('0', $view_data['attendance_notification']);
         $this->assertEquals('1', $view_data['command_staff_notification']);
-        $this->assertTrue($view_data['clubs']->first()->selected);
-        $this->assertTrue($view_data['clubs']->first()->squads->first()->selected);
+        $this->assertTrue($view_data['organizations']->first()->selected);
+        $this->assertTrue($view_data['organizations']->first()->units->first()->selected);
     }
 }

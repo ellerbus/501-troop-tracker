@@ -19,7 +19,6 @@ class Event extends BaseEvent
         self::LIMIT_PARTICIPANTS,
         self::TOTAL_TROOPERS_ALLOWED,
         self::TOTAL_HANDLERS_ALLOWED,
-        self::SQUAD_ID
     ];
 
     /**

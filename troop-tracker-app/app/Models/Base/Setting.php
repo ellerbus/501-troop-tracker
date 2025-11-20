@@ -12,28 +12,31 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class Setting
  * 
- * @property int $id
- * @property bool $site_closed
- * @property int $support_goal
+ * @property string $key
+ * @property string $value
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property int|null $created_id
+ * @property int|null $updated_id
  *
  * @package App\Models\Base
  */
 class Setting extends Model
 {
-    const ID = 'id';
-    const SITE_CLOSED = 'site_closed';
-    const SUPPORT_GOAL = 'support_goal';
+    const KEY = 'key';
+    const VALUE = 'value';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
+    const CREATED_ID = 'created_id';
+    const UPDATED_ID = 'updated_id';
     protected $table = 'tt_settings';
+    protected $primaryKey = 'key';
+    public $incrementing = false;
 
     protected $casts = [
-        self::ID => 'int',
-        self::SITE_CLOSED => 'bool',
-        self::SUPPORT_GOAL => 'int',
         self::CREATED_AT => 'datetime',
-        self::UPDATED_AT => 'datetime'
+        self::UPDATED_AT => 'datetime',
+        self::CREATED_ID => 'int',
+        self::UPDATED_ID => 'int'
     ];
 }

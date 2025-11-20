@@ -65,3 +65,17 @@ h6 {
     text-transform: uppercase;
     letter-spacing: 1px;
 }
+
+.dashboard-cards .card {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.dashboard-cards .card:hover {
+    box-shadow: 4px 4px 4px 4px #1a1b1b;
+    transform: scale(1.1);
+}
+
+.dashboard-cards .card-header {
+    font-weight: bold;
+}

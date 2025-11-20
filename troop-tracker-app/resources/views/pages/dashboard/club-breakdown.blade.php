@@ -1,15 +1,15 @@
-<x-card :label="'Troop Breakdown by Club'">
+<x-card :label="'Troop Breakdown by Organization'">
   <div class="container">
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
-      @forelse($total_troops_by_club as $club)
+      @forelse($total_troops_by_club as $organization)
       <div class="col">
         <span class="badge bg-dark d-flex justify-content-between align-items-center w-100 px-2 py-2">
           <span>
-            {{ $club->name }}
+            {{ $organization->name }}
           </span>
           <span class="text-end fw-bold">
-            @if($club->troop_count > 0)
-            <x-number-format :value="$club->troop_count"
+            @if($organization->troop_count > 0)
+            <x-number-format :value="$organization->troop_count"
                              :prefix="'#'" />
             @else
             <span class="text-muted">

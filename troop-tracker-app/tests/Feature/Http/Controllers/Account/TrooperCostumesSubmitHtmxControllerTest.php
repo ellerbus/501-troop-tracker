@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers\Account;
 
 use App\Enums\MembershipStatus;
-use App\Models\Club;
+use App\Models\Organization;
 use App\Models\ClubCostume;
 use App\Models\Trooper;
-use Database\Seeders\ClubSeeder;
+use Database\Seeders\OrganizationSeeder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -18,25 +18,25 @@ class TrooperCostumesSubmitHtmxControllerTest extends TestCase
     use RefreshDatabase;
 
     private Trooper $trooper;
-    private Club $assigned_club;
+    private Organization $assigned_club;
     private ClubCostume $assigned_club_costume;
-    private Club $unassigned_club;
+    private Organization $unassigned_club;
     private ClubCostume $unassigned_club_costume;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->seed(ClubSeeder::class);
+        $this->seed(OrganizationSeeder::class);
 
-        $this->assigned_club = Club::find(1);
+        $this->assigned_club = Organization::find(1);
         $this->assigned_club_costume = ClubCostume::factory()->create(['club_id' => 1]);
 
-        $this->unassigned_club = Club::find(2);
+        $this->unassigned_club = Organization::find(2);
         $this->unassigned_club_costume = ClubCostume::factory()->create(['club_id' => 2]);
 
         $this->trooper = Trooper::factory()->create();
-        $this->trooper->clubs()->attach($this->assigned_club->id, [
+        $this->trooper->organizations()->attach($this->assigned_club->id, [
             'identifier' => 'TK000',
             'status' => MembershipStatus::Member
         ]);

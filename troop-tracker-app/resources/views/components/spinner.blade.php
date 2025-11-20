@@ -1,4 +1,4 @@
-@props(['id' => 'spinner-' . uniqid()])
+@props(['id' => 'x-' . uniqid()])
 
 <span id="spinner-{{ $id }}"
       class="htmx-indicator"

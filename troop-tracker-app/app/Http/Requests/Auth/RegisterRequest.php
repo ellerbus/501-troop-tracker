@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Models\Club;
+use App\Models\Organization;
 use App\Models\Trooper;
-use App\Rules\Auth\AtLeastOneClubSelectedRule;
-use App\Rules\Auth\UniqueClubIdentifierRule;
-use App\Rules\Auth\ValidSquadForClubRule;
+use App\Rules\Auth\AtLeastOneOrganizationSelectedRule;
+use App\Rules\Auth\UniqueOrganizationIdentifierRule;
+use App\Rules\Auth\ValidRegionForOrganizationRule;
+use App\Rules\Auth\ValidUnitForRegionRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
@@ -15,13 +16,13 @@ use Illuminate\Validation\Rule;
  * Handles the validation for the user registration form.
  *
  * This class defines the base validation rules for user registration and dynamically
- * adds rules based on the clubs a user selects, including custom rules for
- * club-specific identifiers and squad selections. It also customizes error messages
+ * adds rules based on the organizations a user selects, including custom rules for
+ * organization-specific identifiers and region selections. It also customizes error messages
  * for a better user experience.
  */
 class RegisterRequest extends FormRequest
 {
-    private ?Collection $active_clubs = null;
+    private ?Collection $active_organizations = null;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -53,7 +54,7 @@ class RegisterRequest extends FormRequest
             'password' => ['required', 'string'],
         ];
 
-        $rules = array_merge($rules, $this->getClubValidationRules());
+        $rules = array_merge($rules, $this->getOrganizationValidationRules());
 
         return $rules;
     }
@@ -74,39 +75,50 @@ class RegisterRequest extends FormRequest
     }
 
     /**
-     * Generates dynamic validation rules for selected clubs.
+     * Generates dynamic validation rules for selected organizations.
      *
-     * Fetches active clubs and constructs validation rules for their specific identifiers
-     * (e.g., TKID, CAT #) and associated squads, applying custom rule objects.
+     * Fetches active organizations and constructs validation rules for their specific identifiers
+     * (e.g., TKID, CAT #) and associated regions, applying custom rule objects.
      *
-     * @return array<string, mixed> An array of validation rules for the 'clubs' input.
+     * @return array<string, mixed> An array of validation rules for the 'organizations' input.
      */
-    private function getClubValidationRules(): array
+    private function getOrganizationValidationRules(): array
     {
         $rules = [
-            'clubs' => ['array', new AtLeastOneClubSelectedRule()],
-            'clubs.*.selected' => ['nullable', 'boolean'],
+            'organizations' => ['array', new AtLeastOneOrganizationSelectedRule()],
+            'organizations.*.selected' => ['nullable', 'boolean'],
         ];
 
-        $active_clubs = $this->getActiveClubs();
+        $active_organizations = $this->getActiveOrganizations();
 
-        foreach ($active_clubs as $club)
+        foreach ($active_organizations as $organization)
         {
-            if (!empty($club->identifier_validation))
+            if (!empty($organization->identifier_validation))
             {
-                $club_rules = explode('|', $club->identifier_validation);
+                $organization_rules = explode('|', $organization->identifier_validation);
 
-                $club_rules[] = "required_if:clubs.{$club->id}.selected,1";
-                $club_rules[] = new UniqueClubIdentifierRule($club);
+                $organization_rules[] = "required_if:organizations.{$organization->id}.selected,1";
+                $organization_rules[] = new UniqueOrganizationIdentifierRule($organization);
 
-                $rules["clubs.{$club->id}.identifier"] = $club_rules;
+                $rules["organizations.{$organization->id}.identifier"] = $organization_rules;
 
-                if ($club->squads->count() > 0)
+                if ($organization->regions()->count() > 0)
                 {
-                    $rules["clubs.{$club->id}.squad_id"] = [
-                        "required_if:clubs.{$club->id}.selected,1",
-                        new ValidSquadForClubRule($club)
+                    $rules["organizations.{$organization->id}.region_id"] = [
+                        "required_if:organizations.{$organization->id}.selected,1",
+                        new ValidRegionForOrganizationRule($organization)
                     ];
+
+                    foreach ($organization->regions as $region)
+                    {
+                        if ($region->units()->count() > 0)
+                        {
+                            $rules["organizations.{$organization->id}.unit_id"] = [
+                                "required_if:organizations.{$organization->id}.regions.{$region->id}.selected,1",
+                                new ValidUnitForRegionRule($region)
+                            ];
+                        }
+                    }
                 }
             }
         }
@@ -118,38 +130,38 @@ class RegisterRequest extends FormRequest
      * Configure the validator instance.
      *
      * This method is used to add custom, user-friendly error messages for the
-     * dynamically generated club identifier rules.
+     * dynamically generated organization identifier rules.
      *
      * @param \Illuminate\Validation\Validator $validator
      */
     public function withValidator($validator): void
     {
-        $active_clubs = $this->getActiveClubs();
+        $active_organizations = $this->getActiveOrganizations();
 
         $messages = [];
 
-        foreach ($active_clubs as $club)
+        foreach ($active_organizations as $organization)
         {
-            $key = "clubs.{$club->id}.identifier";
+            $key = "organizations.{$organization->id}.identifier";
 
-            if (!empty($club->identifier_validation))
+            if (!empty($organization->identifier_validation))
             {
-                $rules = explode('|', $club->identifier_validation);
+                $rules = explode('|', $organization->identifier_validation);
 
                 foreach ($rules as $rule)
                 {
                     $ruleName = $this->normalizeRuleKey($rule);
 
-                    $messages["{$key}.{$ruleName}"] = "The {$club->identifier_display} for {$club->name} must be {$this->friendlyPhrase($rule)}.";
+                    $messages["{$key}.{$ruleName}"] = "The {$organization->identifier_display} for {$organization->name} must be {$this->friendlyPhrase($rule)}.";
                 }
 
-                if ($club->squads->count() > 0)
+                if ($organization->regions->count() > 0)
                 {
-                    $messages["clubs.{$club->id}.squad_id.required_if"] = "Please select a squad for {$club->name} if you’ve chosen it.";
+                    $messages["organizations.{$organization->id}.region_id.required_if"] = "Please select a region for {$organization->name} if you’ve chosen it.";
                 }
 
                 // Optional: add a message for the required_if rule
-                $messages["{$key}.required_if"] = "Please enter your {$club->identifier_display} for {$club->name} if selected.";
+                $messages["{$key}.required_if"] = "Please enter your {$organization->identifier_display} for {$organization->name} if selected.";
             }
         }
 
@@ -172,8 +184,8 @@ class RegisterRequest extends FormRequest
         };
     }
 
-    private function getActiveClubs(): Collection
+    private function getActiveOrganizations(): Collection
     {
-        return $this->active_clubs ??= Club::active(include_squads: true)->get();
+        return $this->active_organizations ??= Organization::active()->with('regions.units')->get();
     }
 }

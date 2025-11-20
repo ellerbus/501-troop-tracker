@@ -41,19 +41,19 @@
 
 <h4>I am missing troop data / My troop data is incorrect</h4>
 <p>
-  Please refer to your squad leader to get this corrected.
+  Please refer to your unit leader to get this corrected.
 </p>
 
-<h4>I am now a member of another club and need access to their costumes.</h4>
+<h4>I am now a member of another organization and need access to their costumes.</h4>
 <p>
-  Please refer to your squad / club leader to get added to the roster.
+  Please refer to your unit / organization leader to get added to the roster.
 </p>
 
 <h4>My costumes are not showing on my profile / I am missing a costume on my profile</h4>
 <p>
-  The troop tracker automatically scrapes several different club databases for your costume data. If your costume data
+  The troop tracker automatically scrapes several different organization databases for your costume data. If your costume data
   is not showing, make sure your ID numbers and forum usernames are accurate. If the aforementioned information is
-  correct, then refer to your squad / club leadership, as this data is missing on their end.
+  correct, then refer to your unit / organization leadership, as this data is missing on their end.
 </p>
 
 <h4>How do I know I confirmed a troop?</h4>
@@ -64,7 +64,7 @@
 
 <h4>I need a costume added to the troop tracker.</h4>
 <p>
-  Please notify your squad leader, or e-mail the Garrison Web Master directly. See below for e-mail.
+  Please notify your unit leader, or e-mail the Garrison Web Master directly. See below for e-mail.
 </p>
 
 <h4>I need information on joining the 501st Legion.</h4>

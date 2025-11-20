@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Dashboard;
 
-use App\Models\Club;
+use App\Models\Organization;
 use App\Models\ClubCostume;
 use App\Models\Event;
 use App\Models\EventTrooper;
@@ -23,8 +23,8 @@ class DashboardDisplayControllerTest extends TestCase
         $user = Trooper::factory()->create();
         $this->actingAs($user);
 
-        $club = Club::factory()->create();
-        $costume = ClubCostume::factory()->for($club)->create();
+        $organization = Organization::factory()->create();
+        $costume = ClubCostume::factory()->for($organization)->create();
         $event = Event::factory()->closed()->create();
         EventTrooper::factory()->for($event)->for($user)->create([
             'club_costume_id' => $costume->id
@@ -57,8 +57,8 @@ class DashboardDisplayControllerTest extends TestCase
         $this->actingAs($user);
 
         $other_trooper = Trooper::factory()->create();
-        $club = Club::factory()->create();
-        $costume = ClubCostume::factory()->for($club)->create();
+        $organization = Organization::factory()->create();
+        $costume = ClubCostume::factory()->for($organization)->create();
         $event = Event::factory()->closed()->create();
         EventTrooper::factory()->for($event)->for($other_trooper)->create([
             'club_costume_id' => $costume->id
@@ -95,11 +95,11 @@ class DashboardDisplayControllerTest extends TestCase
         $user = Trooper::factory()->create();
         $this->actingAs($user);
 
-        $club1 = Club::factory()->create();
+        $club1 = Organization::factory()->create();
         $costume1 = ClubCostume::factory()->for($club1)->create();
         $costume2 = ClubCostume::factory()->for($club1)->create();
 
-        $club2 = Club::factory()->create();
+        $club2 = Organization::factory()->create();
         $costume3 = ClubCostume::factory()->for($club2)->create();
 
         EventTrooper::factory()->for(Event::factory()->closed()->create())->for($user)->create([

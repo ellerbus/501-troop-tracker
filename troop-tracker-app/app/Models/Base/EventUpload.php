@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $filename
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property int|null $created_id
+ * @property int|null $updated_id
  * 
  * @property Event $event
  * @property Trooper $trooper
@@ -37,6 +39,8 @@ class EventUpload extends Model
     const FILENAME = 'filename';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
+    const CREATED_ID = 'created_id';
+    const UPDATED_ID = 'updated_id';
     protected $table = 'tt_event_uploads';
 
     protected $casts = [
@@ -44,7 +48,9 @@ class EventUpload extends Model
         self::EVENT_ID => 'int',
         self::TROOPER_ID => 'int',
         self::CREATED_AT => 'datetime',
-        self::UPDATED_AT => 'datetime'
+        self::UPDATED_AT => 'datetime',
+        self::CREATED_ID => 'int',
+        self::UPDATED_ID => 'int'
     ];
 
     public function event()

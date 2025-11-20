@@ -18,17 +18,18 @@ return new class extends Migration
             $table->foreignId('event_id')
                 ->constrained('tt_events')
                 ->cascadeOnDelete();
-            $table->foreignId('club_costume_id')
-                ->constrained('tt_club_costumes')
+            $table->foreignId('costume_id')
+                ->constrained('tt_costumes')
                 ->cascadeOnDelete();
 
             $table->boolean('requested');
             $table->boolean('excluded');
 
             $table->timestamps();
+            $table->trooperstamps();
 
             // Prevent duplicate entries
-            $table->unique(columns: ['event_id', 'club_costume_id']);
+            $table->unique(columns: ['event_id', 'costume_id']);
         });
     }
 

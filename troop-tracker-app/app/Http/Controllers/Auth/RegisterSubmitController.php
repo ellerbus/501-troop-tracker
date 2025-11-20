@@ -8,11 +8,11 @@ use App\Contracts\AuthenticationInterface;
 use App\Enums\MembershipStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Models\Club;
-use App\Models\Squad;
+use App\Models\Organization;
 use App\Models\Trooper;
-use App\Models\TrooperClub;
-use App\Models\TrooperSquad;
+use App\Models\TrooperOrganization;
+use App\Models\TrooperUnit;
+use App\Models\Unit;
 use App\Services\FlashMessageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
@@ -74,31 +74,31 @@ class RegisterSubmitController extends Controller
 
         $status = $data['account_type'] == 'member' ? MembershipStatus::Member : MembershipStatus::Handler;
 
-        // Loop through selected clubs and assign identifiers
-        foreach ($data['clubs'] ?? [] as $club_id => $club_data)
+        // Loop through selected organizations and assign identifiers
+        foreach ($data['organizations'] ?? [] as $club_id => $club_data)
         {
             if (!empty($club_data['selected']))
             {
-                // You’ll need to map club-specific fields to trooper columns
-                // Example: if club uses 'tkid' as identifier field
-                $club = Club::find($club_id);
+                // You’ll need to map organization-specific fields to trooper columns
+                // Example: if organization uses 'tkid' as identifier field
+                $organization = Organization::find($club_id);
 
-                if ($club && !empty($club_data['identifier']))
+                if ($organization && !empty($club_data['identifier']))
                 {
-                    $trooper->clubs()->attach($club->id, [
-                        TrooperClub::IDENTIFIER => $club_data['identifier'],
-                        TrooperClub::NOTIFY => true,
-                        TrooperClub::STATUS => $status,
+                    $trooper->organizations()->attach($organization->id, [
+                        TrooperOrganization::IDENTIFIER => $club_data['identifier'],
+                        TrooperOrganization::NOTIFY => true,
+                        TrooperOrganization::STATUS => $status,
                     ]);
                 }
 
                 if (isset($club_data['squad_id']))
                 {
-                    $squad = $club->squads()->firstWhere(Squad::ID, $club_data['squad_id']);
+                    $unit = $organization->units()->firstWhere(Unit::ID, $club_data['squad_id']);
 
-                    $trooper->squads()->attach($squad->id, [
-                        TrooperSquad::NOTIFY => true,
-                        TrooperSquad::STATUS => $status,
+                    $trooper->units()->attach($unit->id, [
+                        TrooperUnit::NOTIFY => true,
+                        TrooperUnit::STATUS => $status,
                     ]);
                 }
             }

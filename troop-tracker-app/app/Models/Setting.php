@@ -10,7 +10,7 @@ class Setting extends BaseSetting
     use HasFactory;
 
     protected $fillable = [
-        self::SITE_CLOSED,
-        self::SUPPORT_GOAL
+        self::KEY,
+        self::VALUE
     ];
 }

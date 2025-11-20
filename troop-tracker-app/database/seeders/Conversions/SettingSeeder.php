@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Seeders\Conversions;
 
 use App\Models\Setting;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -16,20 +15,12 @@ class SettingSeeder extends Seeder
      */
     public function run(): void
     {
-        $settings = DB::table('settings')->get();
+        $settings = DB::table('settings')->first();
 
-        foreach ($settings as $setting)
-        {
-            $s = Setting::first();
+        $support_goal = Setting::find('support_goal') ?? new Setting(['key' => 'support_goal']);
 
-            if ($s == null)
-            {
-                $s = new Setting();
-            }
+        $support_goal->value = $settings->supportgoal;
 
-            $s->support_goal = $setting->supportgoal;
-
-            $s->save();
-        }
+        $support_goal->save();
     }
 }

@@ -4,24 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
-use App\Contracts\ForumInterface;
 use App\Http\Controllers\Controller;
-use App\Models\Club;
-use App\Models\ClubCostume;
-use App\Models\EventTrooper;
 use App\Models\Trooper;
-use App\Services\BreadCrumbService;
 use App\Services\FlashMessageService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * Handles the display of the main trooper dashboard.
  *
- * This controller gathers various statistics for a trooper, such as troop counts by club and costume, and displays them.
+ * This controller gathers various statistics for a trooper, such as troop counts by organization and costume, and displays them.
  */
 class AdminDisplayController extends Controller
 {
@@ -46,9 +39,20 @@ class AdminDisplayController extends Controller
      */
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $trooper_id = (int) $request->get('trooper_id', Auth::user()->id);
+        $not_approved = Trooper::pendingApprovals()->count();
 
-        $data = [];
+        if ($not_approved == 1)
+        {
+            $msg = "There is {$not_approved} trooper ready for action!";
+        }
+        elseif ($not_approved > 1)
+        {
+            $msg = "There are {$not_approved} troopers ready for action!";
+        }
+
+        $this->flash->warning($msg);
+
+        $data = ['not_approved' => $not_approved];
 
         return view('pages.admin.display', $data);
     }

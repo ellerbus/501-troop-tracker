@@ -25,7 +25,7 @@
       <td>
         @foreach($troop->event_troopers as $trooper)
         @if(isset($trooper->club_costume) && $trooper->club_costume->name != 'N/A')
-        <x-costume-name :club="$trooper->club_costume->club->name"
+        <x-costume-name :organization="$trooper->club_costume->organization->name"
                         :costume="$trooper->club_costume->name" />
         @else
         <span class="text-muted">N/A</span>

@@ -19,7 +19,7 @@ class TrooperCostumesSubmitHtmxController extends Controller
     /**
      * Handle the incoming request to add a trooper costume.
      *
-     * This method validates that the user is a member of the club associated with the costume
+     * This method validates that the user is a member of the organization associated with the costume
      * before adding it to their troopers list. It then returns a view partial containing
      * the updated list of trooper costumes.
      *
@@ -35,11 +35,11 @@ class TrooperCostumesSubmitHtmxController extends Controller
 
         if ($club_id > -1 && $club_costume_id > -1)
         {
-            $club = $trooper->assignedClubs($club_id)->first();
+            $organization = $trooper->assignedClubs($club_id)->first();
 
-            if (isset($club))
+            if (isset($organization))
             {
-                $costume = $club->club_costumes()->where(ClubCostume::ID, $club_costume_id)->first();
+                $costume = $organization->club_costumes()->where(ClubCostume::ID, $club_costume_id)->first();
 
                 if (isset($costume))
                 {
@@ -49,7 +49,7 @@ class TrooperCostumesSubmitHtmxController extends Controller
         }
 
         $data = [
-            'clubs' => collect(),
+            'organizations' => collect(),
             'selected_club' => null,
             'costumes' => collect(),
             'trooper_costumes' => $trooper->costumes(),

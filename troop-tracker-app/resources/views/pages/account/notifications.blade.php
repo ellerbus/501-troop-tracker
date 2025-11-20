@@ -40,24 +40,24 @@
 
     <h3>Squads / Clubs</h3>
     <p>
-      <i>Note: Events are categorized by 501st squad territory. To receive event notifications for a particular area,
-        ensure you subscribed to the appropriate squad(s). Club notifications are used in command staff e-mails, to send
-        command staff information on trooper milestones based on squad or club.</i>
+      <i>Note: Events are categorized by 501st unit territory. To receive event notifications for a particular area,
+        ensure you subscribed to the appropriate unit(s). Organization notifications are used in command staff e-mails, to send
+        command staff information on trooper milestones based on unit or organization.</i>
     </p>
 
-    @foreach ($clubs as $club)
+    @foreach ($organizations as $organization)
     <x-input-container class="ps-5">
-      <x-input-checkbox :property="'clubs.' . $club->id . '.notification'"
-                        :label="$club->name"
+      <x-input-checkbox :property="'organizations.' . $organization->id . '.notification'"
+                        :label="$organization->name"
                         :value="1"
-                        :checked="$club->selected" />
-      @foreach ($club->squads as $squad)
+                        :checked="$organization->selected" />
+      @foreach ($organization->units as $unit)
       <x-input-container class="ps-5">
-        <x-input-checkbox :property="'squads.' . $squad->id . '.notification'"
-                          :label="$squad->name"
+        <x-input-checkbox :property="'units.' . $unit->id . '.notification'"
+                          :label="$unit->name"
                           :value="1"
-                          :checked="$squad->selected"
-                          data-club-id="$club->id" />
+                          :checked="$unit->selected"
+                          data-organization-id="$organization->id" />
       </x-input-container>
       @endforeach
     </x-input-container>

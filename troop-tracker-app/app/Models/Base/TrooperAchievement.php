@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $id
  * @property int $trooper_id
- * @property int $trooper_rank
+ * @property int|null $trooper_rank
  * @property bool $trooped_all_squads
  * @property bool $first_troop_completed
  * @property bool $trooped_10

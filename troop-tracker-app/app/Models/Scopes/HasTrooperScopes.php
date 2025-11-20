@@ -22,4 +22,15 @@ trait HasTrooperScopes
     {
         return $query->where(self::USERNAME, $username);
     }
+
+    /**
+     * Scope a query to find all troopers not approved.
+     *
+     * @param Builder<self> $query The Eloquent query builder.
+     * @return Builder<self>
+     */
+    protected function scopePendingApprovals(Builder $query): Builder
+    {
+        return $query->where(self::APPROVED, false)->orderBy(self::NAME);
+    }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Conversions;
 
-use App\Enums\MembershipStatus;
 use App\Enums\TrooperPermissions;
 use App\Models\Trooper;
 use Illuminate\Database\Seeder;

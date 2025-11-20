@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
-use App\Models\Club;
+use App\Models\Organization;
 use App\Models\ClubCostume;
 use App\Models\Trooper;
 use Illuminate\Contracts\View\View;
@@ -20,8 +20,8 @@ class TrooperCostumesDisplayHtmxController extends Controller
     /**
      * Handle the incoming request to display the trooper costumes interface.
      *
-     * This method fetches the user's assigned clubs and their trooper costumes.
-     * If a 'club_id' is provided in the request, it also fetches the costumes for that specific club.
+     * This method fetches the user's assigned organizations and their trooper costumes.
+     * If a 'club_id' is provided in the request, it also fetches the costumes for that specific organization.
      *
      * @param Request $request The incoming HTTP request.
      * @return View The rendered trooper costumes view.
@@ -30,14 +30,14 @@ class TrooperCostumesDisplayHtmxController extends Controller
     {
         $trooper = Trooper::findOrFail(Auth::user()->id);
 
-        $clubs = $trooper->assignedClubs();
+        $organizations = $trooper->assignedClubs();
 
         $selected_club = null;
         $costumes = [];
 
         if ($request->has('club_id'))
         {
-            $selected_club = $clubs->firstWhere(Club::ID, $request->get('club_id'));
+            $selected_club = $organizations->firstWhere(Organization::ID, $request->get('club_id'));
 
             if (isset($selected_club))
             {
@@ -49,7 +49,7 @@ class TrooperCostumesDisplayHtmxController extends Controller
         }
 
         $data = [
-            'clubs' => $clubs,
+            'organizations' => $organizations,
             'selected_club' => $selected_club,
             'costumes' => $costumes,
             'trooper_costumes' => $trooper->costumes(),

@@ -13,8 +13,8 @@ use Illuminate\Validation\ValidationException;
  * Handles the validation for the user registration form.
  *
  * This class defines the base validation rules for user registration and dynamically
- * adds rules based on the clubs a user selects, including custom rules for
- * club-specific identifiers and squad selections. It also customizes error messages
+ * adds rules based on the organizations a user selects, including custom rules for
+ * organization-specific identifiers and unit selections. It also customizes error messages
  * for a better user experience.
  */
 class ProfileRequest extends FormRequest

@@ -75,13 +75,13 @@ class LoginSubmitController extends Controller
 
         if ($results == AuthenticationStatus::SUCCESS)
         {
-            if ($trooper->hasActiveClubStatus())
+            if ($trooper->hasActiveOrganizationStatus())
             {
                 return $this->login($trooper, $request);
             }
 
             //  retired
-            $this->flash->danger('You cannot access this account. Please refer to command staff for additional information (no active clubs).');
+            $this->flash->danger('You cannot access this account. Please refer to command staff for additional information (no active organizations).');
 
             return back()
                 ->withInput($request->except('password'))
@@ -107,6 +107,6 @@ class LoginSubmitController extends Controller
         Auth::login($trooper, $request->remember_me);
 
         //  TODO fix route
-        return redirect()->intended('/index.php');
+        return redirect()->intended(route('account.display'));
     }
 }

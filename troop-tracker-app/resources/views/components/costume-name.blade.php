@@ -1,7 +1,7 @@
-@props(['club'=>null, 'costume'=>null])
+@props(['organization'=>null, 'costume'=>null])
 <span>
-  @if(isset($club))
-  ( {{ $club }} )
+  @if(isset($organization))
+  ( {{ $organization }} )
   @endif
   {{ $costume }}
 </span>

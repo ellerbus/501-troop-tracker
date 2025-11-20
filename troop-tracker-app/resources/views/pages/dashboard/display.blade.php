@@ -8,7 +8,7 @@
 
 @include('pages.dashboard.overview')
 @include('pages.dashboard.achievements', ['trooper_achievement' => $trooper->trooper_achievement])
-@include('pages.dashboard.club-breakdown')
+@include('pages.dashboard.organization-breakdown')
 @include('pages.dashboard.costume-breakdown')
 
 <!-- Navigation Tabs -->

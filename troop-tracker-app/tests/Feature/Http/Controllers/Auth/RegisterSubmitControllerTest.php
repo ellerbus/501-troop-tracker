@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Http\Controllers\Auth;
 
 use App\Contracts\AuthenticationInterface;
-use App\Models\Club;
-use Database\Seeders\ClubSeeder;
+use App\Models\Organization;
+use Database\Seeders\OrganizationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
 use Tests\TestCase;
@@ -19,8 +21,8 @@ class RegisterSubmitControllerTest extends TestCase
     {
         parent::setUp();
 
-        // Seed the database with necessary club data for validation
-        $this->seed(ClubSeeder::class);
+        // Seed the database with necessary organization data for validation
+        $this->seed(OrganizationSeeder::class);
 
         // Mock the controller's dependencies
         $this->auth_mock = $this->mock(AuthenticationInterface::class);
@@ -29,17 +31,17 @@ class RegisterSubmitControllerTest extends TestCase
     public function test_invoke_with_valid_credentials_registers_trooper_and_redirects(): void
     {
         // Arrange: Prepare valid form data that passes RegisterRequest validation
-        $club = Club::find(1); // Assuming ClubSeeder creates a club with ID 1
+        $organization = Organization::find(1); // Assuming OrganizationSeeder creates a organization with ID 1
         $valid_data = [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'account_type' => 'member',
             'username' => 'testuser',
             'password' => 'password',
-            'clubs' => [
-                $club->id => [
+            'organizations' => [
+                $organization->id => [
                     'selected' => '1',
-                    'identifier' => '12345', // Assuming club 1 requires an identifier
+                    'identifier' => '12345', // Assuming organization 1 requires an identifier
                 ],
             ],
         ];
@@ -61,14 +63,14 @@ class RegisterSubmitControllerTest extends TestCase
     public function test_invoke_with_invalid_credentials_redirects_with_errors(): void
     {
         // Arrange: Prepare valid form data but expect authentication to fail
-        $club = Club::find(1); // Assuming ClubSeeder creates a club with ID 1
+        $organization = Organization::find(1); // Assuming OrganizationSeeder creates a organization with ID 1
         $valid_data = [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'account_type' => 'member',
             'username' => 'wronguser',
             'password' => 'wrongpassword',
-            'clubs' => [$club->id => ['selected' => '1', 'identifier' => '12345']],
+            'organizations' => [$organization->id => ['selected' => '1', 'identifier' => '12345']],
         ];
 
         // Set up mock expectation for a failed authentication

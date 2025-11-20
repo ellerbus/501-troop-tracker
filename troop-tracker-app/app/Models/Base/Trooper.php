@@ -7,18 +7,21 @@
 namespace App\Models\Base;
 
 use App\Models\Award;
-use App\Models\Club;
+use App\Models\Costume;
 use App\Models\Event;
 use App\Models\EventTrooper;
 use App\Models\EventUpload;
 use App\Models\EventUploadTag;
-use App\Models\Squad;
+use App\Models\Organization;
+use App\Models\Region;
 use App\Models\TrooperAchievement;
 use App\Models\TrooperAward;
-use App\Models\TrooperClub;
 use App\Models\TrooperCostume;
 use App\Models\TrooperDonation;
-use App\Models\TrooperSquad;
+use App\Models\TrooperOrganization;
+use App\Models\TrooperRegion;
+use App\Models\TrooperUnit;
+use App\Models\Unit;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -48,10 +51,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property Collection|EventUpload[] $event_uploads
  * @property TrooperAchievement|null $trooper_achievement
  * @property Collection|Award[] $awards
- * @property Collection|Club[] $clubs
- * @property Collection|TrooperCostume[] $trooper_costumes
+ * @property Collection|Costume[] $costumes
  * @property Collection|TrooperDonation[] $trooper_donations
- * @property Collection|Squad[] $squads
+ * @property Collection|Organization[] $organizations
+ * @property Collection|Region[] $regions
+ * @property Collection|Unit[] $units
  *
  * @package App\Models\Base
  */
@@ -89,7 +93,7 @@ class Trooper extends Model
     public function events()
     {
         return $this->belongsToMany(Event::class, 'tt_event_troopers')
-                    ->withPivot(EventTrooper::ID, EventTrooper::COSTUME_ID, EventTrooper::BACKUP_COSTUME_ID, EventTrooper::ADDED_BY_TROOPER_ID, EventTrooper::STATUS)
+                    ->withPivot(EventTrooper::ID, EventTrooper::COSTUME_ID, EventTrooper::BACKUP_COSTUME_ID, EventTrooper::ADDED_BY_TROOPER_ID, EventTrooper::STATUS, EventTrooper::CREATED_ID, EventTrooper::UPDATED_ID)
                     ->withTimestamps();
     }
 
@@ -111,20 +115,15 @@ class Trooper extends Model
     public function awards()
     {
         return $this->belongsToMany(Award::class, 'tt_trooper_awards')
-                    ->withPivot(TrooperAward::ID)
+                    ->withPivot(TrooperAward::ID, TrooperAward::CREATED_ID, TrooperAward::UPDATED_ID)
                     ->withTimestamps();
     }
 
-    public function clubs()
+    public function costumes()
     {
-        return $this->belongsToMany(Club::class, 'tt_trooper_clubs')
-                    ->withPivot(TrooperClub::ID, TrooperClub::IDENTIFIER, TrooperClub::NOTIFY, TrooperClub::STATUS)
+        return $this->belongsToMany(Costume::class, 'tt_trooper_costumes')
+                    ->withPivot(TrooperCostume::ID, TrooperCostume::CREATED_ID, TrooperCostume::UPDATED_ID)
                     ->withTimestamps();
-    }
-
-    public function trooper_costumes()
-    {
-        return $this->hasMany(TrooperCostume::class);
     }
 
     public function trooper_donations()
@@ -132,10 +131,24 @@ class Trooper extends Model
         return $this->hasMany(TrooperDonation::class);
     }
 
-    public function squads()
+    public function organizations()
     {
-        return $this->belongsToMany(Squad::class, 'tt_trooper_squads')
-                    ->withPivot(TrooperSquad::ID, TrooperSquad::NOTIFY, TrooperSquad::STATUS)
+        return $this->belongsToMany(Organization::class, 'tt_trooper_organizations')
+                    ->withPivot(TrooperOrganization::ID, TrooperOrganization::IDENTIFIER, TrooperOrganization::NOTIFY, TrooperOrganization::STATUS, TrooperOrganization::CREATED_ID, TrooperOrganization::UPDATED_ID)
+                    ->withTimestamps();
+    }
+
+    public function regions()
+    {
+        return $this->belongsToMany(Region::class, 'tt_trooper_regions')
+                    ->withPivot(TrooperRegion::ID, TrooperRegion::NOTIFY, TrooperRegion::STATUS, TrooperRegion::CREATED_ID, TrooperRegion::UPDATED_ID)
+                    ->withTimestamps();
+    }
+
+    public function units()
+    {
+        return $this->belongsToMany(Unit::class, 'tt_trooper_units')
+                    ->withPivot(TrooperUnit::ID, TrooperUnit::NOTIFY, TrooperUnit::STATUS, TrooperUnit::CREATED_ID, TrooperUnit::UPDATED_ID)
                     ->withTimestamps();
     }
 }

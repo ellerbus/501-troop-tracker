@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
-use App\Models\Club;
+use App\Models\Organization;
 use App\Models\Trooper;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -39,7 +39,7 @@ class NotificationsSubmitHtmxController extends Controller
 
     private function updateTrooperNotifications(array $data): array
     {
-        $clubs = Club::active(include_squads: true)->get();
+        $organizations = Organization::active(include_squads: true)->get();
 
         $trooper = Trooper::findOrFail(Auth::user()->id);
 
@@ -53,29 +53,29 @@ class NotificationsSubmitHtmxController extends Controller
 
         $trooper->save();
 
-        foreach ($clubs as $club)
+        foreach ($organizations as $organization)
         {
-            $notify = isset($data['clubs'][$club->id]['notification']);
+            $notify = isset($data['organizations'][$organization->id]['notification']);
 
-            $club->selected = $notify;
+            $organization->selected = $notify;
 
-            $trooper->clubs()->updateExistingPivot($club->id, [
+            $trooper->organizations()->updateExistingPivot($organization->id, [
                 'notify' => $notify,
             ]);
 
-            foreach ($club->squads as $squad)
+            foreach ($organization->units as $unit)
             {
-                $notify = isset($data['squads'][$squad->id]['notification']);
+                $notify = isset($data['units'][$unit->id]['notification']);
 
-                $squad->selected = $notify;
+                $unit->selected = $notify;
 
-                $trooper->squads()->updateExistingPivot($squad->id, [
+                $trooper->units()->updateExistingPivot($unit->id, [
                     'notify' => $notify,
                 ]);
             }
         }
 
-        $data['clubs'] = $clubs;
+        $data['organizations'] = $organizations;
 
         return $data;
     }

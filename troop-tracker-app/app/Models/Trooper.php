@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Enums\MembershipStatus;
 use App\Enums\TrooperPermissions;
 use App\Models\Base\Trooper as BaseTrooper;
+use App\Models\Casts\LowerCast;
+use App\Models\Concerns\HasObserver;
 use App\Models\Scopes\HasTrooperScopes;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
@@ -27,6 +29,7 @@ class Trooper extends BaseTrooper implements
     use HasFactory;
     use Notifiable;
     use HasTrooperScopes;
+    use HasObserver;
 
     protected $fillable = [
         self::NAME,
@@ -44,6 +47,7 @@ class Trooper extends BaseTrooper implements
     {
         return array_merge($this->casts, [
             self::PERMISSIONS => TrooperPermissions::class,
+            self::EMAIL => LowerCast::class
         ]);
     }
 
@@ -52,66 +56,66 @@ class Trooper extends BaseTrooper implements
         return !$this->approved;
     }
 
-    public function attachClub(int $club_id, string $identifier, MembershipStatus $status): void
+    public function attachOrganization(int $organization_id, string $identifier, MembershipStatus $status): void
     {
-        $this->clubs()->attach($club_id, [
-            TrooperClub::IDENTIFIER => $identifier,
-            TrooperClub::STATUS => $status,
-            TrooperClub::NOTIFY => true
+        $this->organizations()->attach($organization_id, [
+            TrooperOrganization::IDENTIFIER => $identifier,
+            TrooperOrganization::STATUS => $status,
+            TrooperOrganization::NOTIFY => true
         ]);
     }
 
-    public function detachClub(int $club_id, MembershipStatus $status = MembershipStatus::None): void
+    public function detachOrganization(int $organization_id, MembershipStatus $status = MembershipStatus::None): void
     {
         $this->trooper_costumes()
-            ->where(TrooperCostume::CLUB_COSTUME_ID, $club_id)
+            ->where(TrooperCostume::COSTUME_ID, $organization_id)
             ->update([
-                TrooperClub::STATUS => $status,
+                TrooperOrganization::STATUS => $status,
             ]);
     }
 
 
-    public function attachCostume(int $club_costume_id): void
+    public function attachCostume(int $organization_costume_id): void
     {
         $this->trooper_costumes()->create([
-            TrooperCostume::CLUB_COSTUME_ID => $club_costume_id,
+            TrooperCostume::COSTUME_ID => $organization_costume_id,
         ]);
     }
 
-    public function detachCostume(int $club_costume_id): void
+    public function detachCostume(int $organization_costume_id): void
     {
         $this->trooper_costumes()
-            ->where(TrooperCostume::CLUB_COSTUME_ID, $club_costume_id)
+            ->where(TrooperCostume::COSTUME_ID, $organization_costume_id)
             ->delete();
     }
 
-    public function hasActiveClubStatus(): bool
+    public function hasActiveOrganizationStatus(): bool
     {
-        return $this->clubs()
+        return $this->organizations()
             ->active()
-            ->wherePivotNotIn(TrooperClub::STATUS, [MembershipStatus::None, MembershipStatus::Retired])
+            ->wherePivotNotIn(TrooperOrganization::STATUS, [MembershipStatus::None, MembershipStatus::Retired])
             ->exists();
     }
 
-    public function assignedClubs(int $club_id = null): Collection
+    public function assignedOrganizations(int $organization_id = null): Collection
     {
-        $query = $this->clubs()->active()->orderBy(Club::NAME);
+        $query = $this->organizations()->active()->orderBy(Organization::NAME);
 
-        if ($club_id)
+        if ($organization_id)
         {
-            $query->where('tt_clubs.' . Club::ID, $club_id);
+            $query->where('tt_organizations.' . Organization::ID, $organization_id);
         }
 
         return $query->get();
     }
 
-    public function costumes(int $club_id = null): Collection
+    public function costumes(int $organization_id = null): Collection
     {
         return $this->trooper_costumes()
-            ->with(['club_costume.club']) // eager-load both costume and its club
+            ->with(['costume.organization']) // eager-load both costume and its organization
             ->get()
-            ->map(fn($tc) => $tc->club_costume)
-            ->filter(fn($cc) => $club_id ? $cc->club_id === $club_id : true)
+            ->map(fn($tc) => $tc->costume)
+            ->filter(fn($cc) => $organization_id ? $cc->organization_id === $organization_id : true)
             ->values(); // reindex the collection
     }
 }

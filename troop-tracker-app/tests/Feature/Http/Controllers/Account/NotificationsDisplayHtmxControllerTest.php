@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers\Account;
 
 use App\Models\Trooper;
-use Database\Seeders\ClubSeeder;
-use Database\Seeders\SquadSeeder;
+use Database\Seeders\OrganizationSeeder;
+use Database\Seeders\UnitSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,9 +18,9 @@ class NotificationsDisplayHtmxControllerTest extends TestCase
     {
         parent::setUp();
 
-        // Seed the database with necessary club and squad data for the test
-        $this->seed(ClubSeeder::class);
-        $this->seed(SquadSeeder::class);
+        // Seed the database with necessary organization and unit data for the test
+        $this->seed(OrganizationSeeder::class);
+        $this->seed(UnitSeeder::class);
     }
 
     public function test_unauthenticated_trooper_is_redirected_to_login(): void
@@ -41,12 +41,12 @@ class NotificationsDisplayHtmxControllerTest extends TestCase
             'command_staff_notification' => 1,
         ]);
 
-        $trooper->clubs()->attach(1, [
+        $trooper->organizations()->attach(1, [
             'notify' => 1,
             'identifier' => 'TKID',
         ]);
 
-        $trooper->squads()->attach(1, [
+        $trooper->units()->attach(1, [
             'notify' => 1,
         ]);
 
@@ -64,27 +64,27 @@ class NotificationsDisplayHtmxControllerTest extends TestCase
             'command_staff_notification' => 1,
         ]);
 
-        // Assert: Check that the club and squad data is processed correctly
-        $response->assertViewHas('clubs', function ($clubs)
+        // Assert: Check that the organization and unit data is processed correctly
+        $response->assertViewHas('organizations', function ($organizations)
         {
-            // Find the club we expect to be selected
-            $view_club = $clubs->firstWhere('id', '1');
+            // Find the organization we expect to be selected
+            $view_club = $organizations->firstWhere('id', '1');
             if (!$view_club)
             {
-                $this->fail('Club with esquad0 not found in view data.');
+                $this->fail('Organization with esquad0 not found in view data.');
             }
             $this->assertTrue($view_club->selected, 'Expected esquad0 to be selected.');
 
-            // Find the squad we expect to be selected
-            $view_squad1 = $view_club->squads->firstWhere('id', '1');
+            // Find the unit we expect to be selected
+            $view_squad1 = $view_club->units->firstWhere('id', '1');
             if (!$view_squad1)
             {
                 $this->fail('Squad with esquad1 not found in view data.');
             }
             $this->assertTrue($view_squad1->selected, 'Expected esquad1 to be selected.');
 
-            // Find the squad we expect to be unselected
-            $view_squad2 = $view_club->squads->firstWhere('id', '2');
+            // Find the unit we expect to be unselected
+            $view_squad2 = $view_club->units->firstWhere('id', '2');
             if (!$view_squad2)
             {
                 $this->fail('Squad with esquad2 not found in view data.');
@@ -105,12 +105,12 @@ class NotificationsDisplayHtmxControllerTest extends TestCase
             'command_staff_notification' => 1,
         ]);
 
-        $trooper->clubs()->attach(1, [
+        $trooper->organizations()->attach(1, [
             'notify' => 1,
             'identifier' => 'TKID',
         ]);
 
-        $trooper->squads()->attach(1, [
+        $trooper->units()->attach(1, [
             'notify' => 1,
         ]);
 
@@ -124,11 +124,11 @@ class NotificationsDisplayHtmxControllerTest extends TestCase
         $response->assertViewHas('attendance_notification', 0);
         $response->assertViewHas('command_staff_notification', 1);
 
-        $response->assertViewHas('clubs', function ($clubs)
+        $response->assertViewHas('organizations', function ($organizations)
         {
-            $view_club1 = $clubs->firstWhere('id', '1');
-            $view_squad1 = $view_club1->squads->firstWhere('id', '1');
-            $view_squad2 = $view_club1->squads->firstWhere('id', '2');
+            $view_club1 = $organizations->firstWhere('id', '1');
+            $view_squad1 = $view_club1->units->firstWhere('id', '1');
+            $view_squad2 = $view_club1->units->firstWhere('id', '2');
 
             // Club1 and Squad1 should be selected, Club2 and Squad2 should not
             return $view_club1->selected === true

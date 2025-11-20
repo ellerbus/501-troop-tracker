@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
-use App\Models\Club;
-use App\Models\Squad;
+use App\Models\Organization;
 use App\Models\Trooper;
-use App\Models\TrooperClub;
-use App\Models\TrooperSquad;
+use App\Models\TrooperOrganization;
+use App\Models\TrooperUnit;
+use App\Models\Unit;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,32 +36,32 @@ class NotificationsDisplayHtmxController extends Controller
     {
         $trooper = Trooper::findOrFail(Auth::user()->id);
 
-        $clubs = Club::active(include_squads: true)->get();
+        $organizations = Organization::active(include_squads: true)->get();
 
-        $trooper_clubs = $trooper->clubs()
-            ->wherePivot(TrooperClub::NOTIFY, true)
-            ->where(Club::ACTIVE, true)
-            ->pluck('tt_clubs.' . Club::ID)
+        $trooper_clubs = $trooper->organizations()
+            ->wherePivot(TrooperOrganization::NOTIFY, true)
+            ->where(Organization::ACTIVE, true)
+            ->pluck('tt_clubs.' . Organization::ID)
             ->toArray();
 
-        $trooper_squads = $trooper->squads()
-            ->wherePivot(TrooperSquad::NOTIFY, true)
-            ->where(Squad::ACTIVE, true)
-            ->pluck('tt_squads.' . Squad::ID)
+        $trooper_squads = $trooper->units()
+            ->wherePivot(TrooperUnit::NOTIFY, true)
+            ->where(Unit::ACTIVE, true)
+            ->pluck('tt_squads.' . Unit::ID)
             ->toArray();
 
-        foreach ($clubs as $club)
+        foreach ($organizations as $organization)
         {
-            $club->selected = in_array($club->id, $trooper_clubs);
+            $organization->selected = in_array($organization->id, $trooper_clubs);
 
-            foreach ($club->squads as $squad)
+            foreach ($organization->units as $unit)
             {
-                $squad->selected = in_array($squad->id, $trooper_squads);
+                $unit->selected = in_array($unit->id, $trooper_squads);
             }
         }
 
         $data = [
-            'clubs' => $clubs,
+            'organizations' => $organizations,
             'instant_notification' => $trooper->instant_notification,
             'attendance_notification' => $trooper->attendance_notification,
             'command_staff_notification' => $trooper->command_staff_notification,

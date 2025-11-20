@@ -3,7 +3,7 @@
 @section('content')
 
 <x-message>
-  <b>New to the 501st and/or {{ config('tracker.forum.name') }}?</b> Or are you solely a member of another club?
+  <b>New to the 501st and/or {{ config('tracker.forum.name') }}?</b> Or are you solely a member of another organization?
   Use this form below to start signing up for troops.
   <p>
     <i>Command Staff will need to approve your account prior to use.</i>
@@ -21,7 +21,7 @@
 
       <x-input-container>
         <x-label>
-          Display Name (first &amp last name, or use a nickname to remain anonymous):
+          Display Name (first &amp; last name, or use a nickname):
         </x-label>
         <x-input-text autofocus
                       :property="'name'" />
@@ -69,17 +69,20 @@
                         :options="['member'=>'Member', 'handler'=>'Handler']"
                         :placeholder="'-- Select your Account Type --'" />
         <x-input-help>
-          Are you a member of a club selected below, or would like to be assigned as a handler?
+          Are you a member of an organization selected below, or
+          would you like to be assigned as a handler to an organization?
         </x-input-help>
       </x-input-container>
 
 
       <p>
-        Select your associated clubs below.
+        Select your associated organizations below.
       </p>
 
-      @foreach ($clubs as $club)
-      @include('pages.auth.club-selection', ['club' => $club])
+      <x-transmission-bar :id="'register-organization'" />
+
+      @foreach ($organizations as $organization)
+      @include('pages.auth.organization-selection', ['organization' => $organization])
       @endforeach
 
       <x-submit-container>
@@ -88,9 +91,6 @@
         </x-submit-button>
       </x-submit-container>
       <br />
-      <p>
-        If you are a dual member, you will only need one account.
-      </p>
 
     </form>
   </x-card>

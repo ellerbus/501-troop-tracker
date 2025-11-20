@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Club;
+use App\Models\Organization;
 use App\Services\FlashMessageService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -31,10 +31,10 @@ class RegisterDisplayController extends Controller
      */
     public function __invoke(Request $request): View
     {
-        $clubs = Club::active(include_squads: true)->get();
+        $organizations = Organization::active()->with('regions.units')->get();
 
         $data = [
-            'clubs' => $clubs
+            'organizations' => $organizations
         ];
 
         return view('pages.auth.register', $data);

@@ -36,8 +36,6 @@ class LogoutController extends Controller
 
         Auth::logout();
 
-        Session::forget(['id', 'tkid']);
-
         return redirect()->route('auth.login', ['logged_out' => '1']);
     }
 }

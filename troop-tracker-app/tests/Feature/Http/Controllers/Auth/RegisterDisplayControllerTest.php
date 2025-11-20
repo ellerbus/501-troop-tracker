@@ -1,8 +1,10 @@
 <?php
 
-namespace Tests\Feature\Auth;
+declare(strict_types=1);
 
-use Database\Seeders\ClubSeeder;
+namespace Tests\Feature\Http\Controllers\Auth;
+
+use Database\Seeders\OrganizationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
 use Tests\TestCase;
@@ -17,7 +19,7 @@ class RegisterDisplayControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed(ClubSeeder::class);
+        $this->seed(OrganizationSeeder::class);
     }
 
     public function test_invoke_returns_register_view_with_clubs_data(): void
@@ -28,6 +30,6 @@ class RegisterDisplayControllerTest extends TestCase
         // Assert: Verify the response and view data
         $response->assertOk();
         $response->assertViewIs('pages.auth.register');
-        $response->assertViewHas('clubs');
+        $response->assertViewHas('organizations');
     }
 }

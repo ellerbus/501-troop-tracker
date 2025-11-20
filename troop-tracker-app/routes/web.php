@@ -9,11 +9,13 @@ use App\Http\Controllers\Account\TrooperCostumesDeleteHtmxController;
 use App\Http\Controllers\Account\TrooperCostumesDisplayHtmxController;
 use App\Http\Controllers\Account\TrooperCostumesSubmitHtmxController;
 use App\Http\Controllers\Admin\AdminDisplayController;
+use App\Http\Controllers\Admin\Awards\AwardDisplayController;
+use App\Http\Controllers\Admin\Troopers\TrooperApprovalDisplayController;
 use App\Http\Controllers\Auth\LoginDisplayController;
 use App\Http\Controllers\Auth\LoginSubmitController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterDisplayController;
-use App\Http\Controllers\AUth\RegisterHtmxController;
+use App\Http\Controllers\Auth\RegisterHtmxController;
 use App\Http\Controllers\Auth\RegisterSubmitController;
 use App\Http\Controllers\Dashboard\DashboardDisplayController;
 use App\Http\Controllers\Dashboard\HistoricalTroopsHtmxController;
@@ -37,7 +39,7 @@ Route::name('auth.')
         Route::get('/logout', LogoutController::class)->name('logout');
         Route::get('/register', RegisterDisplayController::class)->name('register');
         Route::post('/register', RegisterSubmitController::class);
-        Route::post('/register-htmx/{club}', RegisterHtmxController::class)->name('register-htmx');
+        Route::post('/register-htmx/{organization}', RegisterHtmxController::class)->name('register-htmx');
     });
 
 //  ACCOUNT
@@ -78,5 +80,20 @@ Route::prefix('admin')
     ->group(function ()
     {
         Route::get('/', AdminDisplayController::class)->name('display');
-    });
 
+        //  ADMIN/AWARDS
+        Route::prefix('awards')
+            ->name('awards.')
+            ->group(function ()
+        {
+            Route::get('/', AwardDisplayController::class)->name('display');
+        });
+
+        //  ADMIN/TROOPERS
+        Route::prefix('troopers')
+            ->name('troopers.')
+            ->group(function ()
+        {
+            Route::get('/approvals', TrooperApprovalDisplayController::class)->name('approvals');
+        });
+    });

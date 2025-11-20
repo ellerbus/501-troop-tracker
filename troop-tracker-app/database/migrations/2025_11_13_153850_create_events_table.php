@@ -56,10 +56,13 @@ return new class extends Migration
             // $table->integer('link')->default(0)->index();
             // $table->integer('link2')->default(0)->index();
 
-            $table->foreignId('squad_id')
-                ->nullable()
-                ->constrained('tt_squads')
-                ->cascadeOnDelete();
+            // $table->foreignId('squad_id')
+            //     ->nullable()
+            //     ->constrained('tt_squads')
+            //     ->cascadeOnDelete();
+
+            $table->timestamps();
+            $table->trooperstamps();
         });
     }
 

@@ -4,12 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Conversions;
 
-use App\Enums\TrooperEventStatus;
-use App\Models\ClubCostume;
-use App\Models\Event;
-use App\Models\EventTrooper;
 use App\Models\EventUpload;
-use Database\Seeders\Conversions\Traits\HasSquadMaps;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 

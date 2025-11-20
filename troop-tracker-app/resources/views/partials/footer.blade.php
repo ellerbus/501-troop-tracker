@@ -7,7 +7,7 @@
   </p>
 
   <p class="mb-2">
-    If you are missing troops or notice incorrect data, please refer to your squad leader.
+    If you are missing troops or notice incorrect data, please refer to your unit leader.
   </p>
 
   <p class="mb-0">

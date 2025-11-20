@@ -13,10 +13,10 @@ Use the `make` commands to quickly scaffold new classes. Many commands can be co
 | `php artisan make:request StoreTrooperRequest` | Creates a new form request class for validation in `app/Http/Requests`. |
 | `php artisan make:migration create_squads_table` | Creates a new database migration file. |
 | `php artisan make:factory SquadFactory` | Creates a new model factory. |
-| `php artisan make:seeder SquadSeeder` | Creates a new database seeder class. |
+| `php artisan make:seeder UnitSeeder` | Creates a new database seeder class. |
 | `php artisan make:test UserAuthenticationTest` | Creates a new feature test file in `tests/Feature`. |
 | `php artisan make:test TrooperRepositoryTest --unit` | Creates a new unit test file in `tests/Unit`. |
-| `php artisan code:models --table=squads` | (From `reliese/laravel`) Generates a model from an existing `squads` table. |
+| `php artisan code:models --table=units` | (From `reliese/laravel`) Generates a model from an existing `units` table. |
 
 ## Database Migrations & Seeding
 

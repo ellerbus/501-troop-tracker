@@ -6,13 +6,17 @@
 
 namespace App\Models\Base;
 
-use App\Models\Club;
-use App\Models\EventClub;
+use App\Models\Costume;
 use App\Models\EventCostume;
+use App\Models\EventOrganization;
+use App\Models\EventRegion;
 use App\Models\EventTrooper;
+use App\Models\EventUnit;
 use App\Models\EventUpload;
-use App\Models\Squad;
+use App\Models\Organization;
+use App\Models\Region;
 use App\Models\Trooper;
+use App\Models\Unit;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -32,12 +36,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $limit_participants
  * @property int|null $total_troopers_allowed
  * @property int|null $total_handlers_allowed
- * @property int|null $squad_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property int|null $created_id
+ * @property int|null $updated_id
  * 
- * @property Squad|null $squad
- * @property Collection|Club[] $clubs
- * @property Collection|EventCostume[] $event_costumes
+ * @property Collection|Costume[] $costumes
+ * @property Collection|Organization[] $organizations
+ * @property Collection|Region[] $regions
  * @property Collection|Trooper[] $troopers
+ * @property Collection|Unit[] $units
  * @property Collection|EventUpload[] $event_uploads
  *
  * @package App\Models\Base
@@ -56,9 +64,11 @@ class Event extends Model
     const LIMIT_PARTICIPANTS = 'limit_participants';
     const TOTAL_TROOPERS_ALLOWED = 'total_troopers_allowed';
     const TOTAL_HANDLERS_ALLOWED = 'total_handlers_allowed';
-    const SQUAD_ID = 'squad_id';
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+    const CREATED_ID = 'created_id';
+    const UPDATED_ID = 'updated_id';
     protected $table = 'tt_events';
-    public $timestamps = false;
 
     protected $casts = [
         self::ID => 'int',
@@ -71,30 +81,44 @@ class Event extends Model
         self::LIMIT_PARTICIPANTS => 'bool',
         self::TOTAL_TROOPERS_ALLOWED => 'int',
         self::TOTAL_HANDLERS_ALLOWED => 'int',
-        self::SQUAD_ID => 'int'
+        self::CREATED_AT => 'datetime',
+        self::UPDATED_AT => 'datetime',
+        self::CREATED_ID => 'int',
+        self::UPDATED_ID => 'int'
     ];
 
-    public function squad()
+    public function costumes()
     {
-        return $this->belongsTo(Squad::class);
-    }
-
-    public function clubs()
-    {
-        return $this->belongsToMany(Club::class, 'tt_event_clubs')
-                    ->withPivot(EventClub::ID, EventClub::TROOPERS_ALLOWED, EventClub::HANDLERS_ALLOWED)
+        return $this->belongsToMany(Costume::class, 'tt_event_costumes')
+                    ->withPivot(EventCostume::ID, EventCostume::REQUESTED, EventCostume::EXCLUDED, EventCostume::CREATED_ID, EventCostume::UPDATED_ID)
                     ->withTimestamps();
     }
 
-    public function event_costumes()
+    public function organizations()
     {
-        return $this->hasMany(EventCostume::class);
+        return $this->belongsToMany(Organization::class, 'tt_event_organizations')
+                    ->withPivot(EventOrganization::ID, EventOrganization::TROOPERS_ALLOWED, EventOrganization::HANDLERS_ALLOWED, EventOrganization::CREATED_ID, EventOrganization::UPDATED_ID)
+                    ->withTimestamps();
+    }
+
+    public function regions()
+    {
+        return $this->belongsToMany(Region::class, 'tt_event_regions')
+                    ->withPivot(EventRegion::ID, EventRegion::TROOPERS_ALLOWED, EventRegion::HANDLERS_ALLOWED, EventRegion::CREATED_ID, EventRegion::UPDATED_ID)
+                    ->withTimestamps();
     }
 
     public function troopers()
     {
         return $this->belongsToMany(Trooper::class, 'tt_event_troopers')
-                    ->withPivot(EventTrooper::ID, EventTrooper::CLUB_COSTUME_ID, EventTrooper::BACKUP_CLUB_COSTUME_ID, EventTrooper::ADDED_BY_TROOPER_ID, EventTrooper::STATUS)
+                    ->withPivot(EventTrooper::ID, EventTrooper::COSTUME_ID, EventTrooper::BACKUP_COSTUME_ID, EventTrooper::ADDED_BY_TROOPER_ID, EventTrooper::STATUS, EventTrooper::CREATED_ID, EventTrooper::UPDATED_ID)
+                    ->withTimestamps();
+    }
+
+    public function units()
+    {
+        return $this->belongsToMany(Unit::class, 'tt_event_units')
+                    ->withPivot(EventUnit::ID, EventUnit::TROOPERS_ALLOWED, EventUnit::HANDLERS_ALLOWED, EventUnit::CREATED_ID, EventUnit::UPDATED_ID)
                     ->withTimestamps();
     }
 
