@@ -9,9 +9,11 @@ use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Models\Base\Region;
 use App\Models\Organization;
 use App\Models\Trooper;
 use App\Models\TrooperOrganization;
+use App\Models\TrooperRegion;
 use App\Models\TrooperUnit;
 use App\Models\Unit;
 use App\Services\FlashMessageService;
@@ -84,25 +86,48 @@ class RegisterSubmitController extends Controller
                 // Example: if organization uses 'tkid' as identifier field
                 $organization = Organization::find($organization_id);
 
-                if ($organization && !empty($club_data['identifier']))
+                if ($organization)
                 {
-                    $trooper->organizations()->attach($organization->id, [
-                        TrooperOrganization::IDENTIFIER => $club_data['identifier'],
-                        TrooperOrganization::NOTIFY => true,
-                        TrooperOrganization::MEMBERSHIP_STATUS => MembershipStatus::Pending,
-                        TrooperOrganization::MEMBERSHIP_ROLE => $membership_role,
-                    ]);
-                }
+                    $trooper_organization = new TrooperOrganization();
 
-                if (isset($club_data['squad_id']))
-                {
-                    $unit = $organization->units()->firstWhere(Unit::ID, $club_data['squad_id']);
+                    $trooper_organization->trooper_id = $trooper->id;
+                    $trooper_organization->organization_id = $organization->id;
+                    $trooper_organization->identifier = $club_data['identifier'] ?? '';
+                    $trooper_organization->notify = true;
+                    $trooper_organization->membership_status = MembershipStatus::Pending;
+                    $trooper_organization->membership_role = $membership_role;
 
-                    $trooper->units()->attach($unit->id, [
-                        TrooperUnit::NOTIFY => true,
-                        TrooperUnit::MEMBERSHIP_STATUS => MembershipStatus::Pending,
-                        TrooperUnit::MEMBERSHIP_ROLE => $membership_role,
-                    ]);
+                    $trooper_organization->save();
+
+                    if (isset($club_data['region_id']))
+                    {
+                        $region = $organization->regions()->firstWhere(Region::ID, $club_data['region_id']);
+
+                        $trooper_region = new TrooperRegion();
+
+                        $trooper_region->trooper_id = $trooper->id;
+                        $trooper_region->region_id = $region->id;
+                        $trooper_region->notify = true;
+                        $trooper_region->membership_status = MembershipStatus::Pending;
+                        $trooper_region->membership_role = $membership_role;
+
+                        $trooper_region->save();
+
+                        if (isset($club_data['unit_id']))
+                        {
+                            $unit = $region->units()->firstWhere(Unit::ID, $club_data['unit_id']);
+
+                            $trooper_unit = new TrooperUnit();
+
+                            $trooper_unit->trooper_id = $trooper->id;
+                            $trooper_unit->unit_id = $unit->id;
+                            $trooper_unit->notify = true;
+                            $trooper_unit->membership_status = MembershipStatus::Pending;
+                            $trooper_unit->membership_role = $membership_role;
+
+                            $trooper_unit->save();
+                        }
+                    }
                 }
             }
         }

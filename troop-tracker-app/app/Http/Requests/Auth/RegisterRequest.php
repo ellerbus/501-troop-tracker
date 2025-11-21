@@ -101,23 +101,23 @@ class RegisterRequest extends FormRequest
                 $organization_rules[] = new UniqueOrganizationIdentifierRule($organization);
 
                 $rules["organizations.{$organization->id}.identifier"] = $organization_rules;
+            }
 
-                if ($organization->regions()->count() > 0)
+            if ($organization->regions()->count() > 0)
+            {
+                $rules["organizations.{$organization->id}.region_id"] = [
+                    "required_if:organizations.{$organization->id}.selected,1",
+                    new ValidRegionForOrganizationRule($organization)
+                ];
+
+                foreach ($organization->regions as $region)
                 {
-                    $rules["organizations.{$organization->id}.region_id"] = [
-                        "required_if:organizations.{$organization->id}.selected,1",
-                        new ValidRegionForOrganizationRule($organization)
-                    ];
-
-                    foreach ($organization->regions as $region)
+                    if ($region->units()->count() > 0)
                     {
-                        if ($region->units()->count() > 0)
-                        {
-                            $rules["organizations.{$organization->id}.unit_id"] = [
-                                "required_if:organizations.{$organization->id}.regions.{$region->id}.selected,1",
-                                new ValidUnitForRegionRule($region)
-                            ];
-                        }
+                        $rules["organizations.{$organization->id}.unit_id"] = [
+                            "required_if:organizations.{$organization->id}.regions.{$region->id}.selected,1",
+                            new ValidUnitForRegionRule($region)
+                        ];
                     }
                 }
             }

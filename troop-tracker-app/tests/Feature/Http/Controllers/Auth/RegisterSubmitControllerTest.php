@@ -5,12 +5,20 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers\Auth;
 
 use App\Contracts\AuthenticationInterface;
+use App\Enums\MembershipRole;
+use App\Enums\MembershipStatus;
 use App\Models\Organization;
-use Database\Seeders\OrganizationSeeder;
+use App\Models\Region;
+use App\Models\Trooper;
+use App\Models\Unit;
+use App\Services\FlashMessageService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
+/**
+ * @see \App\Http\Controllers\Auth\RegisterSubmitController
+ */
 class RegisterSubmitControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -21,69 +29,135 @@ class RegisterSubmitControllerTest extends TestCase
     {
         parent::setUp();
 
-        // Seed the database with necessary organization data for validation
-        $this->seed(OrganizationSeeder::class);
-
-        // Mock the controller's dependencies
         $this->auth_mock = $this->mock(AuthenticationInterface::class);
     }
 
-    public function test_invoke_with_valid_credentials_registers_trooper_and_redirects(): void
+    public function test_invoke_with_invalid_credentials_fails_registration(): void
     {
-        // Arrange: Prepare valid form data that passes RegisterRequest validation
-        $organization = Organization::find(1); // Assuming OrganizationSeeder creates a organization with ID 1
-        $valid_data = [
+        // Arrange
+        $this->auth_mock->shouldReceive('verify')
+            ->once()
+            ->with('testuser', 'password')
+            ->andReturn(null);
+
+        $request_data = [
+            'username' => 'testuser',
+            'password' => 'password',
             'name' => 'Test User',
             'email' => 'test@example.com',
             'account_type' => 'member',
+        ];
+
+        // Act
+        $response = $this->post(route('auth.register'), $request_data);
+
+        // Assert
+        $response->assertRedirect();
+        $response->assertSessionHasErrors(['username' => 'Invalid Credentials']);
+        $this->assertDatabaseMissing('tt_troopers', ['username' => 'testuser']);
+    }
+
+    public function test_invoke_with_valid_credentials_registers_member_successfully(): void
+    {
+        // Arrange
+        $organization = Organization::factory()->create(['identifier_validation' => 'string']);
+        $region = Region::factory()->create(['organization_id' => $organization->id]);
+        $unit = Unit::factory()->create(['region_id' => $region->id]);
+
+        $this->auth_mock->shouldReceive('verify')
+            ->once()
+            ->with('testuser', 'password')
+            ->andReturn('auth123');
+
+        $request_data = [
             'username' => 'testuser',
             'password' => 'password',
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'account_type' => 'member',
             'organizations' => [
                 $organization->id => [
                     'selected' => '1',
-                    'identifier' => '12345', // Assuming organization 1 requires an identifier
+                    'identifier' => 'TK12345',
+                    'region_id' => $region->id,
+                    'unit_id' => $unit->id,
                 ],
             ],
         ];
 
-        // Set up mock expectations for a successful registration
-        $auth_id = 999;
-        $this->auth_mock->shouldReceive('verify')
-            ->once()
-            ->with('testuser', 'password')
-            ->andReturn($auth_id);
+        // Act
+        $response = $this->post(route('auth.register'), $request_data);
 
-        // Act: Post the valid data to the registration submission route
-        $response = $this->post(route('auth.register'), $valid_data);
+        // Assert
+        $response->assertRedirect(route('auth.register'));
+        $response->assertSessionHasNoErrors();
 
-        // Assert: Verify the user is redirected back
-        $response->assertRedirect();
-    }
-
-    public function test_invoke_with_invalid_credentials_redirects_with_errors(): void
-    {
-        // Arrange: Prepare valid form data but expect authentication to fail
-        $organization = Organization::find(1); // Assuming OrganizationSeeder creates a organization with ID 1
-        $valid_data = [
+        $this->assertDatabaseHas('tt_troopers', [
+            'username' => 'testuser',
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'account_type' => 'member',
-            'username' => 'wronguser',
-            'password' => 'wrongpassword',
-            'organizations' => [$organization->id => ['selected' => '1', 'identifier' => '12345']],
-        ];
+        ]);
 
-        // Set up mock expectation for a failed authentication
+        $trooper = Trooper::where('username', 'testuser')->first();
+
+        $this->assertDatabaseHas('tt_trooper_organizations', [
+            'trooper_id' => $trooper->id,
+            'organization_id' => $organization->id,
+            'identifier' => 'TK12345',
+            'membership_status' => MembershipStatus::Pending->value,
+            'membership_role' => MembershipRole::Member->value,
+        ]);
+
+        $this->assertDatabaseHas('tt_trooper_regions', [
+            'trooper_id' => $trooper->id,
+            'region_id' => $region->id,
+            'membership_status' => MembershipStatus::Pending->value,
+            'membership_role' => MembershipRole::Member->value,
+        ]);
+
+        $this->assertDatabaseHas('tt_trooper_units', [
+            'trooper_id' => $trooper->id,
+            'unit_id' => $unit->id,
+            'membership_status' => MembershipStatus::Pending->value,
+            'membership_role' => MembershipRole::Member->value,
+        ]);
+    }
+
+    public function test_invoke_registers_handler_successfully(): void
+    {
+        // Arrange
+        $organization = Organization::factory()->create();
+
         $this->auth_mock->shouldReceive('verify')
             ->once()
-            ->with('wronguser', 'wrongpassword')
-            ->andReturn(null);
+            ->with('handleruser', 'password')
+            ->andReturn('auth123');
 
-        // Act: Post the data
-        $response = $this->post(route('auth.register'), $valid_data);
+        $request_data = [
+            'username' => 'handleruser',
+            'password' => 'password',
+            'name' => 'Handler User',
+            'email' => 'handler@example.com',
+            'account_type' => 'handler',
+            'organizations' => [
+                $organization->id => [
+                    'selected' => '1',
+                    'identifier' => 'TK-ID',
+                ],
+            ],
+        ];
 
-        // Assert: Verify the user is redirected back with a specific error
-        $response->assertRedirect();
-        $response->assertSessionHasErrors('username');
+        // Act
+        $response = $this->post(route('auth.register'), $request_data);
+
+        // Assert
+        $response->assertRedirect(route('auth.register'));
+        $trooper = Trooper::where('username', 'handleruser')->first();
+
+        $this->assertDatabaseHas('tt_trooper_organizations', [
+            'trooper_id' => $trooper->id,
+            'organization_id' => $organization->id,
+            'membership_role' => MembershipRole::Handler->value,
+        ]);
     }
 }

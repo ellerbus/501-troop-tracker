@@ -34,7 +34,7 @@ class ActorSeeder extends Seeder
         {
             $organization = Organization::firstWhere(Organization::SLUG, '501st');
 
-            $actor->organizations()->attach($organization->id, [
+            $actor->organizations()->save($organization, [
                 TrooperOrganization::IDENTIFIER => '99999',
                 TrooperOrganization::MEMBERSHIP_STATUS => MembershipStatus::Active,
                 TrooperOrganization::MEMBERSHIP_ROLE => MembershipRole::Member,
