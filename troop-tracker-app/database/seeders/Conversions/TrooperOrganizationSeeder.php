@@ -51,8 +51,9 @@ class TrooperOrganizationSeeder extends Seeder
                 $membership_status = $this->mapLegacyStatus($trooper->{$permissions});
                 $membership_role = $trooper->{$permissions} == 4 ? MembershipRole::Handler : MembershipRole::Member;
 
-                if ($membership_status == 'none')
+                if ($membership_status == 'none' && !$notify)
                 {
+                    //  no status and not getting notified, skip
                     continue;
                 }
 
@@ -73,7 +74,7 @@ class TrooperOrganizationSeeder extends Seeder
                     $t->organization_id = $club['id'];
                 }
 
-                $t->identifier = $identifier;
+                $t->identifier = $identifier == 0 ? '' : $identifier;
                 $t->notify = $notify;
                 $t->membership_status = $membership_status;
                 $t->membership_role = $membership_role;

@@ -25,7 +25,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->boolean('notify')->default(false);
-            $table->string('membership_status', 16)->default(MembershipStatus::Pending->value);
+            $table->string('membership_status', 16)->default(MembershipStatus::None->value);
             $table->string('membership_role', 16)->default(MembershipRole::Member->value);
 
             $table->timestamps();

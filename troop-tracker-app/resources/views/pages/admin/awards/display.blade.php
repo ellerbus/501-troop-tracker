@@ -22,9 +22,6 @@
       {{ $award->name }}
     </td>
     <td class="text-center">
-      {{--
-      <x-edit-button :url="route('admin.awards.edit', $award->id)" />
-      --}}
     </td>
     <td class="text-center">
     </td>

@@ -20,6 +20,11 @@ enum MembershipStatus: string
     case Pending = 'pending';
 
     /**
+     * Denied member of the organization.
+     */
+    case Denied = 'denied';
+
+    /**
      * Active member of the organization.
      */
     case Active = 'active';

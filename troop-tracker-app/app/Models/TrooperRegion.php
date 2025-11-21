@@ -6,10 +6,12 @@ use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
 use App\Models\Base\TrooperRegion as BaseTrooperRegion;
 use App\Models\Concerns\HasTrooperStamps;
+use App\Models\Scopes\HasTrooperRegionScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TrooperRegion extends BaseTrooperRegion
 {
+    use HasTrooperRegionScopes;
     use HasFactory;
     use HasTrooperStamps;
 

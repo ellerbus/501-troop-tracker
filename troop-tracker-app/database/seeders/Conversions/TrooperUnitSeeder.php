@@ -36,7 +36,7 @@ class TrooperUnitSeeder extends Seeder
             {
                 $notify = $trooper->{'esquad' . $key} == 1;
 
-                $membership_status = MembershipStatus::Pending;
+                $membership_status = MembershipStatus::None;
                 $membership_role = MembershipRole::Member;
 
                 if ($trooper->squad == $key)

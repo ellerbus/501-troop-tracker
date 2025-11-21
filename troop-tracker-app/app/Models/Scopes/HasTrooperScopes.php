@@ -32,7 +32,8 @@ trait HasTrooperScopes
      */
     protected function scopePendingApprovals(Builder $query): Builder
     {
-        return $query->where(self::MEMBERSHIP_STATUS, MembershipStatus::Pending)
+        return $query
+            ->where(self::MEMBERSHIP_STATUS, MembershipStatus::Pending)
             ->orderBy(self::NAME);
     }
 }

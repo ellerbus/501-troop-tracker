@@ -1,0 +1,54 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Admin\Troopers;
+
+use App\Enums\MembershipStatus;
+use App\Http\Controllers\Controller;
+use App\Mail\TrooperApproved;
+use App\Models\Trooper;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
+
+/**
+ * Handles the display of the main trooper dashboard.
+ *
+ * This controller gathers various statistics for a trooper, such as troop counts by organization and costume, and displays them.
+ */
+class TrooperApprovalSubmitHtmxController extends Controller
+{
+    /**
+     * Handle the incoming request to display the dashboard page for a trooper.
+     *
+     * Fetches all relevant statistics for a given trooper (or the authenticated user)
+     * and displays them on the main dashboard view. Redirects if the trooper is not found.
+     *
+     * @param Request $request The incoming HTTP request.
+     */
+    public function __invoke(Request $request, Trooper $trooper): Response|View
+    {
+        $this->authorize('approve', $trooper);
+
+        $data = [
+            'trooper' => $trooper
+        ];
+
+        $trooper->membership_status = MembershipStatus::Active;
+
+        $trooper->save();
+
+        Mail::to($trooper->email)->send(new TrooperApproved($trooper));
+
+        $message = json_encode([
+            'message' => "Trooper {$trooper->name} approved!",
+            'type' => 'success',
+        ]);
+
+        return response()
+            ->view('pages.admin.troopers.approval', $data)
+            ->header('X-Flash-Message', $message);
+    }
+}

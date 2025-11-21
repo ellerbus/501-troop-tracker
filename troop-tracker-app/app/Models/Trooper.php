@@ -57,6 +57,16 @@ class Trooper extends BaseTrooper implements
         ]);
     }
 
+    public function isActive(): bool
+    {
+        return $this->membership_status == MembershipStatus::Active;
+    }
+
+    public function isDenied(): bool
+    {
+        return $this->membership_status == MembershipStatus::Denied;
+    }
+
     public function attachCostume(int $costume_id): void
     {
         if (!$this->costumes()->where(TrooperCostume::COSTUME_ID, $costume_id)->exists())
@@ -67,9 +77,7 @@ class Trooper extends BaseTrooper implements
 
     public function detachCostume(int $costume_id): void
     {
-        $this->costumes()
-            ->where(TrooperCostume::COSTUME_ID, $costume_id)
-            ->delete();
+        $this->costumes()->detach($costume_id);
     }
 
     public function hasActiveOrganizationStatus(): bool
@@ -82,7 +90,9 @@ class Trooper extends BaseTrooper implements
 
     public function assignedOrganizations(?int $organization_id): Collection
     {
-        $query = $this->organizations()->active();
+        $query = $this->organizations()
+            ->active()
+            ->wherePivot(TrooperOrganization::MEMBERSHIP_STATUS, MembershipStatus::Active);
 
         if ($organization_id)
         {
@@ -90,6 +100,57 @@ class Trooper extends BaseTrooper implements
         }
 
         return $query->get();
+    }
+
+    public function getFlatOrganizationList(): array
+    {
+        $flat = [];
+
+        $organizations = $this->organizations()
+            ->wherePivot(TrooperOrganization::MEMBERSHIP_STATUS, MembershipStatus::Active)
+            ->get();
+
+        foreach ($organizations as $organization)
+        {
+            $identifier = $organization->pivot->identifier ?? '(none)';
+
+            // Try to find a region under this org
+            $regions = $this->regions()
+                ->where(Region::ORGANIZATION_ID, $organization->id)
+                ->wherePivot(TrooperRegion::MEMBERSHIP_STATUS, MembershipStatus::Active)
+                ->get();
+
+            if ($regions->count() == 0)
+            {
+                // No region → just org
+                $flat[$identifier] = $organization->name;
+                continue;
+            }
+
+            foreach ($regions as $region)
+            {
+                // Try to find a unit under this region
+                $units = $this->units()
+                    ->where(Unit::REGION_ID, $region->id)
+                    ->wherePivot(TrooperUnit::MEMBERSHIP_STATUS, MembershipStatus::Active)
+                    ->get();
+
+                if ($units->count() == 0)
+                {
+                    // Org + Region only
+                    $flat[$identifier] = "{$organization->name}, {$region->name}";
+                    continue;
+                }
+
+                foreach ($units as $unit)
+                {
+                    // Org + Region + Unit
+                    $flat[$identifier] = "{$organization->name}, {$region->name}, {$unit->name}";
+                }
+            }
+        }
+
+        return $flat;
     }
 
     // public function costumes(int $organization_id = null): Collection
