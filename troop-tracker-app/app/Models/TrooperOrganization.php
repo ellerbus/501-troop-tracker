@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
 use App\Models\Base\TrooperOrganization as BaseTrooperOrganization;
 use App\Models\Concerns\HasTrooperStamps;
@@ -17,12 +18,14 @@ class TrooperOrganization extends BaseTrooperOrganization
         self::ORGANIZATION_ID,
         self::IDENTIFIER,
         self::NOTIFY,
-        self::STATUS,
+        self::MEMBERSHIP_STATUS,
+        self::MEMBERSHIP_ROLE,
     ];
     protected function casts(): array
     {
         return array_merge($this->casts, [
-            self::STATUS => MembershipStatus::class,
+            self::MEMBERSHIP_STATUS => MembershipStatus::class,
+            self::MEMBERSHIP_ROLE => MembershipRole::class,
         ]);
     }
 }

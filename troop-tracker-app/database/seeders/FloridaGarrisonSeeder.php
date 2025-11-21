@@ -33,6 +33,7 @@ class FloridaGarrisonSeeder extends Seeder
         $this->call(OrganizationSeeder::class);
         $this->call(RegionSeeder::class);
         $this->call(UnitSeeder::class);
+        $this->call(CostumeSeeder::class);
 
         $this->call(SettingSeeder::class);
         $this->call(TrooperSeeder::class);

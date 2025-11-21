@@ -37,8 +37,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $username
  * @property string $password
  * @property Carbon|null $last_active_at
- * @property string $permissions
- * @property string $approved
+ * @property bool $approved
+ * @property string $membership_status
+ * @property string $membership_role
  * @property bool $instant_notification
  * @property bool $attendance_notification
  * @property bool $command_staff_notification
@@ -69,8 +70,9 @@ class Trooper extends Model
     const USERNAME = 'username';
     const PASSWORD = 'password';
     const LAST_ACTIVE_AT = 'last_active_at';
-    const PERMISSIONS = 'permissions';
     const APPROVED = 'approved';
+    const MEMBERSHIP_STATUS = 'membership_status';
+    const MEMBERSHIP_ROLE = 'membership_role';
     const INSTANT_NOTIFICATION = 'instant_notification';
     const ATTENDANCE_NOTIFICATION = 'attendance_notification';
     const COMMAND_STAFF_NOTIFICATION = 'command_staff_notification';
@@ -83,6 +85,7 @@ class Trooper extends Model
         self::ID => 'int',
         self::EMAIL_VERIFIED_AT => 'datetime',
         self::LAST_ACTIVE_AT => 'datetime',
+        self::APPROVED => 'bool',
         self::INSTANT_NOTIFICATION => 'bool',
         self::ATTENDANCE_NOTIFICATION => 'bool',
         self::COMMAND_STAFF_NOTIFICATION => 'bool',
@@ -134,21 +137,21 @@ class Trooper extends Model
     public function organizations()
     {
         return $this->belongsToMany(Organization::class, 'tt_trooper_organizations')
-                    ->withPivot(TrooperOrganization::ID, TrooperOrganization::IDENTIFIER, TrooperOrganization::NOTIFY, TrooperOrganization::STATUS, TrooperOrganization::CREATED_ID, TrooperOrganization::UPDATED_ID)
+                    ->withPivot(TrooperOrganization::ID, TrooperOrganization::IDENTIFIER, TrooperOrganization::NOTIFY, TrooperOrganization::MEMBERSHIP_STATUS, TrooperOrganization::MEMBERSHIP_ROLE, TrooperOrganization::CREATED_ID, TrooperOrganization::UPDATED_ID)
                     ->withTimestamps();
     }
 
     public function regions()
     {
         return $this->belongsToMany(Region::class, 'tt_trooper_regions')
-                    ->withPivot(TrooperRegion::ID, TrooperRegion::NOTIFY, TrooperRegion::STATUS, TrooperRegion::CREATED_ID, TrooperRegion::UPDATED_ID)
+                    ->withPivot(TrooperRegion::ID, TrooperRegion::NOTIFY, TrooperRegion::MEMBERSHIP_STATUS, TrooperRegion::MEMBERSHIP_ROLE, TrooperRegion::CREATED_ID, TrooperRegion::UPDATED_ID)
                     ->withTimestamps();
     }
 
     public function units()
     {
         return $this->belongsToMany(Unit::class, 'tt_trooper_units')
-                    ->withPivot(TrooperUnit::ID, TrooperUnit::NOTIFY, TrooperUnit::STATUS, TrooperUnit::CREATED_ID, TrooperUnit::UPDATED_ID)
+                    ->withPivot(TrooperUnit::ID, TrooperUnit::NOTIFY, TrooperUnit::MEMBERSHIP_STATUS, TrooperUnit::MEMBERSHIP_ROLE, TrooperUnit::CREATED_ID, TrooperUnit::UPDATED_ID)
                     ->withTimestamps();
     }
 }

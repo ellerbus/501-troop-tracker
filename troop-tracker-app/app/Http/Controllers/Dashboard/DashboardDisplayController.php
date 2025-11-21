@@ -6,9 +6,9 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Contracts\ForumInterface;
 use App\Http\Controllers\Controller;
-use App\Models\Organization;
-use App\Models\ClubCostume;
+use App\Models\Costume;
 use App\Models\EventTrooper;
+use App\Models\Organization;
 use App\Models\Trooper;
 use App\Services\BreadCrumbService;
 use App\Services\FlashMessageService;
@@ -82,7 +82,7 @@ class DashboardDisplayController extends Controller
     {
         $trooper_id = $trooper->id;
 
-        return Organization::whereHas('club_costumes.event_troopers', fn($q) => $q->where(EventTrooper::TROOPER_ID, $trooper_id))
+        return Organization::whereHas('costumes.event_troopers', fn($q) => $q->where(EventTrooper::TROOPER_ID, $trooper_id))
             ->withCount([
                 'event_troopers as troop_count' => fn($query) =>
                     $query->where(EventTrooper::TROOPER_ID, $trooper_id)
@@ -98,19 +98,19 @@ class DashboardDisplayController extends Controller
      * them by the number of appearances. It excludes 'N/A' costumes.
      *
      * @param Trooper $trooper The trooper to calculate statistics for.
-     * @return Collection A collection of ClubCostume models, each with a `troop_count` attribute.
+     * @return Collection A collection of Costume models, each with a `troop_count` attribute.
      */
     private function getTroopsByCostume(Trooper $trooper): Collection
     {
         $trooper_id = $trooper->id;
 
-        return ClubCostume::whereHas('event_troopers', fn($q) => $q->where(EventTrooper::TROOPER_ID, $trooper_id))
+        return Costume::whereHas('event_troopers', fn($q) => $q->where(EventTrooper::TROOPER_ID, $trooper_id))
             ->with('organization')
             ->withCount([
                 'event_troopers as troop_count' => fn($q) =>
                     $q->where(EventTrooper::TROOPER_ID, $trooper_id)
             ])
-            ->whereNot(ClubCostume::NAME, 'N/A')
+            ->whereNot(Costume::NAME, 'N/A')
             ->orderBy('troop_count', 'desc')
             ->get();
     }

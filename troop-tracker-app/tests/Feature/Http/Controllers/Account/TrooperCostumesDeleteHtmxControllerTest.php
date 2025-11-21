@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Account;
 
+use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
-use App\Models\ClubCostume;
+use App\Models\Costume;
 use App\Models\Trooper;
 use App\Models\TrooperCostume;
 use Database\Seeders\OrganizationSeeder;
@@ -18,7 +19,7 @@ class TrooperCostumesDeleteHtmxControllerTest extends TestCase
     use RefreshDatabase;
 
     private Trooper $trooper;
-    private ClubCostume $costume;
+    private Costume $costume;
     private TrooperCostume $trooper_costume;
 
     protected function setUp(): void
@@ -27,20 +28,21 @@ class TrooperCostumesDeleteHtmxControllerTest extends TestCase
 
         $this->seed(OrganizationSeeder::class);
 
-        $this->costume = ClubCostume::factory()->create([
-            'club_id' => 1,
+        $this->costume = Costume::factory()->create([
+            'organization_id' => 1,
             'name' => 'Stormtrooper'
         ]);
 
         $this->trooper = Trooper::factory()->create();
         $this->trooper->organizations()->attach($this->costume->organization->id, [
             'identifier' => 'TK000',
-            'status' => MembershipStatus::Member
+            'membership_status' => MembershipStatus::Active,
+            'membership_role' => MembershipRole::Member
         ]);
 
         $this->trooper_costume = TrooperCostume::factory()->create([
             'trooper_id' => $this->trooper->id,
-            'club_costume_id' => $this->costume->id,
+            'costume_id' => $this->costume->id,
         ]);
     }
 
@@ -49,13 +51,13 @@ class TrooperCostumesDeleteHtmxControllerTest extends TestCase
         // Assert pre-condition
         $this->assertDatabaseHas('tt_trooper_costumes', [
             'trooper_id' => $this->trooper->id,
-            'club_costume_id' => $this->costume->id,
+            'costume_id' => $this->costume->id,
         ]);
 
         // Act
         $response = $this->actingAs($this->trooper)
             ->delete(route('account.trooper-costumes-htmx'), [
-                'club_costume_id' => $this->costume->id,
+                'costume_id' => $this->costume->id,
             ]);
 
         // Assert
@@ -68,7 +70,7 @@ class TrooperCostumesDeleteHtmxControllerTest extends TestCase
 
         $this->assertDatabaseMissing('tt_trooper_costumes', [
             'trooper_id' => $this->trooper->id,
-            'club_costume_id' => $this->costume->id,
+            'costume_id' => $this->costume->id,
         ]);
     }
 }

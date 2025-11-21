@@ -39,7 +39,7 @@ class NotificationsSubmitHtmxController extends Controller
 
     private function updateTrooperNotifications(array $data): array
     {
-        $organizations = Organization::active(include_squads: true)->get();
+        $organizations = Organization::active(eager_load_all: true)->get();
 
         $trooper = Trooper::findOrFail(Auth::user()->id);
 
@@ -63,15 +63,26 @@ class NotificationsSubmitHtmxController extends Controller
                 'notify' => $notify,
             ]);
 
-            foreach ($organization->units as $unit)
+            foreach ($organization->regions as $region)
             {
-                $notify = isset($data['units'][$unit->id]['notification']);
+                $notify = isset($data['regions'][$region->id]['notification']);
 
-                $unit->selected = $notify;
+                $region->selected = $notify;
 
-                $trooper->units()->updateExistingPivot($unit->id, [
+                $trooper->regions()->updateExistingPivot($region->id, [
                     'notify' => $notify,
                 ]);
+
+                foreach ($region->units as $unit)
+                {
+                    $notify = isset($data['units'][$unit->id]['notification']);
+
+                    $unit->selected = $notify;
+
+                    $trooper->units()->updateExistingPivot($unit->id, [
+                        'notify' => $notify,
+                    ]);
+                }
             }
         }
 

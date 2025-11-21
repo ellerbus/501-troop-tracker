@@ -19,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'check.permission' => \App\Http\Middleware\CheckTrooperPermission::class
+            'check.role' => \App\Http\Middleware\CheckActorRoleMiddleware::class
         ]);
 
         $middleware->redirectGuestsTo(fn(Illuminate\Http\Request $request) => route('auth.login'));

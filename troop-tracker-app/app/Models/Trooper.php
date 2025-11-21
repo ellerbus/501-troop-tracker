@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
-use App\Enums\TrooperPermissions;
 use App\Models\Base\Trooper as BaseTrooper;
 use App\Models\Casts\LowerCast;
 use App\Models\Concerns\HasObserver;
@@ -36,6 +36,11 @@ class Trooper extends BaseTrooper implements
         self::EMAIL,
         self::PHONE,
         self::PASSWORD,
+        self::MEMBERSHIP_STATUS,
+        self::MEMBERSHIP_ROLE,
+        self::INSTANT_NOTIFICATION,
+        self::ATTENDANCE_NOTIFICATION,
+        self::COMMAND_STAFF_NOTIFICATION,
     ];
 
     protected $hidden = [
@@ -46,46 +51,24 @@ class Trooper extends BaseTrooper implements
     protected function casts()
     {
         return array_merge($this->casts, [
-            self::PERMISSIONS => TrooperPermissions::class,
+            self::MEMBERSHIP_STATUS => MembershipStatus::class,
+            self::MEMBERSHIP_ROLE => MembershipRole::class,
             self::EMAIL => LowerCast::class
         ]);
     }
 
-    public function isUnapproved(): bool
+    public function attachCostume(int $costume_id): void
     {
-        return !$this->approved;
+        if (!$this->costumes()->where(TrooperCostume::COSTUME_ID, $costume_id)->exists())
+        {
+            $this->costumes()->attach($costume_id);
+        }
     }
 
-    public function attachOrganization(int $organization_id, string $identifier, MembershipStatus $status): void
+    public function detachCostume(int $costume_id): void
     {
-        $this->organizations()->attach($organization_id, [
-            TrooperOrganization::IDENTIFIER => $identifier,
-            TrooperOrganization::STATUS => $status,
-            TrooperOrganization::NOTIFY => true
-        ]);
-    }
-
-    public function detachOrganization(int $organization_id, MembershipStatus $status = MembershipStatus::None): void
-    {
-        $this->trooper_costumes()
-            ->where(TrooperCostume::COSTUME_ID, $organization_id)
-            ->update([
-                TrooperOrganization::STATUS => $status,
-            ]);
-    }
-
-
-    public function attachCostume(int $organization_costume_id): void
-    {
-        $this->trooper_costumes()->create([
-            TrooperCostume::COSTUME_ID => $organization_costume_id,
-        ]);
-    }
-
-    public function detachCostume(int $organization_costume_id): void
-    {
-        $this->trooper_costumes()
-            ->where(TrooperCostume::COSTUME_ID, $organization_costume_id)
+        $this->costumes()
+            ->where(TrooperCostume::COSTUME_ID, $costume_id)
             ->delete();
     }
 
@@ -93,13 +76,13 @@ class Trooper extends BaseTrooper implements
     {
         return $this->organizations()
             ->active()
-            ->wherePivotNotIn(TrooperOrganization::STATUS, [MembershipStatus::None, MembershipStatus::Retired])
+            ->wherePivotNotIn(TrooperOrganization::MEMBERSHIP_STATUS, [MembershipStatus::Pending, MembershipStatus::Retired])
             ->exists();
     }
 
     public function assignedOrganizations(int $organization_id = null): Collection
     {
-        $query = $this->organizations()->active()->orderBy(Organization::NAME);
+        $query = $this->organizations()->active();
 
         if ($organization_id)
         {
@@ -109,13 +92,13 @@ class Trooper extends BaseTrooper implements
         return $query->get();
     }
 
-    public function costumes(int $organization_id = null): Collection
-    {
-        return $this->trooper_costumes()
-            ->with(['costume.organization']) // eager-load both costume and its organization
-            ->get()
-            ->map(fn($tc) => $tc->costume)
-            ->filter(fn($cc) => $organization_id ? $cc->organization_id === $organization_id : true)
-            ->values(); // reindex the collection
-    }
+    // public function costumes(int $organization_id = null): Collection
+    // {
+    //     return $this->trooper_costumes()
+    //         ->with(['costume.organization']) // eager-load both costume and its organization
+    //         ->get()
+    //         ->map(fn($tc) => $tc->costume)
+    //         ->filter(fn($cc) => $organization_id ? $cc->organization_id === $organization_id : true)
+    //         ->values(); // reindex the collection
+    // }
 }

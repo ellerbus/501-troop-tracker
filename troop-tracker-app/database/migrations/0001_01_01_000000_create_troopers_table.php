@@ -1,6 +1,7 @@
 <?php
 
-use App\Enums\TrooperPermissions;
+use App\Enums\MembershipRole;
+use App\Enums\MembershipStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,8 +24,8 @@ return new class extends Migration
             $table->string('username', 128);
             $table->string('password', 256);
             $table->dateTime('last_active_at')->nullable();
-            $table->string('permissions', 16)->default(TrooperPermissions::None->value);
-            $table->string('approved', 16)->default(false);
+            $table->string('membership_status', 16)->default(MembershipStatus::Pending->value);
+            $table->string('membership_role', 16)->default(MembershipRole::Member->value);
 
             $table->boolean('instant_notification')->default(true);
             $table->boolean('attendance_notification')->default(true);

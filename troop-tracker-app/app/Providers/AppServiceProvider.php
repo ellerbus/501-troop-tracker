@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use App\Enums\TrooperPermissions;
+use App\Enums\MembershipRole;
+use App\Enums\MembershipStatus;
 use App\Services\BreadCrumbService;
 use Illuminate\Database\Migrations\DatabaseMigrationRepository;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
@@ -54,19 +55,19 @@ class AppServiceProvider extends ServiceProvider
         //
         //  BLADE BOOTS
         //
-        Blade::if('permission', function (TrooperPermissions|string $role): bool
+        Blade::if('role', function (MembershipRole|string $role): bool
         {
             if (Auth::check())
             {
                 $user = Auth::user();
 
-                if ($user)
+                if ($user && $user->membership_status == MembershipStatus::Active)
                 {
                     if (is_string($role))
                     {
                         try
                         {
-                            $role = TrooperPermissions::from($role);
+                            $role = MembershipRole::from($role);
                         }
                         catch (ValueError $e)
                         {
@@ -74,7 +75,7 @@ class AppServiceProvider extends ServiceProvider
                         }
                     }
 
-                    return $user->permissions === $role;
+                    return $user->membership_role === $role;
                 }
             }
 

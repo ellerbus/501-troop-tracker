@@ -21,7 +21,7 @@ class SupportDisplayHtmxControllerTest extends TestCase
 
     public function test_invoke_returns_correct_view_and_data_for_each_day_of_week(): void
     {
-        Setting::factory()->create([]);
+        Setting::factory()->create(['key' => 'support_goal', 'value' => '300']);
 
         $response = $this->get(route('support-htmx'));
 

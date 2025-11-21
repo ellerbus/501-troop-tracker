@@ -1,4 +1,4 @@
-@props(['tabs' => []])
+@props(['tabs'=>[]])
 
 @if (count($tabs) > 0)
 {{-- Desktop Tabs --}}

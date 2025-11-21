@@ -21,6 +21,7 @@ class LoginSubmitController extends Controller
 {
     /**
      * @param FlashMessageService $flash The flash message service.
+     *
      * @param AuthenticationInterface $auth The authentication service.
      */
     public function __construct(
@@ -30,7 +31,7 @@ class LoginSubmitController extends Controller
     }
 
     /**
-     * Handle the incoming login request.
+     * Handles the incoming login request.
      *
      * @param LoginRequest $request The validated login form request.
      * @return RedirectResponse A redirect response to the intended page or back with errors.
@@ -40,7 +41,7 @@ class LoginSubmitController extends Controller
         //  trooper existance is checked via LoginRequest
         $trooper = Trooper::query()->byUsername($request->username)->first();
 
-        if ($trooper->isUnapproved())
+        if ($trooper->membership_status == MembershipStatus::Pending)
         {
             $this->flash->warning('Your access has not been approved yet. Please refer to command staff for additional information.');
 
@@ -49,10 +50,7 @@ class LoginSubmitController extends Controller
                 ->withErrors(['username' => 'Refer to command staff']);
         }
 
-        $results = $this->auth->authenticate(
-            username: $request->username,
-            password: $request->password
-        );
+        $results = $this->auth->authenticate($request->username, $request->password);
 
         if ($results == AuthenticationStatus::BANNED)
         {
@@ -63,7 +61,7 @@ class LoginSubmitController extends Controller
                 ->withErrors(['username' => 'Refer to command staff']);
         }
 
-        if ($trooper->permissions == MembershipStatus::Retired)
+        if ($trooper->membership_status != MembershipStatus::Active)
         {
             //  retired
             $this->flash->danger('You cannot access this account. Please refer to command staff for additional information (retired).');
@@ -95,7 +93,7 @@ class LoginSubmitController extends Controller
     }
 
     /**
-     * Logs the trooper in and sets up the session.
+     * Logs the trooper in, sets up the session, and redirects.
      *
      * @param Trooper $trooper The trooper to log in.
      * @param LoginRequest $request The original login request.

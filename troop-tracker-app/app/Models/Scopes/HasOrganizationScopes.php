@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models\Scopes;
 
+use App\Models\Region;
+use App\Models\Unit;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -17,9 +19,17 @@ trait HasOrganizationScopes
      * @param Builder<self> $query The Eloquent query builder.
      * @return Builder<self>
      */
-    protected function scopeActive(Builder $query): Builder
+    protected function scopeActive(Builder $query, bool $eager_load_all = false): Builder
     {
         $query->where(self::ACTIVE, true);
+
+        if ($eager_load_all)
+        {
+            $query->with([
+                'regions' => fn($q) => $q->active()->orderBy(Region::NAME),
+                'regions.units' => fn($q) => $q->active()->orderBy(Unit::NAME),
+            ]);
+        }
 
         return $query->orderBy(self::NAME);
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Conversions;
 
+use App\Enums\MembershipRole;
 use App\Models\Base\Organization;
 use App\Models\TrooperRegion;
 use Database\Seeders\Conversions\Traits\HasClubMaps;
@@ -36,9 +37,10 @@ class TrooperRegionSeeder extends Seeder
                 $value = $club['value'];
 
                 $notify = $trooper->{'esquad' . $value} == 1;
-                $status = $this->mapLegacyStatus($trooper->{$permissions});
+                $membership_status = $this->mapLegacyStatus($trooper->{$permissions});
+                $membership_role = $trooper->{$permissions} == 4 ? MembershipRole::Handler : MembershipRole::Member;
 
-                if ($status == 'none')
+                if ($membership_status == 'none')
                 {
                     continue;
                 }
@@ -65,7 +67,8 @@ class TrooperRegionSeeder extends Seeder
                 }
 
                 $t->notify = $notify;
-                $t->status = $status;
+                $t->membership_status = $membership_status;
+                $t->membership_role = $membership_role;
 
                 $t->save();
             }

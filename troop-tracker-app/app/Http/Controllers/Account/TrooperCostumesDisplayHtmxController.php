@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
+use App\Models\Costume;
 use App\Models\Organization;
-use App\Models\ClubCostume;
 use App\Models\Trooper;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -21,7 +21,7 @@ class TrooperCostumesDisplayHtmxController extends Controller
      * Handle the incoming request to display the trooper costumes interface.
      *
      * This method fetches the user's assigned organizations and their trooper costumes.
-     * If a 'club_id' is provided in the request, it also fetches the costumes for that specific organization.
+     * If a 'organization_id' is provided, it also fetches the available costumes for that specific organization.
      *
      * @param Request $request The incoming HTTP request.
      * @return View The rendered trooper costumes view.
@@ -30,29 +30,34 @@ class TrooperCostumesDisplayHtmxController extends Controller
     {
         $trooper = Trooper::findOrFail(Auth::user()->id);
 
-        $organizations = $trooper->assignedClubs();
+        $organizations = $trooper->assignedOrganizations();
 
-        $selected_club = null;
+        $selected_organization = null;
         $costumes = [];
 
-        if ($request->has('club_id'))
+        if ($request->has('organization_id'))
         {
-            $selected_club = $organizations->firstWhere(Organization::ID, $request->get('club_id'));
+            $selected_organization = $organizations->firstWhere(Organization::ID, $request->get('organization_id'));
 
-            if (isset($selected_club))
+            if (isset($selected_organization))
             {
-                $costumes = $selected_club->club_costumes
-                    ->sortBy(ClubCostume::NAME)
-                    ->pluck(ClubCostume::NAME, ClubCostume::ID)
+                $assigned_costume_ids = $trooper->costumes
+                    ->where('organization_id', $selected_organization->id)
+                    ->pluck('id');
+
+                $costumes = $selected_organization->costumes()
+                    ->excluding($assigned_costume_ids)
+                    ->orderBy(Costume::NAME)
+                    ->pluck(Costume::NAME, Costume::ID)
                     ->toArray();
             }
         }
 
         $data = [
             'organizations' => $organizations,
-            'selected_club' => $selected_club,
+            'selected_organization' => $selected_organization,
             'costumes' => $costumes,
-            'trooper_costumes' => $trooper->costumes(),
+            'trooper_costumes' => $trooper->costumes,
         ];
 
         return view('pages.account.trooper-costumes', $data);

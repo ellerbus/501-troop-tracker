@@ -86,7 +86,7 @@ class Organization extends Model
     public function troopers()
     {
         return $this->belongsToMany(Trooper::class, 'tt_trooper_organizations')
-                    ->withPivot(TrooperOrganization::ID, TrooperOrganization::IDENTIFIER, TrooperOrganization::NOTIFY, TrooperOrganization::STATUS, TrooperOrganization::CREATED_ID, TrooperOrganization::UPDATED_ID)
+                    ->withPivot(TrooperOrganization::ID, TrooperOrganization::IDENTIFIER, TrooperOrganization::NOTIFY, TrooperOrganization::MEMBERSHIP_STATUS, TrooperOrganization::MEMBERSHIP_ROLE, TrooperOrganization::CREATED_ID, TrooperOrganization::UPDATED_ID)
                     ->withTimestamps();
     }
 }

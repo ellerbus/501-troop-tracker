@@ -186,6 +186,6 @@ class RegisterRequest extends FormRequest
 
     private function getActiveOrganizations(): Collection
     {
-        return $this->active_organizations ??= Organization::active()->with('regions.units')->get();
+        return $this->active_organizations ??= Organization::active(eager_load_all: true)->get();
     }
 }

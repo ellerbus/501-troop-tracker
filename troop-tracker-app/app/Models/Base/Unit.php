@@ -74,7 +74,7 @@ class Unit extends Model
     public function troopers()
     {
         return $this->belongsToMany(Trooper::class, 'tt_trooper_units')
-                    ->withPivot(TrooperUnit::ID, TrooperUnit::NOTIFY, TrooperUnit::STATUS, TrooperUnit::CREATED_ID, TrooperUnit::UPDATED_ID)
+                    ->withPivot(TrooperUnit::ID, TrooperUnit::NOTIFY, TrooperUnit::MEMBERSHIP_STATUS, TrooperUnit::MEMBERSHIP_ROLE, TrooperUnit::CREATED_ID, TrooperUnit::UPDATED_ID)
                     ->withTimestamps();
     }
 }

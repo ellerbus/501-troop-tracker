@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
 use App\Models\Trooper;
 use App\Models\TrooperUnit;
@@ -22,7 +23,8 @@ class TrooperUnitFactory extends Factory
     {
         return [
             TrooperUnit::TROOPER_ID => Trooper::factory(),
-            TrooperUnit::STATUS => MembershipStatus::Member,
+            TrooperUnit::MEMBERSHIP_STATUS => MembershipStatus::Active,
+            TrooperUnit::MEMBERSHIP_ROLE => MembershipRole::Member,
             TrooperUnit::UNIT_ID => Unit::factory()
         ];
     }

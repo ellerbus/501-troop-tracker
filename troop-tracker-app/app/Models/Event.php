@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Base\Event as BaseEvent;
+use App\Models\Concerns\HasTrooperStamps;
 use App\Models\Scopes\HasEventScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,6 +12,7 @@ class Event extends BaseEvent
 {
     use HasFactory;
     use HasEventScopes;
+    use HasTrooperStamps;
 
     protected $fillable = [
         self::NAME,

@@ -39,27 +39,22 @@
       Manage Site Messages
     </p>
   </x-dashboard-card>
-  <x-dashboard-card :label="'Site Settings'"
+  <x-dashboard-card :label="'Organizations'"
                     :icon="'fa-wrench'"
                     :url="'#'">
+    <p>
+      Create, Update, and Manage Organizations, Regions, Units
+    </p>
+  </x-dashboard-card>
+  @can('viewAny', \App\Models\Setting::class)
+  <x-dashboard-card :label="'Site Settings'"
+                    :icon="'fa-wrench'"
+                    :url="route('admin.settings')">
     <p>
       Manage Site Settings
     </p>
   </x-dashboard-card>
-  <x-dashboard-card :label="'Clubs'"
-                    :icon="'fa-calendar-days'"
-                    :url="'#'">
-    <p>
-      Create, Update, and Manage Clubs
-    </p>
-  </x-dashboard-card>
-  <x-dashboard-card :label="'Squads'"
-                    :icon="'fa-calendar-days'"
-                    :url="'#'">
-    <p>
-      Create, Update, and Manage Squads
-    </p>
-  </x-dashboard-card>
+  @endcan
 </x-dashboard-cards>
 
 @endsection

@@ -1,4 +1,4 @@
-@props(['disabled' => false, 'property' => '', 'label' => '', 'value' => '1', 'checked' => false, 'spinner'=>null])
+@props(['property', 'label', 'disabled'=>false, 'value'=>'1', 'checked'=>false, 'spinner'=>null])
 @php
 $haserror = $errors->has($property);
 $bracketed = preg_replace('/\.(\d+)/', '[$1]', $property);
@@ -11,7 +11,7 @@ $bracketed = preg_replace('/\.(\w+)/', '[$1]', $bracketed);
          value="{{ $value }}"
          @checked($checked?'checked':'')
          {{$disabled?'disabled':''}}
-         {!!$attributes->merge(['class' => 'form-check-input' . ($haserror ? ' is-invalid' : '')])!!}/>
+         {!!$attributes->merge(['class'=>'form-check-input' . ($haserror ? ' is-invalid' : '')])!!}/>
   <label class="form-check-label"
          for="{{ $property }}">
     {{ $label }}

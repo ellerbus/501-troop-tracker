@@ -18,7 +18,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $trooper_id
  * @property int $unit_id
  * @property bool $notify
- * @property string $status
+ * @property string $membership_status
+ * @property string $membership_role
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int|null $created_id
@@ -35,7 +36,8 @@ class TrooperUnit extends Model
     const TROOPER_ID = 'trooper_id';
     const UNIT_ID = 'unit_id';
     const NOTIFY = 'notify';
-    const STATUS = 'status';
+    const MEMBERSHIP_STATUS = 'membership_status';
+    const MEMBERSHIP_ROLE = 'membership_role';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
     const CREATED_ID = 'created_id';

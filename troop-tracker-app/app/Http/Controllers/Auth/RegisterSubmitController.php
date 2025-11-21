@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Contracts\AuthenticationInterface;
+use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
@@ -72,23 +73,24 @@ class RegisterSubmitController extends Controller
 
         $trooper->save();
 
-        $status = $data['account_type'] == 'member' ? MembershipStatus::Member : MembershipStatus::Handler;
+        $membership_role = $data['account_type'] == 'member' ? MembershipRole::Member : MembershipRole::Handler;
 
         // Loop through selected organizations and assign identifiers
-        foreach ($data['organizations'] ?? [] as $club_id => $club_data)
+        foreach ($data['organizations'] ?? [] as $organization_id => $club_data)
         {
             if (!empty($club_data['selected']))
             {
                 // You’ll need to map organization-specific fields to trooper columns
                 // Example: if organization uses 'tkid' as identifier field
-                $organization = Organization::find($club_id);
+                $organization = Organization::find($organization_id);
 
                 if ($organization && !empty($club_data['identifier']))
                 {
                     $trooper->organizations()->attach($organization->id, [
                         TrooperOrganization::IDENTIFIER => $club_data['identifier'],
                         TrooperOrganization::NOTIFY => true,
-                        TrooperOrganization::STATUS => $status,
+                        TrooperOrganization::MEMBERSHIP_STATUS => MembershipStatus::Pending,
+                        TrooperOrganization::MEMBERSHIP_ROLE => $membership_role,
                     ]);
                 }
 
@@ -98,7 +100,8 @@ class RegisterSubmitController extends Controller
 
                     $trooper->units()->attach($unit->id, [
                         TrooperUnit::NOTIFY => true,
-                        TrooperUnit::STATUS => $status,
+                        TrooperUnit::MEMBERSHIP_STATUS => MembershipStatus::Pending,
+                        TrooperUnit::MEMBERSHIP_ROLE => $membership_role,
                     ]);
                 }
             }

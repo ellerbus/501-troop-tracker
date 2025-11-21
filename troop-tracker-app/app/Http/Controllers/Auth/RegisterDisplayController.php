@@ -31,7 +31,7 @@ class RegisterDisplayController extends Controller
      */
     public function __invoke(Request $request): View
     {
-        $organizations = Organization::active()->with('regions.units')->get();
+        $organizations = Organization::active(eager_load_all: true)->get();
 
         $data = [
             'organizations' => $organizations

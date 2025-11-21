@@ -19,6 +19,7 @@ class OrganizationFactory extends Factory
     {
         return [
             Organization::NAME => '501st-' . uniqid(),
+            Organization::SLUG => 'slug.' . uniqid(),
             Organization::IDENTIFIER_DISPLAY => 'TKID',
             Organization::IMAGE_PATH_LG => '',
             Organization::IMAGE_PATH_SM => '',

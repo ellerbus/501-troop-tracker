@@ -5,10 +5,7 @@ namespace Tests\Unit\Rules\Auth;
 use App\Models\Region;
 use App\Models\Unit;
 use App\Rules\Auth\ValidUnitForRegionRule;
-use Closure;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
 use Tests\TestCase;
 
 class ValidUnitForRegionRuleTest extends TestCase
@@ -19,23 +16,8 @@ class ValidUnitForRegionRuleTest extends TestCase
     {
         parent::setUp();
 
-        // Define factories for Region and Unit if they don't exist
-        if (!class_exists(\Database\Factories\RegionFactory::class))
-        {
-            Factory::guessFactoryNamesUsing(function (string $modelName)
-            {
-                return 'Database\\Factories\\' . class_basename($modelName) . 'Factory';
-            });
-            Region::factory()->create();
-        }
-        if (!class_exists(\Database\Factories\UnitFactory::class))
-        {
-            Factory::guessFactoryNamesUsing(function (string $modelName)
-            {
-                return 'Database\\Factories\\' . class_basename($modelName) . 'Factory';
-            });
-            Unit::factory()->create();
-        }
+        Region::factory()->create();
+        Unit::factory()->create();
     }
 
     public function test_validation_passes_when_unit_is_valid_for_region(): void
@@ -44,13 +26,17 @@ class ValidUnitForRegionRuleTest extends TestCase
         $region = Region::factory()->create();
         $unit = Unit::factory()->for($region)->create(['active' => true]);
         $subject = new ValidUnitForRegionRule($region);
-        $fail = Mockery::mock(Closure::class);
-
-        // Expect
-        $fail->shouldNotReceive('__invoke');
+        $fail_was_called = false;
+        $fail = function (string $message) use (&$fail_was_called): void
+        {
+            $fail_was_called = true;
+        };
 
         // Act
         $subject->validate('unit_id', $unit->id, $fail);
+
+        // Assert
+        $this->assertFalse($fail_was_called, 'The validation rule should have passed but it failed.');
     }
 
     public function test_validation_fails_when_unit_is_for_another_region(): void
@@ -60,13 +46,18 @@ class ValidUnitForRegionRuleTest extends TestCase
         $region2 = Region::factory()->create();
         $unit = Unit::factory()->for($region2)->create(['active' => true]);
         $subject = new ValidUnitForRegionRule($region1);
-        $fail = Mockery::mock(Closure::class);
-
-        // Expect
-        $fail->expects('__invoke')->once()->with('Unit selection is invalid.');
+        $fail_was_called = false;
+        $fail = function (string $message) use (&$fail_was_called): void
+        {
+            $fail_was_called = true;
+            $this->assertEquals('Unit selection is invalid.', $message);
+        };
 
         // Act
         $subject->validate('unit_id', $unit->id, $fail);
+
+        // Assert
+        $this->assertTrue($fail_was_called, 'The validation rule should have failed but it passed.');
     }
 
     public function test_validation_fails_when_unit_is_inactive(): void
@@ -75,13 +66,18 @@ class ValidUnitForRegionRuleTest extends TestCase
         $region = Region::factory()->create();
         $unit = Unit::factory()->for($region)->create(['active' => false]);
         $subject = new ValidUnitForRegionRule($region);
-        $fail = Mockery::mock(Closure::class);
-
-        // Expect
-        $fail->expects('__invoke')->once()->with('Unit selection is invalid.');
+        $fail_was_called = false;
+        $fail = function (string $message) use (&$fail_was_called): void
+        {
+            $fail_was_called = true;
+            $this->assertEquals('Unit selection is invalid.', $message);
+        };
 
         // Act
         $subject->validate('unit_id', $unit->id, $fail);
+
+        // Assert
+        $this->assertTrue($fail_was_called, 'The validation rule should have failed but it passed.');
     }
 
     public function test_validation_passes_when_value_is_empty(): void
@@ -89,13 +85,17 @@ class ValidUnitForRegionRuleTest extends TestCase
         // Arrange
         $region = Region::factory()->create();
         $subject = new ValidUnitForRegionRule($region);
-        $fail = Mockery::mock(Closure::class);
-
-        // Expect
-        $fail->shouldNotReceive('__invoke');
+        $fail_was_called = false;
+        $fail = function (string $message) use (&$fail_was_called): void
+        {
+            $fail_was_called = true;
+        };
 
         // Act
         $subject->validate('unit_id', '', $fail);
         $subject->validate('unit_id', null, $fail);
+
+        // Assert
+        $this->assertFalse($fail_was_called, 'The validation rule should have passed but it failed.');
     }
 }

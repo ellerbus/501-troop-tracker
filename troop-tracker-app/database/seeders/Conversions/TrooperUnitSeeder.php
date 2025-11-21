@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Conversions;
 
+use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
 use App\Models\TrooperUnit;
 use Database\Seeders\Conversions\Traits\HasEnumMaps;
@@ -35,11 +36,12 @@ class TrooperUnitSeeder extends Seeder
             {
                 $notify = $trooper->{'esquad' . $key} == 1;
 
-                $status = MembershipStatus::None;
+                $membership_status = MembershipStatus::Pending;
+                $membership_role = MembershipRole::Member;
 
                 if ($trooper->squad == $key)
                 {
-                    $status = MembershipStatus::Member;
+                    $membership_status = MembershipStatus::Active;
                 }
 
                 $t = TrooperUnit::where(TrooperUnit::TROOPER_ID, $trooper->id)
@@ -55,7 +57,8 @@ class TrooperUnitSeeder extends Seeder
                 }
 
                 $t->notify = $notify;
-                $t->status = $status;
+                $t->membership_status = $membership_status;
+                $t->membership_role = $membership_role;
 
                 $t->save();
             }

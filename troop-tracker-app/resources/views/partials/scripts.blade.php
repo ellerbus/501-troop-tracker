@@ -1,36 +1,10 @@
-<!--
- JQUERY 
-<script src="script/lib/jquery-3.4.1.min.js"></script>
-
- JQUERY UI 
-<script src="script/lib/jquery-ui.min.js"></script>
-
- JQUERY SELECT 
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
- Addons 
-<script src="script/lib/jquery-ui-timepicker-addon.js"></script>
-<script src="script/js/validate/jquery.validate.min.js"></script>
-<script src="script/js/validate/additional-methods.min.js"></script>
-<script src="script/js/validate/validate.js?v=4"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<script
-        src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
-
- Drop Zone 
-<script src="script/lib/dropzone.min.js"></script>
-
- LightBox 
-<script src="script/lib/lightbox.min.js"></script>
--->
-
-<!-- HTMX  -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.7/htmx.min.js"></script>
-
-<!-- Bootstrap  -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
 
-<script>
+<script type="text/javascript">
+  /** HTMX CSRF TOKEN **/
   document.addEventListener('htmx:configRequest', function (event) {
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     event.detail.headers['X-CSRF-TOKEN'] = token;
@@ -124,4 +98,49 @@
       console.error("Error parsing JSON or displaying flash message:", e);
     }
   });
+
+  /** BIND TYPEAHEADS **/
+  function bindTypeaheadInputs() {
+    document.querySelectorAll('.typeahead').forEach(input => {
+      // Prevent rebinding if already initialized
+      if (input.dataset.typeaheadBound === 'true') return;
+      input.dataset.typeaheadBound = 'true';
+
+      const searchUrl = input.dataset.searchUrl;
+      const targetId = input.id;
+
+      const costumes = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+          url: searchUrl + '?query=%QUERY',
+          wildcard: '%QUERY'
+        }
+      });
+
+      $(input).typeahead({
+        minLength: 2,
+        highlight: true
+      }, {
+        name: 'costumes',
+        display: 'name',
+        source: costumes,
+        templates: {
+          suggestion: function (data) {
+            return `<div class="dropdown-item d-flex align-items-center p-2">
+                      <i class="bi bi-person-badge me-2 text-secondary"></i>
+                      <span class="text-truncate">${data.name}</span>
+                    </div>`;
+          }
+        }
+      }).on('typeahead:select', function (e, selection) {
+        document.getElementById(targetId).value = selection.id;
+        input.form.dispatchEvent(new Event('submit', { bubbles: true }));
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', bindTypeaheadInputs);
+  document.body.addEventListener('htmx:afterSettle', bindTypeaheadInputs);
+
 </script>

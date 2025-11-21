@@ -19,13 +19,17 @@ class UniqueOrganizationIdentifierRuleTest extends TestCase
         // Arrange
         $organization = Organization::factory()->create();
         $subject = new UniqueOrganizationIdentifierRule($organization);
-        $fail = Mockery::mock(Closure::class);
-
-        // Expect
-        $fail->shouldNotReceive('__invoke');
+        $fail_was_called = false;
+        $fail = function (string $message) use (&$fail_was_called): void
+        {
+            $fail_was_called = true;
+        };
 
         // Act
         $subject->validate('identifier', 'TK-12345', $fail);
+
+        // Assert
+        $this->assertFalse($fail_was_called, 'The validation rule should have passed but it failed.');
     }
 
     public function test_validation_fails_when_identifier_is_not_unique(): void
@@ -36,12 +40,12 @@ class UniqueOrganizationIdentifierRuleTest extends TestCase
         $organization->troopers()->attach($trooper, ['identifier' => 'TK-12345']);
 
         $subject = new UniqueOrganizationIdentifierRule($organization);
-        $fail = Mockery::mock(Closure::class);
-
-        // Expect
-        $fail->expects('__invoke')
-            ->once()
-            ->with("{$organization->name} ID already exists.");
+        $fail_was_called = false;
+        $fail = function (string $message) use (&$fail_was_called, $organization): void
+        {
+            $fail_was_called = true;
+            $this->assertEquals("{$organization->name} ID already exists.", $message);
+        };
 
         // Act
         $subject->validate('identifier', 'TK-12345', $fail);
@@ -52,13 +56,17 @@ class UniqueOrganizationIdentifierRuleTest extends TestCase
         // Arrange
         $organization = Organization::factory()->create();
         $subject = new UniqueOrganizationIdentifierRule($organization);
-        $fail = Mockery::mock(Closure::class);
-
-        // Expect
-        $fail->shouldNotReceive('__invoke');
+        $fail_was_called = false;
+        $fail = function (string $message) use (&$fail_was_called): void
+        {
+            $fail_was_called = true;
+        };
 
         // Act
         $subject->validate('identifier', '', $fail);
+
+        // Assert
+        $this->assertFalse($fail_was_called, 'The validation rule should have passed but it failed.');
     }
 
     public function test_validation_does_not_fail_for_other_organizations(): void
@@ -72,12 +80,16 @@ class UniqueOrganizationIdentifierRuleTest extends TestCase
         $organization2->troopers()->attach($trooper, ['identifier' => 'TK-12345']);
 
         $subject = new UniqueOrganizationIdentifierRule($organization1);
-        $fail = Mockery::mock(Closure::class);
-
-        // Expect
-        $fail->shouldNotReceive('__invoke');
+        $fail_was_called = false;
+        $fail = function (string $message) use (&$fail_was_called): void
+        {
+            $fail_was_called = true;
+        };
 
         // Act
         $subject->validate('identifier', 'TK-12345', $fail);
+
+        // Assert
+        $this->assertFalse($fail_was_called, 'The validation rule should have passed but it failed.');
     }
 }

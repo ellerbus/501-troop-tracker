@@ -1,15 +1,15 @@
 @php
 $icons = [
-'success' => 'fa-circle-check',
-'info' => 'fa-circle-info',
-'warning' => 'fa-circle-exclamation',
-'danger' => 'fa-circle-xmark',
+'success'=>'fa-circle-check',
+'info'=>'fa-circle-info',
+'warning'=>'fa-circle-exclamation',
+'danger'=>'fa-circle-xmark',
 ];
 @endphp
 
 <div id="flash-messages">
   @if ($flash_messages = $flash->getMessages())
-  @foreach ($flash_messages as $type => $messages)
+  @foreach ($flash_messages as $type=>$messages)
   @foreach ($messages as $message)
   <div class="alert alert-{{ $type }} alert-dismissible fade show mt-2">
     <strong>

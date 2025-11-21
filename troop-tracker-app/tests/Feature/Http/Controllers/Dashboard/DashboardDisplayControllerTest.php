@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers\Dashboard;
 
 use App\Models\Organization;
-use App\Models\ClubCostume;
+use App\Models\Costume;
 use App\Models\Event;
 use App\Models\EventTrooper;
 use App\Models\Trooper;
@@ -24,10 +24,10 @@ class DashboardDisplayControllerTest extends TestCase
         $this->actingAs($user);
 
         $organization = Organization::factory()->create();
-        $costume = ClubCostume::factory()->for($organization)->create();
+        $costume = Costume::factory()->for($organization)->create();
         $event = Event::factory()->closed()->create();
         EventTrooper::factory()->for($event)->for($user)->create([
-            'club_costume_id' => $costume->id
+            'costume_id' => $costume->id
         ]);
 
         // Act
@@ -58,10 +58,10 @@ class DashboardDisplayControllerTest extends TestCase
 
         $other_trooper = Trooper::factory()->create();
         $organization = Organization::factory()->create();
-        $costume = ClubCostume::factory()->for($organization)->create();
+        $costume = Costume::factory()->for($organization)->create();
         $event = Event::factory()->closed()->create();
         EventTrooper::factory()->for($event)->for($other_trooper)->create([
-            'club_costume_id' => $costume->id
+            'costume_id' => $costume->id
         ]);
 
         // Act
@@ -96,17 +96,17 @@ class DashboardDisplayControllerTest extends TestCase
         $this->actingAs($user);
 
         $club1 = Organization::factory()->create();
-        $costume1 = ClubCostume::factory()->for($club1)->create();
-        $costume2 = ClubCostume::factory()->for($club1)->create();
+        $costume1 = Costume::factory()->for($club1)->create();
+        $costume2 = Costume::factory()->for($club1)->create();
 
         $club2 = Organization::factory()->create();
-        $costume3 = ClubCostume::factory()->for($club2)->create();
+        $costume3 = Costume::factory()->for($club2)->create();
 
         EventTrooper::factory()->for(Event::factory()->closed()->create())->for($user)->create([
-            'club_costume_id' => $costume1->id
+            'costume_id' => $costume1->id
         ]);
         EventTrooper::factory()->for(Event::factory()->closed()->create())->for($user)->create([
-            'club_costume_id' => $costume3->id
+            'costume_id' => $costume3->id
         ]);
 
         // Act

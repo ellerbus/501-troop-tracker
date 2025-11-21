@@ -82,7 +82,7 @@
       <x-transmission-bar :id="'register-organization'" />
 
       @foreach ($organizations as $organization)
-      @include('pages.auth.organization-selection', ['organization' => $organization])
+      @include('pages.auth.organization-selection', ['organization'=>$organization])
       @endforeach
 
       <x-submit-container>

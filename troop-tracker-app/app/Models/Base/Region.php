@@ -76,7 +76,7 @@ class Region extends Model
     public function troopers()
     {
         return $this->belongsToMany(Trooper::class, 'tt_trooper_regions')
-                    ->withPivot(TrooperRegion::ID, TrooperRegion::NOTIFY, TrooperRegion::STATUS, TrooperRegion::CREATED_ID, TrooperRegion::UPDATED_ID)
+                    ->withPivot(TrooperRegion::ID, TrooperRegion::NOTIFY, TrooperRegion::MEMBERSHIP_STATUS, TrooperRegion::MEMBERSHIP_ROLE, TrooperRegion::CREATED_ID, TrooperRegion::UPDATED_ID)
                     ->withTimestamps();
     }
 

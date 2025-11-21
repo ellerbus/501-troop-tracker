@@ -1,4 +1,4 @@
-@props(['id' => 'card-' . uniqid(), 'label' => '', 'open' => false, 'danger' => false])
+@props(['id'=>'card-' . uniqid(), 'label', 'open'=>false, 'danger'=>false])
 
 <div class="card mb-3 {{ $danger ? 'border-danger' : '' }}">
   <div class="card-header d-flex justify-content-between align-items-center"

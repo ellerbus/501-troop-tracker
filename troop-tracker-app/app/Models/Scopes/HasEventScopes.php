@@ -27,11 +27,10 @@ trait HasEventScopes
     public function scopeByTrooper(Builder $query, int $trooper_id, bool $closed): Builder
     {
         $with = [
-            'unit',
             'event_troopers' => function ($q) use ($trooper_id)
             {
                 $q->where(EventTrooper::TROOPER_ID, $trooper_id)
-                    ->with('club_costume.organization');
+                    ->with('costume.organization');
             },
         ];
 

@@ -18,7 +18,7 @@ class TrooperCostumesDeleteHtmxController extends Controller
     /**
      * Handle the incoming request to delete a trooper costume.
      *
-     * This method removes a costume from the user's troopers list based on the provided 'club_costume_id'.
+     * This method removes a costume from the user's troopers list based on the provided 'costume_id'.
      * It then returns a view partial containing the updated list of trooper costumes.
      *
      * @param Request $request The incoming HTTP request.
@@ -28,18 +28,18 @@ class TrooperCostumesDeleteHtmxController extends Controller
     {
         $trooper = Trooper::findOrFail(Auth::user()->id);
 
-        $club_costume_id = (int) $request->get('club_costume_id', -1);
+        $costume_id = (int) $request->get('costume_id', -1);
 
-        if ($club_costume_id > -1)
+        if ($costume_id > -1)
         {
-            $trooper->detachCostume($club_costume_id);
+            $trooper->detachCostume($costume_id);
         }
 
         $data = [
             'organizations' => collect(),
-            'selected_club' => null,
+            'selected_organization' => null,
             'costumes' => collect(),
-            'trooper_costumes' => $trooper->costumes(),
+            'trooper_costumes' => $trooper->costumes,
         ];
 
         return view('pages.account.trooper-costumes', $data);

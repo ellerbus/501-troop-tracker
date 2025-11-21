@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\ClubCostume;
+use App\Models\Costume;
 use App\Models\Trooper;
 use App\Models\TrooperCostume;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,7 +21,7 @@ class TrooperCostumeFactory extends Factory
     {
         return [
             TrooperCostume::TROOPER_ID => Trooper::factory(),
-            TrooperCostume::CLUB_COSTUME_ID => ClubCostume::factory(),
+            TrooperCostume::COSTUME_ID => Costume::factory(),
         ];
     }
 }

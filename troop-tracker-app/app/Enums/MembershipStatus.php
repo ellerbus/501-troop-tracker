@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Enums;
 
 /**
- * Defines the membership status of a trooper within a organization.
+ * Defines the membership status of a trooper within an organization.
  */
 enum MembershipStatus: string
 {
@@ -15,9 +15,14 @@ enum MembershipStatus: string
     case None = 'none';
 
     /**
-     * An active, regular member.
+     * Membership application is pending approval.
      */
-    case Member = 'member';
+    case Pending = 'pending';
+
+    /**
+     * Active member of the organization.
+     */
+    case Active = 'active';
 
     /**
      * A member on reserve status.
@@ -28,9 +33,4 @@ enum MembershipStatus: string
      * A retired member.
      */
     case Retired = 'retired';
-
-    /**
-     * A non-costumed handler.
-     */
-    case Handler = 'handler';
 }

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Account;
 
+use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
+use App\Models\Costume;
 use App\Models\Organization;
-use App\Models\ClubCostume;
 use App\Models\Trooper;
 use App\Models\TrooperCostume;
 use Database\Seeders\OrganizationSeeder;
@@ -19,9 +20,9 @@ class TrooperCostumesDisplayHtmxControllerTest extends TestCase
     use RefreshDatabase;
 
     private Trooper $trooper;
-    private ClubCostume $costume;
+    private Costume $costume;
     private Organization $organization;
-    private Organization $club2;
+    private Organization $organization2;
 
     protected function setUp(): void
     {
@@ -30,28 +31,30 @@ class TrooperCostumesDisplayHtmxControllerTest extends TestCase
         $this->seed(OrganizationSeeder::class);
 
         $this->organization = Organization::find(1);
-        $inactive_club = Organization::factory()->create(['active' => false]);
+        $inactive_organization = Organization::factory()->create(['active' => false]);
 
-        $this->costume = ClubCostume::factory()->create([
-            'club_id' => $this->organization->id,
+        $this->costume = Costume::factory()->create([
+            'organization_id' => $this->organization->id,
             'name' => 'Stormtrooper'
         ]);
 
         $this->trooper = Trooper::factory()->create();
         $this->trooper->organizations()->attach($this->costume->organization->id, [
             'identifier' => 'TK000',
-            'status' => MembershipStatus::Member
+            'membership_status' => MembershipStatus::Active,
+            'membership_role' => MembershipRole::Member
         ]);
-        $this->trooper->organizations()->attach($inactive_club->id, [
+        $this->trooper->organizations()->attach($inactive_organization->id, [
             'identifier' => 'TK001',
-            'status' => MembershipStatus::Member
+            'membership_status' => MembershipStatus::Active,
+            'membership_role' => MembershipRole::Member
         ]);
 
         // Create a trooper costume for the trooper
-        TrooperCostume::factory()->create(['trooper_id' => $this->trooper->id, 'club_costume_id' => $this->costume->id]);
+        TrooperCostume::factory()->create(['trooper_id' => $this->trooper->id, 'costume_id' => $this->costume->id]);
     }
 
-    public function test_invoke_without_club_id_returns_correct_view_and_data(): void
+    public function test_invoke_without_organization_id_returns_correct_view_and_data(): void
     {
         // Act
         $response = $this->actingAs($this->trooper)
@@ -67,7 +70,7 @@ class TrooperCostumesDisplayHtmxControllerTest extends TestCase
                 && $organizations->contains($this->organization);
         });
 
-        $response->assertViewHas('selected_club', null);
+        $response->assertViewHas('selected_organization', null);
         $response->assertViewHas('costumes', []);
         $response->assertViewHas('trooper_costumes', function (Collection $troopers): bool
         {
@@ -75,17 +78,16 @@ class TrooperCostumesDisplayHtmxControllerTest extends TestCase
         });
     }
 
-    public function test_invoke_with_club_id_returns_correct_view_and_data(): void
+    public function test_invoke_with_organization_id_returns_correct_view_and_data(): void
     {
         // Arrange
-        $expected_costumes = $this->organization->club_costumes
-            ->sortBy('name')
-            ->pluck('name', 'id')
-            ->toArray();
+        //  the costume is assigned to the trooper
+        //  and should not be included
+        $expected_costumes = [];
 
         // Act
         $response = $this->actingAs($this->trooper)
-            ->get(route('account.trooper-costumes-htmx', ['club_id' => $this->organization->id]));
+            ->get(route('account.trooper-costumes-htmx', ['organization_id' => $this->organization->id]));
 
         // Assert
         $response->assertOk();
@@ -97,9 +99,9 @@ class TrooperCostumesDisplayHtmxControllerTest extends TestCase
                 && $organizations->contains($this->organization);
         });
 
-        $response->assertViewHas('selected_club', function (Organization $selected_club): bool
+        $response->assertViewHas('selected_organization', function (Organization $selected_organization): bool
         {
-            return $selected_club->is($this->organization);
+            return $selected_organization->is($this->organization);
         });
 
         $response->assertViewHas('costumes', $expected_costumes);
@@ -109,17 +111,17 @@ class TrooperCostumesDisplayHtmxControllerTest extends TestCase
         });
     }
 
-    public function test_invoke_does_not_show_costumes_for_unassigned_club(): void
+    public function test_invoke_does_not_show_costumes_for_unassigned_organization(): void
     {
         // Arrange
-        $unassigned_club = Organization::factory()->create(['active' => true]);
+        $unassigned_organization = Organization::factory()->create(['active' => true]);
 
         // Act
         $response = $this->actingAs($this->trooper)
-            ->get(route('account.trooper-costumes-htmx', ['club_id' => $unassigned_club->id]));
+            ->get(route('account.trooper-costumes-htmx', ['organization_id' => $unassigned_organization->id]));
 
         // Assert
-        $response->assertViewHas('selected_club', null);
+        $response->assertViewHas('selected_organization', null);
         $response->assertViewHas('costumes', []);
     }
 }

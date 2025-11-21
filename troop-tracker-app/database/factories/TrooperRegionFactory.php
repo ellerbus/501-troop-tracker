@@ -22,7 +22,8 @@ class TrooperRegionFactory extends Factory
     {
         return [
             TrooperRegion::TROOPER_ID => Trooper::factory(),
-            TrooperRegion::STATUS => MembershipStatus::Member,
+            TrooperRegion::MEMBERSHIP_STATUS => MembershipStatus::Active,
+            TrooperRegion::MEMBERSHIP_ROLE => MembershipRole::Member,
             TrooperRegion::REGION_ID => Region::factory()
         ];
     }

@@ -18,7 +18,8 @@ class SettingFactory extends Factory
     public function definition(): array
     {
         return [
-            Setting::SUPPORT_GOAL => 300
+            Setting::KEY => $this->faker->word(),
+            Setting::VALUE => $this->faker->word(),
         ];
     }
 }

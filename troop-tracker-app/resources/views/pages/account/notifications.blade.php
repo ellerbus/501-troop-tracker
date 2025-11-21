@@ -40,9 +40,9 @@
 
     <h3>Squads / Clubs</h3>
     <p>
-      <i>Note: Events are categorized by 501st unit territory. To receive event notifications for a particular area,
-        ensure you subscribed to the appropriate unit(s). Organization notifications are used in command staff e-mails, to send
-        command staff information on trooper milestones based on unit or organization.</i>
+      <i>Note: Events are categorized by 501st region territory. To receive event notifications for a particular area,
+        ensure you subscribed to the appropriate region(s). Organization notifications are used in command staff e-mails, to send
+        command staff information on trooper milestones based on region or organization.</i>
     </p>
 
     @foreach ($organizations as $organization)
@@ -50,14 +50,26 @@
       <x-input-checkbox :property="'organizations.' . $organization->id . '.notification'"
                         :label="$organization->name"
                         :value="1"
-                        :checked="$organization->selected" />
-      @foreach ($organization->units as $unit)
+                        :checked="$organization->selected"
+                        data-organization-id="{{ $organization->id }}" />
+      @foreach ($organization->regions as $region)
       <x-input-container class="ps-5">
-        <x-input-checkbox :property="'units.' . $unit->id . '.notification'"
-                          :label="$unit->name"
+        <x-input-checkbox :property="'regions.' . $region->id . '.notification'"
+                          :label="$region->name"
                           :value="1"
-                          :checked="$unit->selected"
-                          data-organization-id="$organization->id" />
+                          :checked="$region->selected"
+                          data-organization-id="{{ $organization->id }}"
+                          data-region-id="{{ $region->id }}" />
+        @foreach ($region->units as $unit)
+        <x-input-container class="ps-5">
+          <x-input-checkbox :property="'units.' . $unit->id . '.notification'"
+                            :label="$unit->name"
+                            :value="1"
+                            :checked="$unit->selected"
+                            data-organization-id="{{ $organization->id }}"
+                            data-region-id="{{ $region->id }}" />
+        </x-input-container>
+        @endforeach
       </x-input-container>
       @endforeach
     </x-input-container>

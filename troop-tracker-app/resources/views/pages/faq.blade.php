@@ -6,7 +6,7 @@
   FAQ
 </x-page-title>
 
-@foreach ($videos as $key => $label)
+@foreach ($videos as $key=>$label)
 <h4>{{ $label }}</h4>
 <p>
   <iframe width="100%"

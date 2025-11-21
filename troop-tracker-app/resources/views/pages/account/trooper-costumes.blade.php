@@ -12,9 +12,9 @@
         You do not have any assigned organizations
       </x-message>
       @else
-      <x-input-select :property="'club_id'"
+      <x-input-select :property="'organization_id'"
                       :options="$organizations->pluck('name', 'id')->toArray()"
-                      :value="$selected_club->id ?? -1"
+                      :value="$selected_organization->id ?? -1"
                       :placeholder="'-- Select your Organization --'"
                       hx-get="{{ route('account.trooper-costumes-htmx') }}"
                       hx-trigger="change"
@@ -25,8 +25,8 @@
     </x-input-container>
 
     <x-input-container id="costume-select-container">
-      @if(!empty($selected_club))
-      <x-input-select :property="'club_costume_id'"
+      @if(!empty($selected_organization))
+      <x-input-select :property="'costume_id'"
                       :options="$costumes"
                       :value="-1"
                       :placeholder="'-- Select your Costume --'"
@@ -58,7 +58,7 @@
       </td>
       <td class="text-end">
         <x-button class="btn-outline-danger"
-                  hx-delete="{{ route('account.trooper-costumes-htmx', ['club_costume_id' => $trooper_costume->id]) }}"
+                  hx-delete="{{ route('account.trooper-costumes-htmx', ['costume_id'=>$trooper_costume->id]) }}"
                   hx-select="#trooper-costumes-table"
                   hx-target="#trooper-costumes-table"
                   hx-swap="outerHTML"

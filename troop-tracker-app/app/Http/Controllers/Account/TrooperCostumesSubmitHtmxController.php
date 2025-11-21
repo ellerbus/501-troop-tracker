@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
-use App\Models\ClubCostume;
+use App\Models\Costume;
 use App\Models\Trooper;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -30,16 +30,16 @@ class TrooperCostumesSubmitHtmxController extends Controller
     {
         $trooper = Trooper::findOrFail(Auth::user()->id);
 
-        $club_id = (int) $request->input('club_id', -1);
-        $club_costume_id = (int) $request->input('club_costume_id', -1);
+        $organization_id = (int) $request->input('organization_id', -1);
+        $costume_id = (int) $request->input('costume_id', -1);
 
-        if ($club_id > -1 && $club_costume_id > -1)
+        if ($organization_id > -1 && $costume_id > -1)
         {
-            $organization = $trooper->assignedClubs($club_id)->first();
+            $organization = $trooper->assignedOrganizations($organization_id)->first();
 
             if (isset($organization))
             {
-                $costume = $organization->club_costumes()->where(ClubCostume::ID, $club_costume_id)->first();
+                $costume = $organization->costumes()->where(Costume::ID, $costume_id)->first();
 
                 if (isset($costume))
                 {
@@ -50,9 +50,9 @@ class TrooperCostumesSubmitHtmxController extends Controller
 
         $data = [
             'organizations' => collect(),
-            'selected_club' => null,
+            'selected_organization' => null,
             'costumes' => collect(),
-            'trooper_costumes' => $trooper->costumes(),
+            'trooper_costumes' => $trooper->costumes,
         ];
 
         return view('pages.account.trooper-costumes', $data);

@@ -7,7 +7,6 @@ namespace Tests\Feature\Http\Controllers\Auth;
 use App\Contracts\AuthenticationInterface;
 use App\Enums\AuthenticationStatus;
 use App\Enums\MembershipStatus;
-use App\Enums\TrooperPermissions;
 use App\Models\Organization;
 use App\Models\Trooper;
 use Database\Seeders\OrganizationSeeder;
@@ -20,41 +19,29 @@ class LoginSubmitControllerTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * The mocked AuthenticationInterface.
+     * The mocked authentication service.
      */
     private MockInterface $auth_mock;
-
-    private Organization $the_501st;
-    private Organization $the_rebels;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        // Mock the AuthenticationInterface and bind it to the container
-        $this->auth_mock = $this->mock(AuthenticationInterface::class);
-
         $this->seed(OrganizationSeeder::class);
 
-        $this->the_501st = Organization::where('name', '501st Legion')->first();
-        $this->the_rebels = Organization::where('name', 'Rebel Legion')->first();
+        $this->auth_mock = $this->mock(AuthenticationInterface::class);
     }
 
-    public function test_invoke_handles_successful_authentication_with_active_501st_membership(): void
+    public function test_invoke_with_valid_credentials_and_active_status_logs_user_in(): void
     {
         // Arrange
+        $organization = Organization::first();
         $trooper = Trooper::factory()->create([
-            'approved' => 1,
+            'membership_status' => MembershipStatus::Active,
         ]);
-
-        $trooper->organizations()->attach($this->the_501st->id, [
-            'identifier' => '12345',
-            'status' => MembershipStatus::Member,
-        ]);
-
-        $trooper->organizations()->attach($this->the_rebels->id, [
-            'identifier' => '12345',
-            'status' => MembershipStatus::None,
+        $trooper->organizations()->attach($organization->id, [
+            'identifier' => 'TK9999',
+            'membership_status' => MembershipStatus::Active,
         ]);
 
         $this->auth_mock->shouldReceive('authenticate')
@@ -69,16 +56,16 @@ class LoginSubmitControllerTest extends TestCase
         ]);
 
         // Assert
-        $this->assertAuthenticatedAs($trooper);
-        $response->assertRedirect('account');
+        $response->assertRedirect(route('account.display'));
         $response->assertSessionHasNoErrors();
+        $this->assertAuthenticatedAs($trooper);
     }
 
-    public function test_invoke_handles_failed_authentication(): void
+    public function test_invoke_with_invalid_credentials_fails_login(): void
     {
         // Arrange
         $trooper = Trooper::factory()->create([
-            'approved' => 1
+            'membership_status' => MembershipStatus::Active,
         ]);
 
         $this->auth_mock->shouldReceive('authenticate')
@@ -93,15 +80,17 @@ class LoginSubmitControllerTest extends TestCase
         ]);
 
         // Assert
-        $this->assertGuest();
         $response->assertRedirect();
         $response->assertSessionHasErrors(['username' => 'Invalid credentials']);
+        $this->assertGuest();
     }
 
-    public function test_invoke_handles_banned_user(): void
+    public function test_invoke_with_unapproved_trooper_fails_login(): void
     {
         // Arrange
-        $trooper = Trooper::factory()->create();
+        $trooper = Trooper::factory()->create(['membership_status' => MembershipStatus::Pending]);
+
+        $this->auth_mock->shouldNotHaveBeenCalled();
 
         // Act
         $response = $this->post(route('auth.login'), [
@@ -110,17 +99,20 @@ class LoginSubmitControllerTest extends TestCase
         ]);
 
         // Assert
-        $this->assertGuest();
         $response->assertRedirect();
         $response->assertSessionHasErrors(['username' => 'Refer to command staff']);
+        $this->assertGuest();
     }
 
-    public function test_invoke_handles_unapproved_user(): void
+    public function test_invoke_with_banned_trooper_fails_login(): void
     {
         // Arrange
-        $trooper = Trooper::factory()->create(['approved' => false]);
+        $trooper = Trooper::factory()->create(['membership_status' => MembershipStatus::Active]);
 
-        $this->auth_mock->shouldNotReceive('authenticate');
+        $this->auth_mock->shouldReceive('authenticate')
+            ->once()
+            ->with($trooper->username, 'password')
+            ->andReturn(AuthenticationStatus::BANNED);
 
         // Act
         $response = $this->post(route('auth.login'), [
@@ -129,43 +121,16 @@ class LoginSubmitControllerTest extends TestCase
         ]);
 
         // Assert
-        $this->assertGuest();
         $response->assertRedirect();
         $response->assertSessionHasErrors(['username' => 'Refer to command staff']);
-    }
-
-    public function test_invoke_handles_retired_user_via_permissions_column(): void
-    {
-        // Arrange
-        $trooper = Trooper::factory()->create(['permissions' => TrooperPermissions::Retired]);
-
-        // Act
-        $response = $this->post(route('auth.login'), [
-            'username' => $trooper->username,
-            'password' => 'password',
-        ]);
-
-        // Assert
         $this->assertGuest();
-        $response->assertRedirect();
-        $response->assertSessionHasErrors(['username' => 'Refer to command staff']);
     }
 
-    public function test_invoke_handles_user_with_no_active_memberships(): void
+    public function test_invoke_with_retired_trooper_fails_login(): void
     {
         // Arrange
         $trooper = Trooper::factory()->create([
-            'approved' => 1,
-        ]);
-
-        $trooper->organizations()->attach($this->the_501st->id, [
-            'identifier' => '12345',
-            'status' => MembershipStatus::Retired,
-        ]);
-
-        $trooper->organizations()->attach($this->the_rebels->id, [
-            'identifier' => '12345',
-            'status' => MembershipStatus::None,
+            'membership_status' => MembershipStatus::Retired,
         ]);
 
         $this->auth_mock->shouldReceive('authenticate')
@@ -180,8 +145,37 @@ class LoginSubmitControllerTest extends TestCase
         ]);
 
         // Assert
+        $response->assertRedirect();
+        $response->assertSessionHasErrors(['username' => 'You cannot access this account.']);
         $this->assertGuest();
+    }
+
+    public function test_invoke_with_no_active_organization_status_fails_login(): void
+    {
+        // Arrange
+        $organization = Organization::first();
+        $trooper = Trooper::factory()->create([
+            'membership_status' => MembershipStatus::Active,
+        ]);
+        $trooper->organizations()->attach($organization->id, [
+            'identifier' => 'TK999',
+            'membership_status' => MembershipStatus::Retired,
+        ]);
+
+        $this->auth_mock->shouldReceive('authenticate')
+            ->once()
+            ->with($trooper->username, 'password')
+            ->andReturn(AuthenticationStatus::SUCCESS);
+
+        // Act
+        $response = $this->post(route('auth.login'), [
+            'username' => $trooper->username,
+            'password' => 'password',
+        ]);
+
+        // Assert
         $response->assertRedirect();
         $response->assertSessionHasErrors(['username' => 'Refer to command staff']);
+        $this->assertGuest();
     }
 }

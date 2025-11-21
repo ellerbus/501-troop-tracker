@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Conversions;
 
-use App\Enums\TrooperPermissions;
+use App\Enums\MembershipRole;
+use App\Enums\MembershipStatus;
 use App\Models\Trooper;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -29,20 +30,36 @@ class TrooperSeeder extends Seeder
             $t->password = $trooper->password ?? '^' . uniqid();
 
             $t->last_active_at = $trooper->last_active;
-            $t->approved = $trooper->approved;
             $t->created_at = $trooper->datecreated;
 
             $t->instant_notification = $trooper->efast;
             $t->attendance_notification = $trooper->econfirm;
             $t->command_staff_notification = $trooper->ecommandnotify;
 
-            $t->permissions = match ((int) $trooper->permissions)
+            if ($trooper->approved)
             {
-                0 => TrooperPermissions::Member,
-                1 => TrooperPermissions::Admin,
-                2 => TrooperPermissions::Moderator,
-                3 => TrooperPermissions::Retired,
-                default => TrooperPermissions::None,
+                $t->membership_status = match ((int) $trooper->permissions)
+                {
+                    0 => MembershipStatus::Active,
+                    // 1 => MembershipStatus::Admin,
+                    // 2 => MembershipStatus::Moderator,
+                    3 => MembershipStatus::Retired,
+                    default => MembershipStatus::Active,
+                };
+            }
+            else
+            {
+                $t->membership_status = MembershipStatus::Pending;
+            }
+
+            $t->membership_role = match ((int) $trooper->permissions)
+            {
+                0 => MembershipRole::Member,
+                1 => MembershipRole::Admin,
+                2 => MembershipRole::Moderator,
+                //3 => MembershipRole::Retired,
+                4 => MembershipRole::Handler,
+                default => MembershipRole::Member,
             };
 
             $t->save();

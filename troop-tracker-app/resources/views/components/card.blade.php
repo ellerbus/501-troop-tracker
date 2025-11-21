@@ -1,4 +1,4 @@
-@props(['label' => '', 'danger' => false])
+@props(['label'=>'', 'danger'=>false])
 
 <div class="card mb-3 {{ $danger ? 'border-danger' : '' }}">
   @if(!empty($label))

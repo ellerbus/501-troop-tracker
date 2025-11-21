@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
-use App\Enums\TrooperPermissions;
 use App\Models\Organization;
 use App\Models\Trooper;
+use App\Models\TrooperOrganization;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -24,8 +25,8 @@ class ActorSeeder extends Seeder
         $actor->email = 'sith@galaxy-far-far-away.com';
         $actor->username = 'sith';
         $actor->password = Hash::make('password');
-        $actor->permissions = TrooperPermissions::Admin;
-        $actor->approved = true;
+        $actor->membership_status = MembershipStatus::Active;
+        $actor->membership_role = MembershipRole::Admin;
 
         $actor->save();
 
@@ -33,7 +34,12 @@ class ActorSeeder extends Seeder
         {
             $organization = Organization::firstWhere(Organization::SLUG, '501st');
 
-            $actor->attachOrganization($organization->id, '99999', MembershipStatus::Member);
+            $actor->organizations()->attach($organization->id, [
+                TrooperOrganization::IDENTIFIER => '99999',
+                TrooperOrganization::MEMBERSHIP_STATUS => MembershipStatus::Active,
+                TrooperOrganization::MEMBERSHIP_ROLE => MembershipRole::Member,
+                TrooperOrganization::NOTIFY => true
+            ]);
         }
     }
 }

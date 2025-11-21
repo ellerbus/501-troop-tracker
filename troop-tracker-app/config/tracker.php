@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 return [
     'name' => env('TRACKER_NAME', 'UNKNWON'),
-    'has_squads' => env('TRACKER_HAS_SQUADS', true),
     'plugins' => [
         'type' => env('TRACKER_AUTH_PLUGIN', 'standalone'),
         'xenforo' => [

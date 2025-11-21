@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\MembershipRole;
+use App\Enums\MembershipStatus;
 use App\Models\Trooper;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -30,6 +32,8 @@ class TrooperFactory extends Factory
             Trooper::EMAIL => fake()->unique()->safeEmail(),
             Trooper::EMAIL_VERIFIED_AT => now(),
             Trooper::PASSWORD => static::$password ??= Hash::make('password'),
+            Trooper::MEMBERSHIP_STATUS => MembershipStatus::Active,
+            Trooper::MEMBERSHIP_ROLE => MembershipRole::Member,
             Trooper::REMEMBER_TOKEN => Str::random(10),
         ];
     }

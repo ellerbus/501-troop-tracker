@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Troopers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Trooper;
 use App\Services\BreadCrumbService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-//dd(array_filter(get_included_files(), fn($f) => str_contains($f, 'Trooper')));
 
 /**
  * Handles the display of the main trooper dashboard.
@@ -34,22 +34,16 @@ class TrooperApprovalDisplayController extends Controller
      */
     public function __invoke(Request $request): View|RedirectResponse
     {
+        $this->authorize('viewAny', Trooper::class);
+
         $this->crumbs->addRoute('Command Staff', 'admin.display');
         // $this->crumbs->addRoute('Troopers', 'admin.troopers.display');
         $this->crumbs->add('Approvals');
 
-        $with = [
-            'organizations'
-            // => function (Builder $q)
-            // {
-            //     return $q->orderBy(Organization::NAME);
-            // },
-        ];
-
-        //        $troopers = Trooper::with($with)->pendingApprovals()->get();
+        $troopers = Trooper::pendingApprovals()->get();
 
         $data = [
-            'troopers' => []
+            'troopers' => $troopers
         ];
 
         return view('pages.admin.troopers.approvals', $data);

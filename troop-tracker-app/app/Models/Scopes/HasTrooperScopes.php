@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\Scopes;
 
+use App\Enums\MembershipStatus;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -31,6 +32,7 @@ trait HasTrooperScopes
      */
     protected function scopePendingApprovals(Builder $query): Builder
     {
-        return $query->where(self::APPROVED, false)->orderBy(self::NAME);
+        return $query->where(self::MEMBERSHIP_STATUS, MembershipStatus::Pending)
+            ->orderBy(self::NAME);
     }
 }

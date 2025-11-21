@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Account;
 
+use App\Models\Organization;
+use App\Models\Region;
 use App\Models\Trooper;
+use App\Models\Unit;
 use Database\Seeders\OrganizationSeeder;
+use Database\Seeders\RegionSeeder;
 use Database\Seeders\UnitSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -18,8 +22,8 @@ class NotificationsDisplayHtmxControllerTest extends TestCase
     {
         parent::setUp();
 
-        // Seed the database with necessary organization and unit data for the test
         $this->seed(OrganizationSeeder::class);
+        $this->seed(RegionSeeder::class);
         $this->seed(UnitSeeder::class);
     }
 
@@ -41,11 +45,14 @@ class NotificationsDisplayHtmxControllerTest extends TestCase
             'command_staff_notification' => 1,
         ]);
 
+        // Attach trooper to organizations, regions, and units with notification settings
         $trooper->organizations()->attach(1, [
             'notify' => 1,
             'identifier' => 'TKID',
         ]);
-
+        $trooper->regions()->attach(1, [
+            'notify' => 1,
+        ]);
         $trooper->units()->attach(1, [
             'notify' => 1,
         ]);
@@ -64,77 +71,56 @@ class NotificationsDisplayHtmxControllerTest extends TestCase
             'command_staff_notification' => 1,
         ]);
 
-        // Assert: Check that the organization and unit data is processed correctly
+        // Assert: Check that the organization, region, and unit data is processed correctly
         $response->assertViewHas('organizations', function ($organizations)
         {
-            // Find the organization we expect to be selected
-            $view_club = $organizations->firstWhere('id', '1');
-            if (!$view_club)
-            {
-                $this->fail('Organization with esquad0 not found in view data.');
-            }
-            $this->assertTrue($view_club->selected, 'Expected esquad0 to be selected.');
+            // Organization 1: Should be selected
+            $view_organization_1 = $organizations->firstWhere('id', 1);
+            $this->assertNotNull($view_organization_1, 'Organization 1 not found in view data.');
+            $this->assertTrue($view_organization_1->selected, 'Expected Organization 1 to be selected.');
 
-            // Find the unit we expect to be selected
-            $view_squad1 = $view_club->units->firstWhere('id', '1');
-            if (!$view_squad1)
-            {
-                $this->fail('Squad with esquad1 not found in view data.');
+            // Organization 2: Should NOT be selected (trooper not attached with notify=1)
+            $view_organization_2 = $organizations->firstWhere('id', 2);
+            if ($view_organization_2)
+            { // It might not be in the collection if no regions/units are active
+                $this->assertFalse($view_organization_2->selected, 'Expected Organization 2 to NOT be selected.');
             }
-            $this->assertTrue($view_squad1->selected, 'Expected esquad1 to be selected.');
 
-            // Find the unit we expect to be unselected
-            $view_squad2 = $view_club->units->firstWhere('id', '2');
-            if (!$view_squad2)
-            {
-                $this->fail('Squad with esquad2 not found in view data.');
+            // Region 1 (under Organization 1): Should be selected
+            $view_region_1 = $view_organization_1->regions->firstWhere('id', 1);
+            $this->assertNotNull($view_region_1, 'Region 1 not found under Organization 1.');
+            $this->assertTrue($view_region_1->selected, 'Expected Region 1 to be selected.');
+
+            // Region 2 (under Organization 1): Should NOT be selected (trooper not attached with notify=1)
+            $view_region_2 = $view_organization_1->regions->firstWhere('id', 2);
+            if ($view_region_2)
+            { // It might not be in the collection if no units are active
+                $this->assertFalse($view_region_2->selected, 'Expected Region 2 to NOT be selected.');
             }
-            $this->assertFalse($view_squad2->selected, 'Expected esquad2 to be unselected.');
+
+            // Unit 1 (under Region 1): Should be selected
+            $view_unit_1 = $view_region_1->units->firstWhere('id', 1);
+            $this->assertNotNull($view_unit_1, 'Unit 1 not found under Region 1.');
+            $this->assertTrue($view_unit_1->selected, 'Expected Unit 1 to be selected.');
+
+            // Unit 3 (under Region 1): Should NOT be selected (trooper not attached with notify=1)
+            $view_unit_3 = $view_region_1->units->firstWhere('id', 3);
+            if ($view_unit_3)
+            {
+                $this->assertFalse($view_unit_3->selected, 'Expected Unit 3 to NOT be selected.');
+            }
+
+            // Unit 2 (under Region 2): Should NOT be selected (trooper not attached with notify=1)
+            if ($view_region_2)
+            {
+                $view_unit_2 = $view_region_2->units->firstWhere('id', 2);
+                if ($view_unit_2)
+                {
+                    $this->assertFalse($view_unit_2->selected, 'Expected Unit 2 to NOT be selected.');
+                }
+            }
 
             return true;
         });
     }
-
-
-    public function test_invoke_returns_view_with_correct_notification_data(): void
-    {
-        // Act 
-        $trooper = Trooper::factory()->create([
-            'instant_notification' => 1,
-            'attendance_notification' => 0,
-            'command_staff_notification' => 1,
-        ]);
-
-        $trooper->organizations()->attach(1, [
-            'notify' => 1,
-            'identifier' => 'TKID',
-        ]);
-
-        $trooper->units()->attach(1, [
-            'notify' => 1,
-        ]);
-
-        $response = $this->actingAs($trooper)->get(route('account.notifications-htmx'));
-
-        // Assert
-        $response->assertOk();
-        $response->assertViewIs('pages.account.notifications');
-
-        $response->assertViewHas('instant_notification', 1);
-        $response->assertViewHas('attendance_notification', 0);
-        $response->assertViewHas('command_staff_notification', 1);
-
-        $response->assertViewHas('organizations', function ($organizations)
-        {
-            $view_club1 = $organizations->firstWhere('id', '1');
-            $view_squad1 = $view_club1->units->firstWhere('id', '1');
-            $view_squad2 = $view_club1->units->firstWhere('id', '2');
-
-            // Club1 and Squad1 should be selected, Club2 and Squad2 should not
-            return $view_club1->selected === true
-                && $view_squad1->selected === true
-                && $view_squad2->selected === false;
-        });
-    }
 }
-

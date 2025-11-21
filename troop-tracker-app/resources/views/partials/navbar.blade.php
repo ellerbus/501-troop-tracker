@@ -29,12 +29,12 @@
           FAQ
         </x-nav-link>
 
-        @permission('admin')
+        @role('admin')
         <x-nav-link :href="route('admin.display')"
                     :active="request()->routeIs('admin.display')">
           Command Staff
         </x-nav-link>
-        @endpermission
+        @endrole
 
         @auth
         <x-nav-link :href="route('account.display')"

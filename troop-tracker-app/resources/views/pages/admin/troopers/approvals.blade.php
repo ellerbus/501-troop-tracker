@@ -15,11 +15,11 @@
 
           <dt class="col-4">Phone:</dt>
           <dd class="col-8">{{ $trooper->phone ?? 'n/a' }}</dd>
+          {{--
 
-          @if(config('tracker.has_squads'))
           <dt class="col-4">Squad:</dt>
           <dd class="col-8">{{ $trooper->unit->name ?? 'n/a' }}</dd>
-          @endif
+          --}}
 
         </dl>
         {{--

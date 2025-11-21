@@ -2,15 +2,15 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\TrooperPermissions;
+use App\Enums\MembershipRole;
+use App\Enums\MembershipStatus;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
-use Symfony\Component\HttpFoundation\Response;
 use ValueError;
 
-class CheckTrooperPermission
+class CheckActorRoleMiddleware
 {
     /**
      * Handle an incoming request.
@@ -34,15 +34,15 @@ class CheckTrooperPermission
                 {
                     try
                     {
-                        $role = TrooperPermissions::from($role);
+                        $role = MembershipRole::from($role);
                     }
                     catch (ValueError $e)
                     {
-                        throw new InvalidArgumentException("Invalid permission role: '{$role}'");
+                        throw new InvalidArgumentException("Invalid MembershipRole: '{$role}'");
                     }
                 }
 
-                if ($user->permissions === $role)
+                if ($user->membership_status == MembershipStatus::Active && $user->membership_role === $role)
                 {
                     return $next($request);
                 }

@@ -12,9 +12,10 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 /**
- * Handles the display of the main trooper dashboard.
+ * Handles the display of the main administration dashboard.
  *
- * This controller gathers various statistics for a trooper, such as troop counts by organization and costume, and displays them.
+ * This controller provides a summary of administrative tasks, such as displaying
+ * the count of troopers pending approval and setting a relevant flash message.
  */
 class AdminDisplayController extends Controller
 {
@@ -29,13 +30,12 @@ class AdminDisplayController extends Controller
     }
 
     /**
-     * Handle the incoming request to display the dashboard page for a trooper.
+     * Handle the incoming request to display the admin dashboard.
      *
-     * Fetches all relevant statistics for a given trooper (or the authenticated user)
-     * and displays them on the main dashboard view. Redirects if the trooper is not found.
+     * It calculates the number of troopers pending approval, sets a corresponding
+     * flash message, and renders the main admin view.
      *
-     * @param Request $request The incoming HTTP request.
-     * @return View|RedirectResponse The rendered dashboard page view or a redirect response.
+     * @return View|RedirectResponse The rendered admin dashboard view or a redirect response.
      */
     public function __invoke(Request $request): View|RedirectResponse
     {
@@ -50,7 +50,10 @@ class AdminDisplayController extends Controller
             $msg = "There are {$not_approved} troopers ready for action!";
         }
 
-        $this->flash->warning($msg);
+        if ($not_approved > 0)
+        {
+            $this->flash->warning($msg);
+        }
 
         $data = ['not_approved' => $not_approved];
 

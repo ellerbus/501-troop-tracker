@@ -1,6 +1,6 @@
-@props(['uid' => 'button-' . uniqid()])
+@props(['uid'=>'button-' . uniqid()])
 
 <button type="button"
-        {!!$attributes->merge(['class' => 'btn'])!!}>
+        {!!$attributes->merge(['class'=>'btn'])!!}>
   {{ $slot }}
 </button>

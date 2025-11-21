@@ -1,4 +1,4 @@
-@props(['model' => null])
+@props(['model'=>null])
 
 @isset($model)
 <hr />
