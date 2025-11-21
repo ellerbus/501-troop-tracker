@@ -80,7 +80,7 @@ class Trooper extends BaseTrooper implements
             ->exists();
     }
 
-    public function assignedOrganizations(int $organization_id = null): Collection
+    public function assignedOrganizations(?int $organization_id): Collection
     {
         $query = $this->organizations()->active();
 

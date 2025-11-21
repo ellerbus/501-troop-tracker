@@ -30,7 +30,7 @@ class TrooperCostumesDisplayHtmxController extends Controller
     {
         $trooper = Trooper::findOrFail(Auth::user()->id);
 
-        $organizations = $trooper->assignedOrganizations();
+        $organizations = $trooper->assignedOrganizations(null);
 
         $selected_organization = null;
         $costumes = [];
