@@ -4,24 +4,16 @@ namespace App\Models;
 
 use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
-use App\Models\Base\TrooperUnit as BaseTrooperUnit;
+use App\Models\Base\TrooperAssignment as BaseTrooperAssignment;
 use App\Models\Concerns\HasTrooperStamps;
-use App\Models\Scopes\HasTrooperUnitScopes;
+use App\Models\Scopes\HasTrooperRegionScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class TrooperUnit extends BaseTrooperUnit
+class TrooperAssignment extends BaseTrooperAssignment
 {
-    use HasTrooperUnitScopes;
+    use HasTrooperRegionScopes;
     use HasFactory;
     use HasTrooperStamps;
-
-    protected $fillable = [
-        self::TROOPER_ID,
-        self::UNIT_ID,
-        self::NOTIFY,
-        self::MEMBERSHIP_STATUS,
-        self::MEMBERSHIP_ROLE,
-    ];
 
     protected function casts(): array
     {

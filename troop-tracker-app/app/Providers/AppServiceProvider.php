@@ -50,6 +50,7 @@ class AppServiceProvider extends ServiceProvider
         {
             $this->unsignedBigInteger('created_id')->nullable();
             $this->unsignedBigInteger('updated_id')->nullable();
+            $this->unsignedBigInteger('deleted_id')->nullable();
         });
 
         //

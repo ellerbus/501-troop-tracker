@@ -15,22 +15,28 @@ return new class extends Migration
         {
             $table->id();
 
+            // Self-referencing parent_id
+            $table->foreignId('parent_id')
+                ->nullable()
+                ->constrained('tt_organizations')
+                ->cascadeOnDelete();
+
             $table->string('name', 64);
-            $table->string('slug')->unique();
+            $table->string('type', 16);
             $table->string('identifier_display', 64)->nullable();
             $table->string('identifier_validation', 64)->nullable();
-            $table->boolean('active')->default(false);
             $table->string('image_path_lg', 128)->nullable();
             $table->string('image_path_sm', 128)->nullable();
+            $table->string('node_path', 128);
 
             $table->string('description', 512)->nullable();
 
-
             $table->timestamps();
             $table->trooperstamps();
+            $table->softDeletes();
 
             // Prevent duplicate entries
-            $table->unique(['name']);
+            $table->unique(['parent_id', 'name']);
         });
     }
 

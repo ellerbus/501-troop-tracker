@@ -10,9 +10,4 @@ class EventUploadTag extends BaseEventUploadTag
 {
     use HasFactory;
     use HasTrooperStamps;
-
-    protected $fillable = [
-        self::EVENT_UPLOAD_ID,
-        self::TROOPER_ID
-    ];
 }

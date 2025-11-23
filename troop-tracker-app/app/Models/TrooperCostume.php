@@ -10,9 +10,4 @@ class TrooperCostume extends BaseTrooperCostume
 {
     use HasFactory;
     use HasTrooperStamps;
-
-    protected $fillable = [
-        self::TROOPER_ID,
-        self::COSTUME_ID
-    ];
 }

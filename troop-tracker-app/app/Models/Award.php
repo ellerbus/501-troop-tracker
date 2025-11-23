@@ -10,8 +10,4 @@ class Award extends BaseAward
 {
     use HasFactory;
     use HasTrooperStamps;
-
-    protected $fillable = [
-        self::NAME
-    ];
 }

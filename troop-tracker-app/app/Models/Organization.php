@@ -3,33 +3,26 @@
 namespace App\Models;
 
 use App\Models\Base\Organization as BaseOrganization;
+use App\Models\Concerns\HasObserver;
 use App\Models\Concerns\HasTrooperStamps;
 use App\Models\Scopes\HasOrganizationScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Organization extends BaseOrganization
 {
+    use HasObserver;
     use HasOrganizationScopes;
     use HasFactory;
     use HasTrooperStamps;
 
-    protected $fillable = [
-        self::NAME,
-        self::SLUG,
-        self::IDENTIFIER_DISPLAY,
-        self::IDENTIFIER_VALIDATION,
-        self::ACTIVE,
-        self::IMAGE_PATH_LG,
-        self::IMAGE_PATH_SM,
-        self::DESCRIPTION,
-    ];
-
     /**
-     * Get all of the event troopers for the organization through its costumes.
+     * Alias for organization()
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Organization, Organization>
      */
-    public function event_troopers(): HasManyThrough
+    public function parent(): BelongsTo
     {
-        return $this->hasManyThrough(EventTrooper::class, Costume::class);
+        return $this->belongsTo(self::class, self::PARENT_ID);
     }
 }

@@ -12,10 +12,4 @@ class EventUpload extends BaseEventUpload
     use HasEventUploadScopes;
     use HasFactory;
     use HasTrooperStamps;
-
-    protected $fillable = [
-        self::EVENT_ID,
-        self::TROOPER_ID,
-        self::FILENAME
-    ];
 }

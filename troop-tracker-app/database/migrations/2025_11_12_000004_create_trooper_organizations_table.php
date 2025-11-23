@@ -13,26 +13,26 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tt_trooper_units', function (Blueprint $table)
+        Schema::create('tt_trooper_organizations', function (Blueprint $table)
         {
             $table->id();
 
             $table->foreignId('trooper_id')
                 ->constrained('tt_troopers')
                 ->cascadeOnDelete();
-            $table->foreignId('unit_id')
-                ->constrained('tt_units')
+            $table->foreignId('organization_id')
+                ->constrained('tt_organizations')
                 ->cascadeOnDelete();
 
-            $table->boolean('notify')->default(false);
-            $table->string('membership_status', 16)->default(MembershipStatus::None->value);
-            $table->string('membership_role', 16)->default(MembershipRole::Member->value);
+            $table->string('identifier', 64);
 
             $table->timestamps();
             $table->trooperstamps();
+            $table->softDeletes();
 
             // Prevent duplicate entries
-            $table->unique(columns: ['trooper_id', 'unit_id']);
+            $table->unique(columns: ['trooper_id', 'organization_id']);
+            $table->unique(columns: ['organization_id', 'identifier']);
         });
     }
 
@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tt_trooper_units');
+        Schema::dropIfExists('tt_trooper_organizations');
     }
 };

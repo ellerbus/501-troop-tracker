@@ -30,6 +30,7 @@ return new class extends Migration
 
             $table->timestamps();
             $table->trooperstamps();
+            $table->softDeletes();
         });
     }
 

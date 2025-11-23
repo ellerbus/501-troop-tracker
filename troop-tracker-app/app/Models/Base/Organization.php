@@ -9,84 +9,120 @@ namespace App\Models\Base;
 use App\Models\Costume;
 use App\Models\Event;
 use App\Models\EventOrganization;
-use App\Models\Region;
 use App\Models\Trooper;
+use App\Models\TrooperAssignment;
 use App\Models\TrooperOrganization;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Organization
  * 
  * @property int $id
+ * @property int|null $parent_id
  * @property string $name
- * @property string $slug
+ * @property string $type
  * @property string|null $identifier_display
  * @property string|null $identifier_validation
- * @property bool $active
  * @property string|null $image_path_lg
  * @property string|null $image_path_sm
+ * @property string $node_path
  * @property string|null $description
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int|null $created_id
  * @property int|null $updated_id
+ * @property int|null $deleted_id
+ * @property string|null $deleted_at
  * 
+ * @property \App\Models\Organization|null $organization
  * @property Collection|Costume[] $costumes
  * @property Collection|Event[] $events
- * @property Collection|Region[] $regions
+ * @property Collection|\App\Models\Organization[] $organizations
+ * @property Collection|TrooperAssignment[] $trooper_assignments
  * @property Collection|Trooper[] $troopers
  *
  * @package App\Models\Base
  */
 class Organization extends Model
 {
+    use SoftDeletes;
     const ID = 'id';
+    const PARENT_ID = 'parent_id';
     const NAME = 'name';
-    const SLUG = 'slug';
+    const TYPE = 'type';
     const IDENTIFIER_DISPLAY = 'identifier_display';
     const IDENTIFIER_VALIDATION = 'identifier_validation';
-    const ACTIVE = 'active';
     const IMAGE_PATH_LG = 'image_path_lg';
     const IMAGE_PATH_SM = 'image_path_sm';
+    const NODE_PATH = 'node_path';
     const DESCRIPTION = 'description';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
     const CREATED_ID = 'created_id';
     const UPDATED_ID = 'updated_id';
+    const DELETED_ID = 'deleted_id';
+    const DELETED_AT = 'deleted_at';
     protected $table = 'tt_organizations';
 
     protected $casts = [
         self::ID => 'int',
-        self::ACTIVE => 'bool',
+        self::PARENT_ID => 'int',
         self::CREATED_AT => 'datetime',
         self::UPDATED_AT => 'datetime',
         self::CREATED_ID => 'int',
-        self::UPDATED_ID => 'int'
+        self::UPDATED_ID => 'int',
+        self::DELETED_ID => 'int'
     ];
 
-    public function costumes()
+    protected $fillable = [
+        self::PARENT_ID,
+        self::NAME,
+        self::TYPE,
+        self::IDENTIFIER_DISPLAY,
+        self::IDENTIFIER_VALIDATION,
+        self::IMAGE_PATH_LG,
+        self::IMAGE_PATH_SM,
+        self::NODE_PATH,
+        self::DESCRIPTION
+    ];
+
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Organization::class, \App\Models\Organization::PARENT_ID);
+    }
+
+    public function costumes(): HasMany
     {
         return $this->hasMany(Costume::class);
     }
 
-    public function events()
+    public function events(): BelongsToMany
     {
         return $this->belongsToMany(Event::class, 'tt_event_organizations')
-                    ->withPivot(EventOrganization::ID, EventOrganization::TROOPERS_ALLOWED, EventOrganization::HANDLERS_ALLOWED, EventOrganization::CREATED_ID, EventOrganization::UPDATED_ID)
+                    ->withPivot(EventOrganization::ID, EventOrganization::TROOPERS_ALLOWED, EventOrganization::HANDLERS_ALLOWED, EventOrganization::CREATED_ID, EventOrganization::UPDATED_ID, EventOrganization::DELETED_ID, EventOrganization::DELETED_AT)
                     ->withTimestamps();
     }
 
-    public function regions()
+    public function organizations(): HasMany
     {
-        return $this->hasMany(Region::class);
+        return $this->hasMany(\App\Models\Organization::class, \App\Models\Organization::PARENT_ID);
     }
 
-    public function troopers()
+    public function trooper_assignments(): HasMany
+    {
+        return $this->hasMany(TrooperAssignment::class);
+    }
+
+    public function troopers(): BelongsToMany
     {
         return $this->belongsToMany(Trooper::class, 'tt_trooper_organizations')
-                    ->withPivot(TrooperOrganization::ID, TrooperOrganization::IDENTIFIER, TrooperOrganization::NOTIFY, TrooperOrganization::MEMBERSHIP_STATUS, TrooperOrganization::MEMBERSHIP_ROLE, TrooperOrganization::CREATED_ID, TrooperOrganization::UPDATED_ID)
+                    ->withPivot(TrooperOrganization::ID, TrooperOrganization::IDENTIFIER, TrooperOrganization::CREATED_ID, TrooperOrganization::UPDATED_ID, TrooperOrganization::DELETED_ID, TrooperOrganization::DELETED_AT)
                     ->withTimestamps();
     }
 }

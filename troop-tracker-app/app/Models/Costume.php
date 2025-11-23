@@ -13,11 +13,6 @@ class Costume extends BaseCostume
     use HasFactory;
     use HasTrooperStamps;
 
-    protected $fillable = [
-        self::ORGANIZATION_ID,
-        self::NAME,
-    ];
-
     public function fullCostumeName(): string
     {
         return "({$this->organization->name}) {$this->name}";

@@ -12,11 +12,6 @@ class Setting extends BaseSetting
     use HasFactory;
     use HasTrooperStamps;
 
-    protected $fillable = [
-        self::KEY,
-        self::VALUE
-    ];
-
     protected function casts()
     {
         return array_merge($this->casts, [

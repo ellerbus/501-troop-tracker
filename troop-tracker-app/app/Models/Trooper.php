@@ -31,23 +31,6 @@ class Trooper extends BaseTrooper implements
     use HasTrooperScopes;
     use HasObserver;
 
-    protected $fillable = [
-        self::NAME,
-        self::EMAIL,
-        self::PHONE,
-        self::PASSWORD,
-        self::MEMBERSHIP_STATUS,
-        self::MEMBERSHIP_ROLE,
-        self::INSTANT_NOTIFICATION,
-        self::ATTENDANCE_NOTIFICATION,
-        self::COMMAND_STAFF_NOTIFICATION,
-    ];
-
-    protected $hidden = [
-        self::PASSWORD,
-        self::REMEMBER_TOKEN,
-    ];
-
     protected function casts()
     {
         return array_merge($this->casts, [

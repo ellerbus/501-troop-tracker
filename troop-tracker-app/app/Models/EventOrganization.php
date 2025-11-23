@@ -10,11 +10,4 @@ class EventOrganization extends BaseEventOrganization
 {
     use HasFactory;
     use HasTrooperStamps;
-
-    protected $fillable = [
-        self::EVENT_ID,
-        self::ORGANIZATION_ID,
-        self::TROOPERS_ALLOWED,
-        self::HANDLERS_ALLOWED,
-    ];
 }

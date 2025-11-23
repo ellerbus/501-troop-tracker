@@ -11,6 +11,8 @@ use App\Models\TrooperAward;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Award
@@ -21,6 +23,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $updated_at
  * @property int|null $created_id
  * @property int|null $updated_id
+ * @property int|null $deleted_id
+ * @property string|null $deleted_at
  * 
  * @property Collection|Trooper[] $troopers
  *
@@ -28,12 +32,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Award extends Model
 {
+    use SoftDeletes;
     const ID = 'id';
     const NAME = 'name';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
     const CREATED_ID = 'created_id';
     const UPDATED_ID = 'updated_id';
+    const DELETED_ID = 'deleted_id';
+    const DELETED_AT = 'deleted_at';
     protected $table = 'tt_awards';
 
     protected $casts = [
@@ -41,13 +48,18 @@ class Award extends Model
         self::CREATED_AT => 'datetime',
         self::UPDATED_AT => 'datetime',
         self::CREATED_ID => 'int',
-        self::UPDATED_ID => 'int'
+        self::UPDATED_ID => 'int',
+        self::DELETED_ID => 'int'
     ];
 
-    public function troopers()
+    protected $fillable = [
+        self::NAME
+    ];
+
+    public function troopers(): BelongsToMany
     {
         return $this->belongsToMany(Trooper::class, 'tt_trooper_awards')
-                    ->withPivot(TrooperAward::ID, TrooperAward::CREATED_ID, TrooperAward::UPDATED_ID)
+                    ->withPivot(TrooperAward::ID, TrooperAward::CREATED_ID, TrooperAward::UPDATED_ID, TrooperAward::DELETED_ID, TrooperAward::DELETED_AT)
                     ->withTimestamps();
     }
 }

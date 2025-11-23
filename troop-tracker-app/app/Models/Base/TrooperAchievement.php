@@ -9,6 +9,8 @@ namespace App\Models\Base;
 use App\Models\Trooper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class TrooperAchievement
@@ -35,6 +37,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $indirect_funds
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  * 
  * @property Trooper $trooper
  *
@@ -42,6 +45,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TrooperAchievement extends Model
 {
+    use SoftDeletes;
     const ID = 'id';
     const TROOPER_ID = 'trooper_id';
     const TROOPER_RANK = 'trooper_rank';
@@ -64,6 +68,7 @@ class TrooperAchievement extends Model
     const INDIRECT_FUNDS = 'indirect_funds';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
+    const DELETED_AT = 'deleted_at';
     protected $table = 'tt_trooper_achievements';
 
     protected $casts = [
@@ -91,7 +96,29 @@ class TrooperAchievement extends Model
         self::UPDATED_AT => 'datetime'
     ];
 
-    public function trooper()
+    protected $fillable = [
+        self::TROOPER_ID,
+        self::TROOPER_RANK,
+        self::TROOPED_ALL_SQUADS,
+        self::FIRST_TROOP_COMPLETED,
+        self::TROOPED_10,
+        self::TROOPED_25,
+        self::TROOPED_50,
+        self::TROOPED_75,
+        self::TROOPED_100,
+        self::TROOPED_150,
+        self::TROOPED_200,
+        self::TROOPED_250,
+        self::TROOPED_300,
+        self::TROOPED_400,
+        self::TROOPED_500,
+        self::TROOPED_501,
+        self::VOLUNTEER_HOURS,
+        self::DIRECT_FUNDS,
+        self::INDIRECT_FUNDS
+    ];
+
+    public function trooper(): BelongsTo
     {
         return $this->belongsTo(Trooper::class);
     }

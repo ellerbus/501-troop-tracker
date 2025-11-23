@@ -13,13 +13,13 @@ trait HasClubMaps
     {
         // Hardcoded squadID → club name
         $legacy_clubs = [
-            0 => ['name' => '501st', 'status' => 'p501', 'identity' => 'tkid'],
-            6 => ['name' => 'rebel-legion', 'status' => 'pRebel', 'identity' => 'rebelforum'],
-            7 => ['name' => 'droid-builders', 'status' => 'pDroid', 'identity' => ''],
-            8 => ['name' => 'mercs', 'status' => 'pMando', 'identity' => 'mandoid'],
+            0 => ['name' => '501st Legion', 'status' => 'p501', 'identity' => 'tkid'],
+            6 => ['name' => 'Rebel Legion', 'status' => 'pRebel', 'identity' => 'rebelforum'],
+            7 => ['name' => 'Droid Builders', 'status' => 'pDroid', 'identity' => ''],
+            8 => ['name' => 'Mandalorian Mercs', 'status' => 'pMando', 'identity' => 'mandoid'],
             //9 => ['name' => 'Other', 'status' => 'pOther', 'identity' => ''],
-            10 => ['name' => 'saber-guild', 'status' => 'pSG', 'identity' => 'sgid'],
-            13 => ['name' => 'dark-empire', 'status' => 'pDE', 'identity' => 'de_id'],
+            10 => ['name' => 'Saber Guild', 'status' => 'pSG', 'identity' => 'sgid'],
+            13 => ['name' => 'Dark Empire', 'status' => 'pDE', 'identity' => 'de_id'],
         ];
 
         // Build final map: squadID → club_id
@@ -27,7 +27,7 @@ trait HasClubMaps
 
         foreach ($legacy_clubs as $legacy_id => $meta)
         {
-            $club = Organization::firstWhere(Organization::SLUG, $meta['name']);
+            $club = Organization::firstWhere(Organization::NAME, $meta['name']);
 
             if ($club)
             {

@@ -14,9 +14,7 @@ use Database\Seeders\Conversions\TrooperAwardSeeder;
 use Database\Seeders\Conversions\TrooperCostumeSeeder;
 use Database\Seeders\Conversions\TrooperDonationSeeder;
 use Database\Seeders\Conversions\TrooperOrganizationSeeder;
-use Database\Seeders\Conversions\TrooperRegionSeeder;
 use Database\Seeders\Conversions\TrooperSeeder;
-use Database\Seeders\Conversions\TrooperUnitSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
@@ -31,16 +29,14 @@ class FloridaGarrisonSeeder extends Seeder
     public function run(): void
     {
         $this->call(OrganizationSeeder::class);
-        $this->call(RegionSeeder::class);
-        $this->call(UnitSeeder::class);
         $this->call(CostumeSeeder::class);
 
         $this->call(SettingSeeder::class);
         $this->call(TrooperSeeder::class);
         $this->call(TrooperDonationSeeder::class);
-        $this->call(TrooperOrganizationSeeder::class);
-        $this->call(TrooperRegionSeeder::class);
-        $this->call(TrooperUnitSeeder::class);
+        // $this->call(TrooperOrganizationSeeder::class);
+        // $this->call(TrooperRegionSeeder::class);
+        // $this->call(TrooperUnitSeeder::class);
         $this->call(TrooperCostumeSeeder::class);
 
         $this->call(EventSeeder::class);

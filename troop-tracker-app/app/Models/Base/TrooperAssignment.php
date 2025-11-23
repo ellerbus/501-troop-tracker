@@ -6,17 +6,19 @@
 
 namespace App\Models\Base;
 
+use App\Models\Organization;
 use App\Models\Trooper;
-use App\Models\Unit;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class TrooperUnit
+ * Class TrooperAssignment
  * 
  * @property int $id
  * @property int $trooper_id
- * @property int $unit_id
+ * @property int $organization_id
  * @property bool $notify
  * @property string $membership_status
  * @property string $membership_role
@@ -24,17 +26,20 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $updated_at
  * @property int|null $created_id
  * @property int|null $updated_id
+ * @property int|null $deleted_id
+ * @property string|null $deleted_at
  * 
+ * @property Organization $organization
  * @property Trooper $trooper
- * @property Unit $unit
  *
  * @package App\Models\Base
  */
-class TrooperUnit extends Model
+class TrooperAssignment extends Model
 {
+    use SoftDeletes;
     const ID = 'id';
     const TROOPER_ID = 'trooper_id';
-    const UNIT_ID = 'unit_id';
+    const ORGANIZATION_ID = 'organization_id';
     const NOTIFY = 'notify';
     const MEMBERSHIP_STATUS = 'membership_status';
     const MEMBERSHIP_ROLE = 'membership_role';
@@ -42,26 +47,37 @@ class TrooperUnit extends Model
     const UPDATED_AT = 'updated_at';
     const CREATED_ID = 'created_id';
     const UPDATED_ID = 'updated_id';
-    protected $table = 'tt_trooper_units';
+    const DELETED_ID = 'deleted_id';
+    const DELETED_AT = 'deleted_at';
+    protected $table = 'tt_trooper_assignments';
 
     protected $casts = [
         self::ID => 'int',
         self::TROOPER_ID => 'int',
-        self::UNIT_ID => 'int',
+        self::ORGANIZATION_ID => 'int',
         self::NOTIFY => 'bool',
         self::CREATED_AT => 'datetime',
         self::UPDATED_AT => 'datetime',
         self::CREATED_ID => 'int',
-        self::UPDATED_ID => 'int'
+        self::UPDATED_ID => 'int',
+        self::DELETED_ID => 'int'
     ];
 
-    public function trooper()
+    protected $fillable = [
+        self::TROOPER_ID,
+        self::ORGANIZATION_ID,
+        self::NOTIFY,
+        self::MEMBERSHIP_STATUS,
+        self::MEMBERSHIP_ROLE
+    ];
+
+    public function organization(): BelongsTo
     {
-        return $this->belongsTo(Trooper::class);
+        return $this->belongsTo(Organization::class);
     }
 
-    public function unit()
+    public function trooper(): BelongsTo
     {
-        return $this->belongsTo(Unit::class);
+        return $this->belongsTo(Trooper::class);
     }
 }

@@ -33,6 +33,7 @@ return new class extends Migration
 
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('tt_password_reset_tokens', function (Blueprint $table)

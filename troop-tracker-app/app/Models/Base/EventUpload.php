@@ -12,6 +12,9 @@ use App\Models\Trooper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class EventUpload
@@ -24,6 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $updated_at
  * @property int|null $created_id
  * @property int|null $updated_id
+ * @property int|null $deleted_id
+ * @property string|null $deleted_at
  * 
  * @property Event $event
  * @property Trooper $trooper
@@ -33,6 +38,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class EventUpload extends Model
 {
+    use SoftDeletes;
     const ID = 'id';
     const EVENT_ID = 'event_id';
     const TROOPER_ID = 'trooper_id';
@@ -41,6 +47,8 @@ class EventUpload extends Model
     const UPDATED_AT = 'updated_at';
     const CREATED_ID = 'created_id';
     const UPDATED_ID = 'updated_id';
+    const DELETED_ID = 'deleted_id';
+    const DELETED_AT = 'deleted_at';
     protected $table = 'tt_event_uploads';
 
     protected $casts = [
@@ -50,20 +58,27 @@ class EventUpload extends Model
         self::CREATED_AT => 'datetime',
         self::UPDATED_AT => 'datetime',
         self::CREATED_ID => 'int',
-        self::UPDATED_ID => 'int'
+        self::UPDATED_ID => 'int',
+        self::DELETED_ID => 'int'
     ];
 
-    public function event()
+    protected $fillable = [
+        self::EVENT_ID,
+        self::TROOPER_ID,
+        self::FILENAME
+    ];
+
+    public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
     }
 
-    public function trooper()
+    public function trooper(): BelongsTo
     {
         return $this->belongsTo(Trooper::class);
     }
 
-    public function event_upload_tags()
+    public function event_upload_tags(): HasMany
     {
         return $this->hasMany(EventUploadTag::class);
     }

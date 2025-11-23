@@ -3,6 +3,7 @@
 namespace App\Models\Concerns;
 
 use App\Models\Trooper;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 
 trait HasTrooperStamps
@@ -25,6 +26,22 @@ trait HasTrooperStamps
                 $model->updated_id = Auth::id();
             }
         });
+
+        static::restoring(function ($model)
+        {
+            if (Auth::check())
+            {
+                $model->deleted_id = null;
+            }
+        });
+
+        static::deleting(function ($model)
+        {
+            if (Auth::check())
+            {
+                $model->deleted_id = Auth::id();
+            }
+        });
     }
 
     /**
@@ -32,7 +49,7 @@ trait HasTrooperStamps
      *
      * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function created_by()
+    public function created_by(): BelongsTo
     {
         return $this->belongsTo(Trooper::class, 'created_id', 'id');
     }
@@ -42,7 +59,7 @@ trait HasTrooperStamps
      *
      * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function updated_by()
+    public function updated_by(): BelongsTo
     {
         return $this->belongsTo(Trooper::class, 'updated_id', 'id');
     }
@@ -52,7 +69,7 @@ trait HasTrooperStamps
      *
      * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function deleted_by()
+    public function deleted_by(): BelongsTo
     {
         return $this->belongsTo(Trooper::class, 'deleted_id', 'id');
     }
@@ -62,7 +79,7 @@ trait HasTrooperStamps
      *
      * @return bool
      */
-    public function usingSoftDeletes()
+    private function usingSoftDeletes(): bool
     {
         return $usingSoftDeletes = in_array(
             'Illuminate\Database\Eloquent\SoftDeletes',

@@ -47,6 +47,7 @@ return new class extends Migration
             $table->float('indirect_funds')->default(0);
 
             $table->timestamps();
+            $table->softDeletes();
 
             // Prevent duplicate entries
             $table->unique(columns: ['trooper_id']);

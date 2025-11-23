@@ -10,11 +10,4 @@ class EventCostume extends BaseEventCostume
 {
     use HasFactory;
     use HasTrooperStamps;
-
-    protected $fillable = [
-        self::EVENT_ID,
-        self::COSTUME_ID,
-        self::REQUESTED,
-        self::EXCLUDED
-    ];
 }

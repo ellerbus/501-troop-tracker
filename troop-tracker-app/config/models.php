@@ -125,7 +125,7 @@ return [
         |
         */
 
-        'soft_deletes' => false,
+        'soft_deletes' => true,
 
         // 'soft_deletes' => [
         //     'enabled' => true,
@@ -247,7 +247,12 @@ return [
         */
 
         'guarded' => [
-            // 'created_by', 'updated_by'
+            'created_id',
+            'created_at',
+            'updated_id',
+            'updated_at',
+            'deleted_id',
+            'deleted_at'
         ],
 
         /*
@@ -318,6 +323,7 @@ return [
             'title_troopers',
             'titles',
             'troopers',
+            'uploads',
         ],
 
         /*
@@ -471,7 +477,7 @@ return [
         | if you want the $hidden to be generated in base files
         |
         */
-        'hidden_in_base_files' => false,
+        'hidden_in_base_files' => true,
 
         /*
         |--------------------------------------------------------------------------
@@ -481,7 +487,7 @@ return [
         | if you want the $fillable to be generated in base files
         |
         */
-        'fillable_in_base_files' => false,
+        'fillable_in_base_files' => true,
 
         /*
         |--------------------------------------------------------------------------
@@ -493,7 +499,7 @@ return [
         | NOTE: This requires PHP 7.0 or later.
         |
         */
-        'enable_return_types' => false,
+        'enable_return_types' => true,
     ],
 
     /*

@@ -14,15 +14,6 @@ class Event extends BaseEvent
     use HasEventScopes;
     use HasTrooperStamps;
 
-    protected $fillable = [
-        self::NAME,
-        self::STARTS_AT,
-        self::ENDS_AT,
-        self::LIMIT_PARTICIPANTS,
-        self::TOTAL_TROOPERS_ALLOWED,
-        self::TOTAL_HANDLERS_ALLOWED,
-    ];
-
     /**
      * Get the troopers signed up for the event.
      */

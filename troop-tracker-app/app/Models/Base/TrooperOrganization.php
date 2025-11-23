@@ -10,6 +10,8 @@ use App\Models\Organization;
 use App\Models\Trooper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class TrooperOrganization
@@ -18,13 +20,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $trooper_id
  * @property int $organization_id
  * @property string $identifier
- * @property bool $notify
- * @property string $membership_status
- * @property string $membership_role
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int|null $created_id
  * @property int|null $updated_id
+ * @property int|null $deleted_id
+ * @property string|null $deleted_at
  * 
  * @property Organization $organization
  * @property Trooper $trooper
@@ -33,36 +34,42 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TrooperOrganization extends Model
 {
+    use SoftDeletes;
     const ID = 'id';
     const TROOPER_ID = 'trooper_id';
     const ORGANIZATION_ID = 'organization_id';
     const IDENTIFIER = 'identifier';
-    const NOTIFY = 'notify';
-    const MEMBERSHIP_STATUS = 'membership_status';
-    const MEMBERSHIP_ROLE = 'membership_role';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
     const CREATED_ID = 'created_id';
     const UPDATED_ID = 'updated_id';
+    const DELETED_ID = 'deleted_id';
+    const DELETED_AT = 'deleted_at';
     protected $table = 'tt_trooper_organizations';
 
     protected $casts = [
         self::ID => 'int',
         self::TROOPER_ID => 'int',
         self::ORGANIZATION_ID => 'int',
-        self::NOTIFY => 'bool',
         self::CREATED_AT => 'datetime',
         self::UPDATED_AT => 'datetime',
         self::CREATED_ID => 'int',
-        self::UPDATED_ID => 'int'
+        self::UPDATED_ID => 'int',
+        self::DELETED_ID => 'int'
     ];
 
-    public function organization()
+    protected $fillable = [
+        self::TROOPER_ID,
+        self::ORGANIZATION_ID,
+        self::IDENTIFIER
+    ];
+
+    public function organization(): BelongsTo
     {
         return $this->belongsTo(Organization::class);
     }
 
-    public function trooper()
+    public function trooper(): BelongsTo
     {
         return $this->belongsTo(Trooper::class);
     }

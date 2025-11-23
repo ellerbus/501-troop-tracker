@@ -9,17 +9,16 @@ namespace App\Models\Base;
 use App\Models\Costume;
 use App\Models\EventCostume;
 use App\Models\EventOrganization;
-use App\Models\EventRegion;
 use App\Models\EventTrooper;
-use App\Models\EventUnit;
 use App\Models\EventUpload;
 use App\Models\Organization;
-use App\Models\Region;
 use App\Models\Trooper;
-use App\Models\Unit;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Event
@@ -40,18 +39,19 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $updated_at
  * @property int|null $created_id
  * @property int|null $updated_id
+ * @property int|null $deleted_id
+ * @property string|null $deleted_at
  * 
  * @property Collection|Costume[] $costumes
  * @property Collection|Organization[] $organizations
- * @property Collection|Region[] $regions
  * @property Collection|Trooper[] $troopers
- * @property Collection|Unit[] $units
  * @property Collection|EventUpload[] $event_uploads
  *
  * @package App\Models\Base
  */
 class Event extends Model
 {
+    use SoftDeletes;
     const ID = 'id';
     const NAME = 'name';
     const STARTS_AT = 'starts_at';
@@ -68,6 +68,8 @@ class Event extends Model
     const UPDATED_AT = 'updated_at';
     const CREATED_ID = 'created_id';
     const UPDATED_ID = 'updated_id';
+    const DELETED_ID = 'deleted_id';
+    const DELETED_AT = 'deleted_at';
     protected $table = 'tt_events';
 
     protected $casts = [
@@ -84,45 +86,46 @@ class Event extends Model
         self::CREATED_AT => 'datetime',
         self::UPDATED_AT => 'datetime',
         self::CREATED_ID => 'int',
-        self::UPDATED_ID => 'int'
+        self::UPDATED_ID => 'int',
+        self::DELETED_ID => 'int'
     ];
 
-    public function costumes()
+    protected $fillable = [
+        self::NAME,
+        self::STARTS_AT,
+        self::ENDS_AT,
+        self::CLOSED,
+        self::CHARITY_DIRECT_FUNDS,
+        self::CHARITY_INDIRECT_FUNDS,
+        self::CHARITY_NAME,
+        self::CHARITY_HOURS,
+        self::LIMIT_PARTICIPANTS,
+        self::TOTAL_TROOPERS_ALLOWED,
+        self::TOTAL_HANDLERS_ALLOWED
+    ];
+
+    public function costumes(): BelongsToMany
     {
         return $this->belongsToMany(Costume::class, 'tt_event_costumes')
-                    ->withPivot(EventCostume::ID, EventCostume::REQUESTED, EventCostume::EXCLUDED, EventCostume::CREATED_ID, EventCostume::UPDATED_ID)
+                    ->withPivot(EventCostume::ID, EventCostume::REQUESTED, EventCostume::EXCLUDED, EventCostume::CREATED_ID, EventCostume::UPDATED_ID, EventCostume::DELETED_ID, EventCostume::DELETED_AT)
                     ->withTimestamps();
     }
 
-    public function organizations()
+    public function organizations(): BelongsToMany
     {
         return $this->belongsToMany(Organization::class, 'tt_event_organizations')
-                    ->withPivot(EventOrganization::ID, EventOrganization::TROOPERS_ALLOWED, EventOrganization::HANDLERS_ALLOWED, EventOrganization::CREATED_ID, EventOrganization::UPDATED_ID)
+                    ->withPivot(EventOrganization::ID, EventOrganization::TROOPERS_ALLOWED, EventOrganization::HANDLERS_ALLOWED, EventOrganization::CREATED_ID, EventOrganization::UPDATED_ID, EventOrganization::DELETED_ID, EventOrganization::DELETED_AT)
                     ->withTimestamps();
     }
 
-    public function regions()
-    {
-        return $this->belongsToMany(Region::class, 'tt_event_regions')
-                    ->withPivot(EventRegion::ID, EventRegion::TROOPERS_ALLOWED, EventRegion::HANDLERS_ALLOWED, EventRegion::CREATED_ID, EventRegion::UPDATED_ID)
-                    ->withTimestamps();
-    }
-
-    public function troopers()
+    public function troopers(): BelongsToMany
     {
         return $this->belongsToMany(Trooper::class, 'tt_event_troopers')
-                    ->withPivot(EventTrooper::ID, EventTrooper::COSTUME_ID, EventTrooper::BACKUP_COSTUME_ID, EventTrooper::ADDED_BY_TROOPER_ID, EventTrooper::STATUS, EventTrooper::CREATED_ID, EventTrooper::UPDATED_ID)
+                    ->withPivot(EventTrooper::ID, EventTrooper::COSTUME_ID, EventTrooper::BACKUP_COSTUME_ID, EventTrooper::ADDED_BY_TROOPER_ID, EventTrooper::STATUS, EventTrooper::CREATED_ID, EventTrooper::UPDATED_ID, EventTrooper::DELETED_ID, EventTrooper::DELETED_AT)
                     ->withTimestamps();
     }
 
-    public function units()
-    {
-        return $this->belongsToMany(Unit::class, 'tt_event_units')
-                    ->withPivot(EventUnit::ID, EventUnit::TROOPERS_ALLOWED, EventUnit::HANDLERS_ALLOWED, EventUnit::CREATED_ID, EventUnit::UPDATED_ID)
-                    ->withTimestamps();
-    }
-
-    public function event_uploads()
+    public function event_uploads(): HasMany
     {
         return $this->hasMany(EventUpload::class);
     }

@@ -13,15 +13,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tt_trooper_regions', function (Blueprint $table)
+        Schema::create('tt_trooper_assignments', function (Blueprint $table)
         {
             $table->id();
 
             $table->foreignId('trooper_id')
                 ->constrained('tt_troopers')
                 ->cascadeOnDelete();
-            $table->foreignId('region_id')
-                ->constrained('tt_regions')
+
+            $table->foreignId('organization_id')
+                ->constrained('tt_organizations')
                 ->cascadeOnDelete();
 
             $table->boolean('notify')->default(false);
@@ -30,9 +31,10 @@ return new class extends Migration
 
             $table->timestamps();
             $table->trooperstamps();
+            $table->softDeletes();
 
             // Prevent duplicate entries
-            $table->unique(columns: ['trooper_id', 'region_id']);
+            $table->unique(columns: ['trooper_id', 'organization_id']);
         });
     }
 
@@ -41,6 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tt_trooper_regions');
+        Schema::dropIfExists('tt_trooper_assignments');
     }
 };

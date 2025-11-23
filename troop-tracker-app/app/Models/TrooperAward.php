@@ -12,9 +12,4 @@ class TrooperAward extends BaseTrooperAward
     use HasTrooperAwardScopes;
     use HasFactory;
     use HasTrooperStamps;
-
-    protected $fillable = [
-        self::TROOPER_ID,
-        self::AWARD_ID
-    ];
 }

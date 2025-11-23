@@ -3,6 +3,7 @@
 namespace App\Models\Concerns;
 
 use Illuminate\Support\Str;
+use RuntimeException;
 
 trait HasObserver
 {
@@ -17,8 +18,19 @@ trait HasObserver
             ->classBasename()
             ->value();
 
-        $observer_class = "App\\Observers\\{$name}Observer";
+        $observerClass = "App\\Models\\Observers\\{$name}Observer";
 
-        static::observe($observer_class);
+        if (class_exists($observerClass))
+        {
+            static::observe($observerClass);
+        }
+        else
+        {
+            // Fail loudly so you know the observer wasn't found
+            throw new RuntimeException(
+                sprintf('Observer class [%s] not found for model [%s]', $observerClass, static::class)
+            );
+        }
+
     }
 }

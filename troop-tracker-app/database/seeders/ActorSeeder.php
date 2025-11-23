@@ -32,13 +32,16 @@ class ActorSeeder extends Seeder
 
         if ($actor->organizations->count() == 0)
         {
-            $organization = Organization::firstWhere(Organization::SLUG, '501st');
+            $organization = Organization::firstWhere(Organization::NAME, '501st Legion');
 
-            $actor->organizations()->save($organization, [
-                TrooperOrganization::IDENTIFIER => '99999',
-                TrooperOrganization::MEMBERSHIP_STATUS => MembershipStatus::Active,
-                TrooperOrganization::MEMBERSHIP_ROLE => MembershipRole::Member,
-                TrooperOrganization::NOTIFY => true
+            $actor->trooper_assignments()->save([
+                'organization_id' => $organization->id,
+                'membership_role' => MembershipRole::Member,
+                'membership_status' => MembershipStatus::Active,
+            ]);
+
+            $actor->organizations()->attach($organization->id, [
+                'identifier' => '99999',
             ]);
         }
     }
