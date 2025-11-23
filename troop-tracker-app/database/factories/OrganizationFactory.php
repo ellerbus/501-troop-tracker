@@ -27,4 +27,20 @@ class OrganizationFactory extends Factory
             Organization::NODE_PATH => ''
         ];
     }
+
+    public function region(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            Organization::PARENT_ID => Organization::factory(),
+            Organization::TYPE => OrganizationType::Region,
+        ]);
+    }
+
+    public function unit(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            Organization::PARENT_ID => Organization::factory()->region(),
+            Organization::TYPE => OrganizationType::Unit,
+        ]);
+    }
 }

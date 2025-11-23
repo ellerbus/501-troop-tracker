@@ -7,9 +7,7 @@ namespace Tests\Unit\Policies;
 use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
 use App\Models\Organization;
-use App\Models\Region;
 use App\Models\Trooper;
-use App\Models\Unit;
 use App\Policies\TrooperPolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -31,11 +29,11 @@ class TrooperPolicyTest extends TestCase
     {
         return [
             'viewAny' => ['viewAny'],
-            'view' => ['view'],
-            'update' => ['update'],
-            'delete' => ['delete'],
-            'restore' => ['restore'],
-            'forceDelete' => ['forceDelete'],
+            'view' => ['view', Trooper::factory()],
+            'update' => ['update', Trooper::factory()],
+            'delete' => ['delete', Trooper::factory()],
+            'restore' => ['restore', Trooper::factory()],
+            'forceDelete' => ['forceDelete', Trooper::factory()],
         ];
     }
 
@@ -43,11 +41,9 @@ class TrooperPolicyTest extends TestCase
     public function test_moderator_permissions_grant_access(string $method): void
     {
         // Arrange
-        $model = $method == 'viewAny' ? null : Trooper::factory()->create();
-
         $admin = Trooper::factory()->create(['membership_role' => MembershipRole::Admin]);
         $moderator = Trooper::factory()->create(['membership_role' => MembershipRole::Moderator]);
-        $args = $model ? [$admin, $model] : [$admin];
+        $args = $method === 'viewAny' ? [$admin] : [$admin, Trooper::factory()->create()];
 
         // Act & Assert
         $this->assertTrue($this->subject->{$method}(...$args));
@@ -59,10 +55,8 @@ class TrooperPolicyTest extends TestCase
     public function test_member_permissions_deny_access(string $method): void
     {
         // Arrange
-        $model = $method == 'viewAny' ? null : Trooper::factory()->create();
-
         $member = Trooper::factory()->create(['membership_role' => MembershipRole::Member]);
-        $args = $model ? [$member, $model] : [$member];
+        $args = $method === 'viewAny' ? [$member] : [$member, Trooper::factory()->create()];
 
         // Act & Assert
         $this->assertFalse($this->subject->{$method}(...$args));
@@ -105,12 +99,13 @@ class TrooperPolicyTest extends TestCase
     {
         // Arrange
         $moderator = Trooper::factory()->create(['membership_role' => MembershipRole::Moderator]);
-        $candidate = Trooper::factory()->create();
+        $candidate = Trooper::factory()->create(['membership_status' => MembershipStatus::Pending]);
         $organization = Organization::factory()->create();
-        $moderator->organizations()->attach($organization->id, [
+
+        $moderator->trooper_assignments()->create([
+            'organization_id' => $organization->id,
             'membership_role' => MembershipRole::Moderator,
             'membership_status' => MembershipStatus::Active,
-            'identifier' => ''
         ]);
 
         // Act & Assert
@@ -121,15 +116,15 @@ class TrooperPolicyTest extends TestCase
     {
         // Arrange
         $moderator = Trooper::factory()->create(['membership_role' => MembershipRole::Moderator]);
-        $candidate = Trooper::factory()->create();
+        $candidate = Trooper::factory()->create(['membership_status' => MembershipStatus::Pending]);
         $organization = Organization::factory()->create();
 
-        $moderator->organizations()->attach($organization->id, [
+        $assignment = $moderator->trooper_assignments()->create([
+            'organization_id' => $organization->id,
             'membership_role' => MembershipRole::Moderator,
             'membership_status' => MembershipStatus::Active,
-            'identifier' => ''
         ]);
-        $candidate->organizations()->attach($organization->id, ['identifier' => '']);
+        $candidate->trooper_assignments()->create(['organization_id' => $organization->id]);
 
         // Act & Assert
         $this->assertTrue($this->subject->approve($moderator, $candidate));
@@ -139,14 +134,15 @@ class TrooperPolicyTest extends TestCase
     {
         // Arrange
         $moderator = Trooper::factory()->create(['membership_role' => MembershipRole::Moderator]);
-        $candidate = Trooper::factory()->create();
-        $region = Region::factory()->create();
+        $candidate = Trooper::factory()->create(['membership_status' => MembershipStatus::Pending]);
+        $organization = Organization::factory()->create();
 
-        $moderator->regions()->attach($region->id, [
+        $assignment = $moderator->trooper_assignments()->create([
+            'organization_id' => $organization->id,
             'membership_role' => MembershipRole::Moderator,
-            'membership_status' => MembershipStatus::Active
+            'membership_status' => MembershipStatus::Active,
         ]);
-        $candidate->regions()->attach($region->id);
+        $candidate->trooper_assignments()->create(['organization_id' => $organization->id]);
 
         // Act & Assert
         $this->assertTrue($this->subject->approve($moderator, $candidate));
@@ -156,17 +152,17 @@ class TrooperPolicyTest extends TestCase
     {
         // Arrange
         $moderator = Trooper::factory()->create(['membership_role' => MembershipRole::Moderator]);
-        $candidate = Trooper::factory()->create();
-        $unit = Unit::factory()->create();
+        $candidate = Trooper::factory()->create(['membership_status' => MembershipStatus::Pending]);
+        $organization = Organization::factory()->create();
 
-        $moderator->units()->attach($unit->id, [
+        $assignment = $moderator->trooper_assignments()->create([
+            'organization_id' => $organization->id,
             'membership_role' => MembershipRole::Moderator,
-            'membership_status' => MembershipStatus::Active
+            'membership_status' => MembershipStatus::Active,
         ]);
-        $candidate->units()->attach($unit->id);
+        $candidate->trooper_assignments()->create(['organization_id' => $organization->id]);
 
         // Act & Assert
         $this->assertTrue($this->subject->approve($moderator, $candidate));
     }
 }
-

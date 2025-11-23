@@ -2,8 +2,7 @@
 
 namespace App\Rules\Auth;
 
-use App\Models\Region;
-use App\Models\Unit;
+use App\Models\Organization;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
@@ -18,9 +17,9 @@ class ValidUnitForRegionRule implements ValidationRule
     /**
      * Creates a new rule instance.
      *
-     * @param Region $region The region against which the unit's validity will be checked.
+     * @param Organization $region The region against which the unit's validity will be checked.
      */
-    public function __construct(private readonly Region $region)
+    public function __construct(private readonly Organization $region)
     {
     }
 
@@ -37,7 +36,7 @@ class ValidUnitForRegionRule implements ValidationRule
     {
         if (!empty($value))
         {
-            $exists = $this->region->units()->active()->where(Unit::ID, $value)->exists();
+            $exists = $this->region->organizations()->units()->where(Organization::ID, $value)->exists();
 
             if (!$exists)
             {

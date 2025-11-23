@@ -83,41 +83,8 @@ class TrooperPolicy
         {
             return true;
         }
-
-        return $this->sharesModeratedScope($trooper, $subject);
-    }
-
-    /**
-     * Check if a moderator shares a common scope (organization, region, or unit) with a candidate trooper.
-     *
-     * @param Trooper $approver The moderator attempting to approve.
-     * @param Trooper $candidate The trooper pending approval.
-     * @return bool True if they share a moderated scope, false otherwise.
-     */
-    protected function sharesModeratedScope(Trooper $approver, Trooper $candidate): bool
-    {
-        $moderated_orgs = $approver->organizations()
-            ->wherePivot(TrooperOrganization::MEMBERSHIP_ROLE, MembershipRole::Moderator)
-            ->wherePivot(TrooperOrganization::MEMBERSHIP_STATUS, MembershipStatus::Active)
-            ->pluck('tt_organizations.id');
-
-        $moderated_regions = $approver->regions()
-            ->wherePivot(TrooperRegion::MEMBERSHIP_ROLE, MembershipRole::Moderator)
-            ->wherePivot(TrooperRegion::MEMBERSHIP_STATUS, MembershipStatus::Active)
-            ->pluck('tt_regions.id');
-
-        $moderated_units = $approver->units()
-            ->wherePivot(TrooperUnit::MEMBERSHIP_ROLE, MembershipRole::Moderator)
-            ->wherePivot(TrooperUnit::MEMBERSHIP_STATUS, MembershipStatus::Active)
-            ->pluck('tt_units.id');
-
-        $candidate_orgs = $candidate->organizations()->pluck('tt_organizations.id');
-        $candidate_regions = $candidate->regions()->pluck('tt_regions.id');
-        $candidate_units = $candidate->units()->pluck('tt_units.id');
-
-        return
-            $candidate_orgs->intersect($moderated_orgs)->isNotEmpty() ||
-            $candidate_regions->intersect($moderated_regions)->isNotEmpty() ||
-            $candidate_units->intersect($moderated_units)->isNotEmpty();
+        return Trooper::approvableBy($trooper)
+            ->where(Trooper::ID, $subject->id)
+            ->exists();
     }
 }

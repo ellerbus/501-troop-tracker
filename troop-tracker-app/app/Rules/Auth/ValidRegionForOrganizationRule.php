@@ -2,8 +2,7 @@
 
 namespace App\Rules\Auth;
 
-use App\Models\Base\Organization;
-use App\Models\Region;
+use App\Models\Organization;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
@@ -37,7 +36,7 @@ class ValidRegionForOrganizationRule implements ValidationRule
     {
         if (!empty($value))
         {
-            $exists = $this->organization->regions()->active()->where(Region::ID, $value)->exists();
+            $exists = $this->organization->organizations()->regions()->where(Organization::ID, $value)->exists();
 
             if (!$exists)
             {

@@ -3,7 +3,6 @@
 namespace Tests\Unit\Rules\Auth;
 
 use App\Models\Organization;
-use App\Models\Region;
 use App\Rules\Auth\ValidRegionForOrganizationRule;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -16,15 +15,14 @@ class ValidRegionForOrganizationRuleTest extends TestCase
     {
         parent::setUp();
 
-        Organization::factory()->create();
-        Region::factory()->create();
+        Organization::factory()->region()->create();
     }
 
     public function test_validation_passes_when_region_is_valid_for_organization(): void
     {
         // Arrange
         $organization = Organization::factory()->create();
-        $region = Region::factory()->for($organization)->create(['active' => true]);
+        $region = Organization::factory()->region()->create(['parent_id' => $organization->id]);
         $subject = new ValidRegionForOrganizationRule($organization);
         $fail_was_called = false;
         $fail = function (string $message) use (&$fail_was_called): void
@@ -44,25 +42,8 @@ class ValidRegionForOrganizationRuleTest extends TestCase
         // Arrange
         $organization1 = Organization::factory()->create();
         $organization2 = Organization::factory()->create();
-        $region = Region::factory()->for($organization2)->create(['active' => true]);
+        $region = Organization::factory()->region()->create(['parent_id' => $organization2->id]);
         $subject = new ValidRegionForOrganizationRule($organization1);
-        $fail_was_called = false;
-        $fail = function (string $message) use (&$fail_was_called): void
-        {
-            $fail_was_called = true;
-            $this->assertEquals('Region selection is invalid.', $message);
-        };
-
-        // Act
-        $subject->validate('region_id', $region->id, $fail);
-    }
-
-    public function test_validation_fails_when_region_is_inactive(): void
-    {
-        // Arrange
-        $organization = Organization::factory()->create();
-        $region = Region::factory()->for($organization)->create(['active' => false]);
-        $subject = new ValidRegionForOrganizationRule($organization);
         $fail_was_called = false;
         $fail = function (string $message) use (&$fail_was_called): void
         {
