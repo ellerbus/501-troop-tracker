@@ -27,12 +27,12 @@ trait HasClubMaps
 
         foreach ($legacy_clubs as $legacy_id => $meta)
         {
-            $club = Organization::firstWhere(Organization::NAME, $meta['name']);
+            $organization = Organization::firstWhere(Organization::NAME, $meta['name']);
 
-            if ($club)
+            if ($organization)
             {
                 $map[$meta['status']] = [
-                    'id' => $club->id,
+                    'id' => $organization->id,
                     'value' => $legacy_id,
                     'identity' => $meta['identity'],
                 ];

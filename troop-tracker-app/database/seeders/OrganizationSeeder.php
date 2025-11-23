@@ -66,7 +66,6 @@ class OrganizationSeeder extends Seeder
             $org->identifier_display = $data['identifier_display'] ?? '';
             $org->identifier_validation = $data['identifier_validation'] ?? '';
             $org->type = OrganizationType::Organization;
-            $org->node_path = '';
 
             $org->save();
         }
@@ -90,13 +89,12 @@ class OrganizationSeeder extends Seeder
             if ($parent)
             {
                 $region = Organization::where('name', $data['name'])
-                    ->where('node_path', $parent->id)
+                    ->where('parent_id', $parent->id)
                     ->first() ?? new Organization();
 
                 $region->name = $data['name'];
                 $region->parent_id = $parent->id;
                 $region->type = OrganizationType::Region;
-                $region->node_path = '';
 
                 $region->save();
             }
@@ -134,7 +132,6 @@ class OrganizationSeeder extends Seeder
                 $unit->name = $data['name'];
                 $unit->parent_id = $region->id;
                 $unit->type = OrganizationType::Unit;
-                $unit->node_path = '';
 
                 $unit->save();
             }

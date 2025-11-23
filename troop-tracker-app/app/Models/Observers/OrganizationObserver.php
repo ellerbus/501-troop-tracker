@@ -5,10 +5,13 @@ namespace App\Models\Observers;
 use App\Models\Organization;
 
 /**
- * Handles lifecycle events for the Organization model.
+ * Handles lifecycle events for the Organization model to manage hierarchical node paths.
  */
 class OrganizationObserver
 {
+    /**
+     * The separator used in the node path.
+     */
     const SEP = ':';
 
     /**
@@ -22,35 +25,27 @@ class OrganizationObserver
     }
 
     /**
-     * Handle the Organization "created" event.
+     * Handle the Organization "saved" event.
      *
-     * @param Organization $organization The organization instance that was created.
+     * @param Organization $organization The organization instance that was saved.
      */
-    public function created(Organization $organization): void
+    public function saved(Organization $organization): void
     {
-        $this->assignNodePath($organization);
+        $organization->updateQuietly([
+            'node_path' => $this->buildNodePath($organization),
+        ]);
 
-        $organization->saveQuietly();
     }
 
     /**
-     * Handle the Organization "updating" event.
-     *
-     * @param Organization $organization The organization instance being updated.
-     */
-    public function updating(Organization $organization): void
-    {
-        $this->assignNodePath($organization);
-    }
-
-    /**
-     * Generates and assigns a materialized path for the organization.
+     * Builds a materialized path for the organization.
      *
      * This path represents the hierarchy of the organization by concatenating the IDs of its ancestors.
      *
      * @param Organization $organization The organization to generate the path for.
+     * @return string The generated node path.
      */
-    private function assignNodePath(Organization $organization): void
+    private function buildNodePath(Organization $organization): string
     {
         $node_path = [$organization->id];
 
@@ -63,6 +58,6 @@ class OrganizationObserver
         }
 
         // Reverse so root comes first, then join with dots
-        $organization->node_path = implode(self::SEP, array_reverse($node_path)) . self::SEP;
+        return implode(self::SEP, array_reverse($node_path)) . self::SEP;
     }
 }

@@ -27,7 +27,6 @@ class EventSeeder extends Seeder
             $e = Event::find($event->id) ?? new Event(['id' => $event->id]);
 
             $e->name = $event->name;
-            //$e->squad_id = $squad_maps[$event->squad_id] ?? null;
             $e->starts_at = $event->dateStart;
             $e->ends_at = $event->dateEnd;
 
