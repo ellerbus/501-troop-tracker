@@ -16,26 +16,47 @@
     <x-table>
       <thead>
         <tr>
-          <th>ID</th>
           <th>Organization</th>
+          <th>Identifier</th>
         </tr>
       </thead>
       @foreach($trooper->organizations as $organization)
       <tr>
         <td>{{ $organization->name }}</td>
-        <td>{{ $organization->identifier }}</td>
+        <td>{{ $organization->pivot->identifier }}</td>
       </tr>
+      @endforeach
       <thead>
         <tr>
-          <th>ID</th>
           <th>Organization</th>
+          <th>Selected Role</th>
         </tr>
       </thead>
-      @foreach($trooper->organizations as $organization)
+      @foreach($trooper->trooper_assignments->filter(fn($a) => is_null($a->organization->parent_id)) as $org_asg)
       <tr>
-        <td>{{ $organization->name }}</td>
-        <td>{{ $organization->identifier }}</td>
+        <td class="ps-{{ substr_count($org_asg->organization->node_path, ':') }}">
+          {{ $org_asg->organization->name }}
+        </td>
+        <td>{{ $org_asg->membership_role }}</td>
       </tr>
+      @foreach($trooper->trooper_assignments->filter(fn($a) => $a->organization->parent_id == $org_asg->organization_id) as $reg_asg)
+      <tr>
+        <td class="ps-{{ substr_count($reg_asg->organization->node_path, ':') }}">
+          <i class="fa fa-fw fa-caret-right"></i>
+          {{ $reg_asg->organization->name }}
+        </td>
+        <td>{{ $reg_asg->membership_role }}</td>
+      </tr>
+      @foreach($trooper->trooper_assignments->filter(fn($a) => $a->organization->parent_id == $reg_asg->organization_id) as $unit_asg)
+      <tr>
+        <td class="ps-{{ substr_count($unit_asg->organization->node_path, ':') }}">
+          <i class="fa fa-fw fa-caret-right"></i>
+          <i class="fa fa-fw fa-caret-right"></i>
+          {{ $unit_asg->organization->name }}
+        </td>
+        <td>{{ $unit_asg->membership_role }}</td>
+      </tr>
+      @endforeach
       @endforeach
       @endforeach
     </x-table>

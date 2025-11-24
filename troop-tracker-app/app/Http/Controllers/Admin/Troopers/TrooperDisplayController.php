@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Auth;
  *
  * This controller gathers various statistics for a trooper, such as troop counts by organization and costume, and displays them.
  */
-class TrooperApprovalDisplayController extends Controller
+class TrooperDisplayController extends Controller
 {
     public function __construct(private readonly BreadCrumbService $crumbs)
     {
@@ -39,12 +39,11 @@ class TrooperApprovalDisplayController extends Controller
         $this->authorize('viewAny', Trooper::class);
 
         $this->crumbs->addRoute('Command Staff', 'admin.display');
-        $this->crumbs->addRoute('Troopers', 'admin.troopers.display');
-        $this->crumbs->add('Approvals');
+        $this->crumbs->add('Troopers');
 
         $trooper = Auth::user();
 
-        $query = Trooper::pendingApprovals()->with('trooper_assignments.organization');
+        $query = Trooper::query()->orderBy(Trooper::NAME);
 
         if ($trooper->membership_role != MembershipRole::Admin)
         {
@@ -57,6 +56,6 @@ class TrooperApprovalDisplayController extends Controller
             'troopers' => $troopers
         ];
 
-        return view('pages.admin.troopers.approvals', $data);
+        return view('pages.admin.troopers.display', $data);
     }
 }
