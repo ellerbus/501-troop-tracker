@@ -62,7 +62,7 @@ class DashboardDisplayController extends Controller
 
         $data = [
             'trooper' => $trooper,
-            'total_troops_by_club' => $this->getTroopsByClub($trooper),
+            'total_troops_by_organization' => $this->getTroopsByOrganization($trooper),
             'total_troops_by_costume' => $this->getTroopsByCostume($trooper),
         ];
 
@@ -78,7 +78,7 @@ class DashboardDisplayController extends Controller
      * @param Trooper $trooper The trooper to calculate statistics for.
      * @return Collection A collection of Organization models, each with a `troop_count` attribute.
      */
-    private function getTroopsByClub(Trooper $trooper): Collection
+    private function getTroopsByOrganization(Trooper $trooper): Collection
     {
         $trooper_id = $trooper->id;
 

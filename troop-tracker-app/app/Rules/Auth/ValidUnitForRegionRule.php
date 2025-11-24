@@ -36,7 +36,11 @@ class ValidUnitForRegionRule implements ValidationRule
     {
         if (!empty($value))
         {
-            $exists = $this->region->organizations()->units()->where(Organization::ID, $value)->exists();
+            $exists = $this->region
+                ->organizations()
+                ->ofTypeUnits()
+                ->where(Organization::ID, $value)
+                ->exists();
 
             if (!$exists)
             {

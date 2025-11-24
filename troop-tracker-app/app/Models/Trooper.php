@@ -109,9 +109,9 @@ class Trooper extends BaseTrooper implements
      *
      * @param int|null $organization_id The ID of the parent organization to filter by.
      *
-     * @return Collection<int, TrooperAssignment> A collection of active assignments.
+     * @return Collection<int, Organization> A collection of active organizations.
      */
-    public function assignedOrganizations(?int $organization_id): Collection
+    public function getAssignedOrganizations(?int $organization_id): Collection
     {
         $query = $this->trooper_assignments()
             ->where(TrooperAssignment::MEMBERSHIP_STATUS, MembershipStatus::Active);
@@ -121,6 +121,6 @@ class Trooper extends BaseTrooper implements
             $query->where(TrooperAssignment::ORGANIZATION_ID, $organization_id);
         }
 
-        return $query->get();
+        return $query->with('organization')->get()->map->organization;
     }
 }

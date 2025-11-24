@@ -52,7 +52,7 @@
                         :value="1"
                         :checked="$organization->selected"
                         data-organization-id="{{ $organization->id }}" />
-      @foreach ($organization->regions as $region)
+      @foreach ($organization->organizations as $region)
       <x-input-container class="ps-5">
         <x-input-checkbox :property="'regions.' . $region->id . '.notification'"
                           :label="$region->name"
@@ -60,7 +60,7 @@
                           :checked="$region->selected"
                           data-organization-id="{{ $organization->id }}"
                           data-region-id="{{ $region->id }}" />
-        @foreach ($region->units as $unit)
+        @foreach ($region->organizations as $unit)
         <x-input-container class="ps-5">
           <x-input-checkbox :property="'units.' . $unit->id . '.notification'"
                             :label="$unit->name"

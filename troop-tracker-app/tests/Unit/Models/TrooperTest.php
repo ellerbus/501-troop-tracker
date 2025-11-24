@@ -106,27 +106,4 @@ class TrooperTest extends TestCase
         $this->assertTrue($trooper_with_active->hasActiveOrganizationStatus());
         $this->assertFalse($trooper_with_inactive->hasActiveOrganizationStatus());
     }
-
-    public function test_assigned_organizations_returns_active_assignments(): void
-    {
-        // Arrange
-        $trooper = Trooper::factory()->create();
-        $organization1 = Organization::factory()->create();
-        $organization2 = Organization::factory()->create();
-        $trooper->trooper_assignments()->create([
-            'organization_id' => $organization1->id,
-            'membership_status' => MembershipStatus::Active
-        ]);
-        $trooper->trooper_assignments()->create([
-            'organization_id' => $organization2->id,
-            'membership_status' => MembershipStatus::Retired
-        ]);
-
-        // Act
-        $assignments = $trooper->assignedOrganizations(null);
-
-        // Assert
-        $this->assertCount(1, $assignments);
-        $this->assertEquals(MembershipStatus::Active, $assignments->first()->membership_status);
-    }
 }

@@ -11,7 +11,6 @@ use App\Models\Organization;
 use App\Models\Region;
 use App\Models\Trooper;
 use App\Models\Unit;
-use App\Services\FlashMessageService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
 use Tests\TestCase;
@@ -61,8 +60,8 @@ class RegisterSubmitControllerTest extends TestCase
     {
         // Arrange
         $organization = Organization::factory()->create(['identifier_validation' => 'string']);
-        $region = Region::factory()->create(['organization_id' => $organization->id]);
-        $unit = Unit::factory()->create(['region_id' => $region->id]);
+        $region = Organization::factory()->region()->create(['parent_id' => $organization->id]);
+        $unit = Organization::factory()->unit()->create(['parent_id' => $region->id]);
 
         $this->auth_mock->shouldReceive('verify')
             ->once()
@@ -104,20 +103,25 @@ class RegisterSubmitControllerTest extends TestCase
             'trooper_id' => $trooper->id,
             'organization_id' => $organization->id,
             'identifier' => 'TK12345',
+        ]);
+
+        $this->assertDatabaseHas('tt_trooper_assignments', [
+            'trooper_id' => $trooper->id,
+            'organization_id' => $organization->id,
             'membership_status' => MembershipStatus::Pending->value,
             'membership_role' => MembershipRole::Member->value,
         ]);
 
-        $this->assertDatabaseHas('tt_trooper_regions', [
+        $this->assertDatabaseHas('tt_trooper_assignments', [
             'trooper_id' => $trooper->id,
-            'region_id' => $region->id,
+            'organization_id' => $region->id,
             'membership_status' => MembershipStatus::Pending->value,
             'membership_role' => MembershipRole::Member->value,
         ]);
 
-        $this->assertDatabaseHas('tt_trooper_units', [
+        $this->assertDatabaseHas('tt_trooper_assignments', [
             'trooper_id' => $trooper->id,
-            'unit_id' => $unit->id,
+            'organization_id' => $unit->id,
             'membership_status' => MembershipStatus::Pending->value,
             'membership_role' => MembershipRole::Member->value,
         ]);
@@ -154,7 +158,7 @@ class RegisterSubmitControllerTest extends TestCase
         $response->assertRedirect(route('auth.register'));
         $trooper = Trooper::where('username', 'handleruser')->first();
 
-        $this->assertDatabaseHas('tt_trooper_organizations', [
+        $this->assertDatabaseHas('tt_trooper_assignments', [
             'trooper_id' => $trooper->id,
             'organization_id' => $organization->id,
             'membership_role' => MembershipRole::Handler->value,

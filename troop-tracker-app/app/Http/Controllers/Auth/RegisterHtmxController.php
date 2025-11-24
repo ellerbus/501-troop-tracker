@@ -34,9 +34,9 @@ class RegisterHtmxController
             'organization' => $organization,
         ];
 
-        if ($organization->regions->count() == 1)
+        if ($organization->organizations->count() == 1)
         {
-            $region = $organization->regions->first();
+            $region = $organization->organizations->first();
 
             $region->selected = true;
         }
@@ -46,7 +46,7 @@ class RegisterHtmxController
 
             if (isset($region_id))
             {
-                foreach ($organization->regions as $region)
+                foreach ($organization->organizations as $region)
                 {
                     if ($region->id == $region_id)
                     {

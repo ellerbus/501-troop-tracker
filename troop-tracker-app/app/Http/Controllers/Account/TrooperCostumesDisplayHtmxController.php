@@ -30,14 +30,16 @@ class TrooperCostumesDisplayHtmxController extends Controller
     {
         $trooper = Trooper::findOrFail(Auth::user()->id);
 
-        $organizations = $trooper->assignedOrganizations(null);
+        $organizations = Organization::withActiveTroopers($trooper->id)->get();
 
         $selected_organization = null;
         $costumes = [];
 
         if ($request->has('organization_id'))
         {
-            $selected_organization = $organizations->firstWhere(Organization::ID, $request->get('organization_id'));
+            $organization_id = $request->get('organization_id');
+
+            $selected_organization = $organizations->firstWhere(Organization::ID, $organization_id);
 
             if (isset($selected_organization))
             {
@@ -46,6 +48,7 @@ class TrooperCostumesDisplayHtmxController extends Controller
                     ->pluck('id');
 
                 $costumes = $selected_organization->costumes()
+                    ->with('organization')
                     ->excluding($assigned_costume_ids)
                     ->orderBy(Costume::NAME)
                     ->pluck(Costume::NAME, Costume::ID)

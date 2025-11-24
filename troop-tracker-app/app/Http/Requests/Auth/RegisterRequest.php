@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Enums\OrganizationType;
 use App\Models\Organization;
 use App\Models\Trooper;
 use App\Rules\Auth\AtLeastOneOrganizationSelectedRule;
@@ -22,7 +23,7 @@ use Illuminate\Validation\Rule;
  */
 class RegisterRequest extends FormRequest
 {
-    private ?Collection $active_organizations = null;
+    private ?Collection $organizations = null;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -89,9 +90,9 @@ class RegisterRequest extends FormRequest
             'organizations.*.selected' => ['nullable', 'boolean'],
         ];
 
-        $active_organizations = $this->getActiveOrganizations();
+        $organizations = $this->getOrganizations();
 
-        foreach ($active_organizations as $organization)
+        foreach ($organizations as $organization)
         {
             if (!empty($organization->identifier_validation))
             {
@@ -103,16 +104,20 @@ class RegisterRequest extends FormRequest
                 $rules["organizations.{$organization->id}.identifier"] = $organization_rules;
             }
 
-            if ($organization->regions()->count() > 0)
+            $regions = $organization->organizations;
+
+            if ($regions->count() > 0)
             {
                 $rules["organizations.{$organization->id}.region_id"] = [
                     "required_if:organizations.{$organization->id}.selected,1",
                     new ValidRegionForOrganizationRule($organization)
                 ];
 
-                foreach ($organization->regions as $region)
+                foreach ($regions as $region)
                 {
-                    if ($region->units()->count() > 0)
+                    $units = $region->organizations;
+
+                    if ($units->count() > 0)
                     {
                         $rules["organizations.{$organization->id}.unit_id"] = [
                             "required_if:organizations.{$organization->id}.regions.{$region->id}.selected,1",
@@ -136,7 +141,7 @@ class RegisterRequest extends FormRequest
      */
     public function withValidator($validator): void
     {
-        $active_organizations = $this->getActiveOrganizations();
+        $active_organizations = $this->getOrganizations();
 
         $messages = [];
 
@@ -155,7 +160,7 @@ class RegisterRequest extends FormRequest
                     $messages["{$key}.{$ruleName}"] = "The {$organization->identifier_display} for {$organization->name} must be {$this->friendlyPhrase($rule)}.";
                 }
 
-                if ($organization->regions->count() > 0)
+                if ($organization->organizations->count() > 0)
                 {
                     $messages["organizations.{$organization->id}.region_id.required_if"] = "Please select a region for {$organization->name} if you’ve chosen it.";
                 }
@@ -184,8 +189,12 @@ class RegisterRequest extends FormRequest
         };
     }
 
-    private function getActiveOrganizations(): Collection
+    private function getOrganizations(): Collection
     {
-        return $this->active_organizations ??= Organization::active(eager_load_all: true)->get();
+        if (!isset($this->organizations))
+        {
+            $this->organizations = Organization::fullyLoaded()->get();
+        }
+        return $this->organizations;
     }
 }

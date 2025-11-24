@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
 use App\Models\Costume;
+use App\Models\Organization;
 use App\Models\Trooper;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -35,11 +36,15 @@ class TrooperCostumesSubmitHtmxController extends Controller
 
         if ($organization_id > -1 && $costume_id > -1)
         {
-            $organization = $trooper->assignedOrganizations($organization_id)->first();
+            $organization = Organization::withActiveTroopers($trooper->id)
+                ->where(Organization::ID, $organization_id)
+                ->first();
 
             if (isset($organization))
             {
-                $costume = $organization->costumes()->where(Costume::ID, $costume_id)->first();
+                $costume = $organization->costumes()
+                    ->where(Costume::ID, $costume_id)
+                    ->first();
 
                 if (isset($costume))
                 {

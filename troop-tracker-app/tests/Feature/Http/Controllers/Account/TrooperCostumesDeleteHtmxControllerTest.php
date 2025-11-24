@@ -7,6 +7,7 @@ namespace Tests\Feature\Http\Controllers\Account;
 use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
 use App\Models\Costume;
+use App\Models\Organization;
 use App\Models\Trooper;
 use App\Models\TrooperCostume;
 use Database\Seeders\OrganizationSeeder;
@@ -20,30 +21,24 @@ class TrooperCostumesDeleteHtmxControllerTest extends TestCase
 
     private Trooper $trooper;
     private Costume $costume;
+    private Organization $organization;
     private TrooperCostume $trooper_costume;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->seed(OrganizationSeeder::class);
+        $this->organization = Organization::factory()
+            ->withCostume('Stormtrooper')
+            ->create();
 
-        $this->costume = Costume::factory()->create([
-            'organization_id' => 1,
-            'name' => 'Stormtrooper'
-        ]);
+        $this->costume = $this->organization->costumes()->first();
 
-        $this->trooper = Trooper::factory()->create();
-        $this->trooper->organizations()->attach($this->costume->organization->id, [
-            'identifier' => 'TK000',
-            'membership_status' => MembershipStatus::Active,
-            'membership_role' => MembershipRole::Member
-        ]);
-
-        $this->trooper_costume = TrooperCostume::factory()->create([
-            'trooper_id' => $this->trooper->id,
-            'costume_id' => $this->costume->id,
-        ]);
+        $this->trooper = Trooper::factory()
+            ->withOrganization($this->organization, 'TK-1')
+            ->withCostume($this->costume)
+            ->withAssignment($this->organization, notify: true)
+            ->create();
     }
 
     public function test_invoke_removes_trooper_costume_and_returns_view(): void

@@ -24,8 +24,6 @@ class TrooperOrganizationFactory extends Factory
         return [
             TrooperOrganization::TROOPER_ID => Trooper::factory(),
             TrooperOrganization::IDENTIFIER => 'TK' . uniqid(),
-            TrooperOrganization::MEMBERSHIP_STATUS => MembershipStatus::Active,
-            TrooperOrganization::MEMBERSHIP_ROLE => MembershipRole::Member,
             TrooperOrganization::ORGANIZATION_ID => Organization::factory(),
         ];
     }

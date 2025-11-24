@@ -24,12 +24,12 @@
       </x-label>
       <x-input-text :property="'organizations.' . $organization->id . '.identifier'" />
     </x-input-container>
-    @if($organization->regions->count() > 0)
+    @if($organization->organizations->count() > 0)
     <x-input-container>
       <x-input-select :property="'organizations.' . $organization->id . '.region_id'"
-                      :options="$organization->regions->pluck('name', 'id')->toArray()"
+                      :options="$organization->organizations->pluck('name', 'id')->toArray()"
                       :placeholder="'-- Select your Region/Garrison --'"
-                      :value="$organization->regions->where('selected', true)->first()->id ?? null"
+                      :value="$organization->organizations->where('selected', true)->first()->id ?? null"
                       hx-post="{{ route('auth.register-htmx', ['organization'=>$organization->id]) }}"
                       hx-select="#unit-container-{{ $organization->id }}"
                       hx-target="#unit-container-{{ $organization->id }}"
@@ -40,12 +40,12 @@
     </x-input-container>
 
     @php($rid = old("organizations.{$organization->id}.region_id"))
-    @php($region = $organization->regions->find($rid))
+    @php($region = $organization->organizations->find($rid))
 
     <x-input-container id="unit-container-{{ $organization->id }}">
-      @if($region && $region->units->count() > 0)
+      @if($region && $region->organizations->count() > 0)
       <x-input-select :property="'organizations.' . $organization->id . '.unit_id'"
-                      :options="$region->units->pluck('name', 'id')->toArray()"
+                      :options="$region->organizations->pluck('name', 'id')->toArray()"
                       :placeholder="'-- Select your Unit/Squad --'" />
       @endif
     </x-input-container>

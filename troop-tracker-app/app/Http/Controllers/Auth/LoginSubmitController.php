@@ -101,10 +101,8 @@ class LoginSubmitController extends Controller
      */
     private function login(Trooper $trooper, LoginRequest $request): RedirectResponse
     {
-        //  all good
         Auth::login($trooper, $request->remember_me);
 
-        //  TODO fix route
         return redirect()->intended(route('account.display'));
     }
 }

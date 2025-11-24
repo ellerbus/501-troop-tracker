@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Organization;
 use App\Models\Region;
 use App\Models\Trooper;
+use App\Models\TrooperAssignment;
 use App\Models\TrooperOrganization;
 use App\Models\TrooperUnit;
 use App\Models\Unit;
@@ -37,37 +38,24 @@ class NotificationsDisplayHtmxController extends Controller
     {
         $trooper = Trooper::findOrFail(Auth::user()->id);
 
-        $organizations = Organization::active(eager_load_all: true)->get();
+        $organizations = Organization::fullyLoaded()->get();
 
-        $trooper_organizations = $trooper->organizations()
-            ->wherePivot(TrooperOrganization::NOTIFY, true)
-            ->where(Organization::ACTIVE, true)
-            ->pluck('tt_organizations.' . Organization::ID)
-            ->toArray();
-
-        $trooper_regions = $trooper->regions()
-            ->wherePivot(TrooperUnit::NOTIFY, true)
-            ->where(Region::ACTIVE, true)
-            ->pluck('tt_regions.' . Region::ID)
-            ->toArray();
-
-        $trooper_units = $trooper->units()
-            ->wherePivot(TrooperUnit::NOTIFY, true)
-            ->where(Unit::ACTIVE, true)
-            ->pluck('tt_units.' . Unit::ID)
+        $trooper_assignments = $trooper->trooper_assignments()
+            ->where(TrooperAssignment::NOTIFY, true)
+            ->pluck(TrooperAssignment::ORGANIZATION_ID)
             ->toArray();
 
         foreach ($organizations as $organization)
         {
-            $organization->selected = in_array($organization->id, $trooper_organizations);
+            $organization->selected = in_array($organization->id, $trooper_assignments);
 
-            foreach ($organization->regions as $region)
+            foreach ($organization->organizations as $region)
             {
-                $region->selected = in_array($region->id, $trooper_regions);
+                $region->selected = in_array($region->id, $trooper_assignments);
 
-                foreach ($region->units as $unit)
+                foreach ($region->organizations as $unit)
                 {
-                    $unit->selected = in_array($unit->id, $trooper_units);
+                    $unit->selected = in_array($unit->id, $trooper_assignments);
                 }
             }
         }

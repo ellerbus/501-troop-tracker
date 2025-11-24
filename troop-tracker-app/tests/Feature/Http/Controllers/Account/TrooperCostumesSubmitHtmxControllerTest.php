@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Account;
 
-use App\Enums\MembershipRole;
-use App\Enums\MembershipStatus;
 use App\Models\Costume;
 use App\Models\Organization;
 use App\Models\Trooper;
-use Database\Seeders\OrganizationSeeder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -19,41 +16,40 @@ class TrooperCostumesSubmitHtmxControllerTest extends TestCase
     use RefreshDatabase;
 
     private Trooper $trooper;
-    private Organization $assigned_club;
+    private Organization $assigned_organization;
     private Costume $assigned_costume;
-    private Organization $unassigned_club;
+    private Organization $unassigned_organization;
     private Costume $unassigned_costume;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->seed(OrganizationSeeder::class);
+        $this->assigned_organization = Organization::factory()->withCostume('Stormtrooper')->create();
+        $this->assigned_costume = $this->assigned_organization->costumes()->first();
 
-        $this->assigned_club = Organization::find(1);
-        $this->assigned_costume = Costume::factory()->create(['organization_id' => 1]);
+        $this->unassigned_organization = Organization::factory()->withCostume('Stormtrooper')->create();
+        $this->unassigned_costume = $this->unassigned_organization->costumes()->first();
 
-        $this->unassigned_club = Organization::find(2);
-        $this->unassigned_costume = Costume::factory()->create(['organization_id' => 2]);
-
-        $this->trooper = Trooper::factory()->create();
-        $this->trooper->organizations()->attach($this->assigned_club->id, [
-            'identifier' => 'TK000',
-            'membership_status' => MembershipStatus::Active,
-            'membership_role' => MembershipRole::Member
-        ]);
+        $this->trooper = Trooper::factory()
+            ->withOrganization($this->assigned_organization, 'TK-1')
+            ->withCostume($this->assigned_costume)
+            ->withAssignment($this->assigned_organization, notify: true)
+            ->create();
     }
 
     public function test_invoke_adds_trooper_costume_for_valid_request(): void
     {
         // Arrange
+        $this->trooper->detachCostume($this->assigned_costume->id);
+
         $this->assertDatabaseMissing('tt_trooper_costumes', [
             'trooper_id' => $this->trooper->id,
             'costume_id' => $this->assigned_costume->id,
         ]);
 
         $request_data = [
-            'organization_id' => $this->assigned_club->id,
+            'organization_id' => $this->assigned_organization->id,
             'costume_id' => $this->assigned_costume->id,
         ];
 
@@ -80,7 +76,7 @@ class TrooperCostumesSubmitHtmxControllerTest extends TestCase
     {
         // Arrange
         $request_data = [
-            'organization_id' => $this->unassigned_club->id,
+            'organization_id' => $this->unassigned_organization->id,
             'costume_id' => $this->unassigned_costume->id,
         ];
 
@@ -93,7 +89,7 @@ class TrooperCostumesSubmitHtmxControllerTest extends TestCase
         $response->assertViewIs('pages.account.trooper-costumes');
         $response->assertViewHas('trooper_costumes', function (Collection $trooper_costumes): bool
         {
-            return $trooper_costumes->isEmpty();
+            return $trooper_costumes->count() == 1;
         });
 
         $this->assertDatabaseMissing('tt_trooper_costumes', [

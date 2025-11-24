@@ -40,7 +40,7 @@ class DashboardDisplayControllerTest extends TestCase
         {
             return $trooper->id === $user->id;
         });
-        $response->assertViewHas('total_troops_by_club', function ($collection)
+        $response->assertViewHas('total_troops_by_organization', function ($collection)
         {
             return $collection->count() === 1 && $collection->first()->troop_count === 1;
         });
@@ -113,7 +113,7 @@ class DashboardDisplayControllerTest extends TestCase
         $response = $this->get(route('dashboard.display'));
 
         // Assert
-        $response->assertViewHas('total_troops_by_club', function ($collection)
+        $response->assertViewHas('total_troops_by_organization', function ($collection)
         {
             return $collection->count() === 2;
         });

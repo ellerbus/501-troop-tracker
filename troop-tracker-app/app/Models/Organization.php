@@ -25,4 +25,10 @@ class Organization extends BaseOrganization
     {
         return $this->belongsTo(self::class, self::PARENT_ID);
     }
+
+    public function event_troopers()
+    {
+        return $this->hasManyThrough(EventTrooper::class, Costume::class);
+    }
+
 }

@@ -35,14 +35,12 @@ class LoginSubmitControllerTest extends TestCase
     public function test_invoke_with_valid_credentials_and_active_status_logs_user_in(): void
     {
         // Arrange
-        $organization = Organization::first();
-        $trooper = Trooper::factory()->create([
-            'membership_status' => MembershipStatus::Active,
-        ]);
-        $trooper->organizations()->attach($organization->id, [
-            'identifier' => 'TK9999',
-            'membership_status' => MembershipStatus::Active,
-        ]);
+        $organization = Organization::factory()->create();
+
+        $trooper = Trooper::factory()
+            ->withOrganization($organization, 'TK9999')
+            ->withAssignment($organization, MembershipStatus::Active)
+            ->create();
 
         $this->auth_mock->shouldReceive('authenticate')
             ->once()
@@ -64,9 +62,7 @@ class LoginSubmitControllerTest extends TestCase
     public function test_invoke_with_invalid_credentials_fails_login(): void
     {
         // Arrange
-        $trooper = Trooper::factory()->create([
-            'membership_status' => MembershipStatus::Active,
-        ]);
+        $trooper = Trooper::factory()->asActive()->create();
 
         $this->auth_mock->shouldReceive('authenticate')
             ->once()
@@ -88,7 +84,7 @@ class LoginSubmitControllerTest extends TestCase
     public function test_invoke_with_unapproved_trooper_fails_login(): void
     {
         // Arrange
-        $trooper = Trooper::factory()->create(['membership_status' => MembershipStatus::Pending]);
+        $trooper = Trooper::factory()->asPending()->create();
 
         $this->auth_mock->shouldNotHaveBeenCalled();
 
@@ -106,8 +102,8 @@ class LoginSubmitControllerTest extends TestCase
 
     public function test_invoke_with_banned_trooper_fails_login(): void
     {
-        // Arrange
-        $trooper = Trooper::factory()->create(['membership_status' => MembershipStatus::Active]);
+        // Arrange   
+        $trooper = Trooper::factory()->asActive()->create();
 
         $this->auth_mock->shouldReceive('authenticate')
             ->once()
@@ -129,9 +125,7 @@ class LoginSubmitControllerTest extends TestCase
     public function test_invoke_with_retired_trooper_fails_login(): void
     {
         // Arrange
-        $trooper = Trooper::factory()->create([
-            'membership_status' => MembershipStatus::Retired,
-        ]);
+        $trooper = Trooper::factory()->asRetired()->create();
 
         $this->auth_mock->shouldReceive('authenticate')
             ->once()
@@ -154,13 +148,12 @@ class LoginSubmitControllerTest extends TestCase
     {
         // Arrange
         $organization = Organization::first();
-        $trooper = Trooper::factory()->create([
-            'membership_status' => MembershipStatus::Active,
-        ]);
-        $trooper->organizations()->attach($organization->id, [
-            'identifier' => 'TK999',
-            'membership_status' => MembershipStatus::Retired,
-        ]);
+
+        $trooper = Trooper::factory()
+            ->asActive()
+            ->withOrganization($organization, 'TK9999')
+            ->withAssignment($organization, MembershipStatus::Retired)
+            ->create();
 
         $this->auth_mock->shouldReceive('authenticate')
             ->once()

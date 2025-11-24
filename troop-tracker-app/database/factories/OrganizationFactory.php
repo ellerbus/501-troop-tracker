@@ -3,7 +3,9 @@
 namespace Database\Factories;
 
 use App\Enums\OrganizationType;
+use App\Models\Costume;
 use App\Models\Organization;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -42,5 +44,20 @@ class OrganizationFactory extends Factory
             Organization::PARENT_ID => Organization::factory()->region(),
             Organization::TYPE => OrganizationType::Unit,
         ]);
+    }
+
+    public function withCostume(string $name): static
+    {
+        return $this->afterCreating(function (Organization $organization) use ($name)
+        {
+            if ($organization->type != OrganizationType::Organization)
+            {
+                throw new Exception('Invalid Organization Type for a costume: ' . $organization->type);
+            }
+
+            $organization->costumes()->create([
+                'name' => $name
+            ]);
+        });
     }
 }

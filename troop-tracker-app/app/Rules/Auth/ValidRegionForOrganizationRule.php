@@ -36,7 +36,11 @@ class ValidRegionForOrganizationRule implements ValidationRule
     {
         if (!empty($value))
         {
-            $exists = $this->organization->organizations()->regions()->where(Organization::ID, $value)->exists();
+            $exists = $this->organization
+                ->organizations()
+                ->ofTypeRegions()
+                ->where(Organization::ID, $value)
+                ->exists();
 
             if (!$exists)
             {

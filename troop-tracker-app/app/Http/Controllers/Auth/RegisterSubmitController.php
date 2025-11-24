@@ -12,6 +12,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\Base\Region;
 use App\Models\Organization;
 use App\Models\Trooper;
+use App\Models\TrooperAssignment;
 use App\Models\TrooperOrganization;
 use App\Models\TrooperRegion;
 use App\Models\TrooperUnit;
@@ -65,6 +66,7 @@ class RegisterSubmitController extends Controller
 
     private function register(array $data, mixed $auth_user_id): Trooper
     {
+        //  TODO optional identifier if handler
         $trooper = new Trooper();
 
         $trooper->name = $data['name'];
@@ -78,9 +80,9 @@ class RegisterSubmitController extends Controller
         $membership_role = $data['account_type'] == 'member' ? MembershipRole::Member : MembershipRole::Handler;
 
         // Loop through selected organizations and assign identifiers
-        foreach ($data['organizations'] ?? [] as $organization_id => $club_data)
+        foreach ($data['organizations'] ?? [] as $organization_id => $organization_data)
         {
-            if (!empty($club_data['selected']))
+            if (!empty($organization_data['selected']))
             {
                 // You’ll need to map organization-specific fields to trooper columns
                 // Example: if organization uses 'tkid' as identifier field
@@ -88,44 +90,58 @@ class RegisterSubmitController extends Controller
 
                 if ($organization)
                 {
-                    $trooper_organization = new TrooperOrganization();
-
-                    $trooper_organization->trooper_id = $trooper->id;
-                    $trooper_organization->organization_id = $organization->id;
-                    $trooper_organization->identifier = $club_data['identifier'] ?? '';
-                    $trooper_organization->notify = true;
-                    $trooper_organization->membership_status = MembershipStatus::Pending;
-                    $trooper_organization->membership_role = $membership_role;
-
-                    $trooper_organization->save();
-
-                    if (isset($club_data['region_id']))
+                    if (isset($organization_data['identifier']) && $organization_data['identifier'] != '')
                     {
-                        $region = $organization->regions()->firstWhere(Region::ID, $club_data['region_id']);
+                        $trooper_organization = new TrooperOrganization();
 
-                        $trooper_region = new TrooperRegion();
+                        $trooper_organization->trooper_id = $trooper->id;
+                        $trooper_organization->organization_id = $organization->id;
+                        $trooper_organization->identifier = $organization_data['identifier'];
 
-                        $trooper_region->trooper_id = $trooper->id;
-                        $trooper_region->region_id = $region->id;
-                        $trooper_region->notify = true;
-                        $trooper_region->membership_status = MembershipStatus::Pending;
-                        $trooper_region->membership_role = $membership_role;
+                        $trooper_organization->save();
+                    }
 
-                        $trooper_region->save();
+                    $organization_assignment = new TrooperAssignment();
 
-                        if (isset($club_data['unit_id']))
+                    $organization_assignment->trooper_id = $trooper->id;
+                    $organization_assignment->organization_id = $organization->id;
+                    $organization_assignment->notify = true;
+                    $organization_assignment->membership_status = MembershipStatus::Pending;
+                    $organization_assignment->membership_role = $membership_role;
+
+                    $organization_assignment->save();
+
+                    if (isset($organization_data['region_id']))
+                    {
+                        $region = $organization->organizations()
+                            ->ofTypeRegions()
+                            ->firstWhere(Organization::ID, $organization_data['region_id']);
+
+                        $region_assignment = new TrooperAssignment();
+
+                        $region_assignment->trooper_id = $trooper->id;
+                        $region_assignment->organization_id = $region->id;
+                        $region_assignment->notify = true;
+                        $region_assignment->membership_status = MembershipStatus::Pending;
+                        $region_assignment->membership_role = $membership_role;
+
+                        $region_assignment->save();
+
+                        if (isset($organization_data['unit_id']))
                         {
-                            $unit = $region->units()->firstWhere(Unit::ID, $club_data['unit_id']);
+                            $unit = $region->organizations()
+                                ->ofTypeUnits()
+                                ->firstWhere(Organization::ID, $organization_data['unit_id']);
 
-                            $trooper_unit = new TrooperUnit();
+                            $unit_assignment = new TrooperAssignment();
 
-                            $trooper_unit->trooper_id = $trooper->id;
-                            $trooper_unit->unit_id = $unit->id;
-                            $trooper_unit->notify = true;
-                            $trooper_unit->membership_status = MembershipStatus::Pending;
-                            $trooper_unit->membership_role = $membership_role;
+                            $unit_assignment->trooper_id = $trooper->id;
+                            $unit_assignment->organization_id = $unit->id;
+                            $unit_assignment->notify = true;
+                            $unit_assignment->membership_status = MembershipStatus::Pending;
+                            $unit_assignment->membership_role = $membership_role;
 
-                            $trooper_unit->save();
+                            $unit_assignment->save();
                         }
                     }
                 }

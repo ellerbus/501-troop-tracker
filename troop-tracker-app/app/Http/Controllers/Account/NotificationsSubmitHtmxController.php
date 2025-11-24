@@ -7,6 +7,8 @@ namespace App\Http\Controllers\Account;
 use App\Http\Controllers\Controller;
 use App\Models\Organization;
 use App\Models\Trooper;
+use App\Models\TrooperAssignment;
+use App\Models\TrooperOrganization;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -39,7 +41,7 @@ class NotificationsSubmitHtmxController extends Controller
 
     private function updateTrooperNotifications(array $data): array
     {
-        $organizations = Organization::active(eager_load_all: true)->get();
+        $organizations = Organization::fullyLoaded()->get();
 
         $trooper = Trooper::findOrFail(Auth::user()->id);
 
@@ -59,29 +61,32 @@ class NotificationsSubmitHtmxController extends Controller
 
             $organization->selected = $notify;
 
-            $trooper->organizations()->updateExistingPivot($organization->id, [
-                'notify' => $notify,
-            ]);
+            $trooper->trooper_assignments()->updateOrCreate(
+                [TrooperAssignment::ORGANIZATION_ID => $organization->id],
+                [TrooperAssignment::NOTIFY => $notify]
+            );
 
-            foreach ($organization->regions as $region)
+            foreach ($organization->organizations as $region)
             {
                 $notify = isset($data['regions'][$region->id]['notification']);
 
                 $region->selected = $notify;
 
-                $trooper->regions()->updateExistingPivot($region->id, [
-                    'notify' => $notify,
-                ]);
+                $trooper->trooper_assignments()->updateOrCreate(
+                    [TrooperAssignment::ORGANIZATION_ID => $region->id],
+                    [TrooperAssignment::NOTIFY => $notify]
+                );
 
-                foreach ($region->units as $unit)
+                foreach ($region->organizations as $unit)
                 {
                     $notify = isset($data['units'][$unit->id]['notification']);
 
                     $unit->selected = $notify;
 
-                    $trooper->units()->updateExistingPivot($unit->id, [
-                        'notify' => $notify,
-                    ]);
+                    $trooper->trooper_assignments()->updateOrCreate(
+                        [TrooperAssignment::ORGANIZATION_ID => $unit->id],
+                        [TrooperAssignment::NOTIFY => $notify]
+                    );
                 }
             }
         }
