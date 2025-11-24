@@ -44,16 +44,21 @@ class RegisterSubmitController extends Controller
      */
     public function __invoke(RegisterRequest $request): RedirectResponse
     {
-        $auth_user_id = $this->auth->verify(
-            username: $request->username,
-            password: $request->password
-        );
+        $auth_user_id = null;
 
-        if ($auth_user_id == null)
+        if (config('tracker.plugins.type') != 'standalone')
         {
-            return back()
-                ->withInput()
-                ->withErrors(['username' => 'Invalid Credentials']);
+            $auth_user_id = $this->auth->verify(
+                username: $request->username,
+                password: $request->password
+            );
+
+            if ($auth_user_id == null)
+            {
+                return back()
+                    ->withInput()
+                    ->withErrors(['username' => 'Invalid Credentials']);
+            }
         }
 
         $this->register($request->validated(), $auth_user_id);

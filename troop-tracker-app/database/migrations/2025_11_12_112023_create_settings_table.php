@@ -29,8 +29,8 @@ return new class extends Migration
             // $table->text('sitemessage')->nullable();
 
             $table->timestamps();
-            $table->trooperstamps();
             $table->softDeletes();
+            $table->trooperstamps();
         });
     }
 

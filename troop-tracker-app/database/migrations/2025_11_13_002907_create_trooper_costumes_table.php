@@ -23,8 +23,8 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->timestamps();
-            $table->trooperstamps();
             $table->softDeletes();
+            $table->trooperstamps();
 
             // Prevent duplicate entries
             $table->unique(columns: ['trooper_id', 'costume_id']);

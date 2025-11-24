@@ -26,8 +26,8 @@ return new class extends Migration
             $table->boolean('excluded');
 
             $table->timestamps();
-            $table->trooperstamps();
             $table->softDeletes();
+            $table->trooperstamps();
 
             // Prevent duplicate entries
             $table->unique(columns: ['event_id', 'costume_id']);

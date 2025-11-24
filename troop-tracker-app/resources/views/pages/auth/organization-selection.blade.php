@@ -39,7 +39,8 @@
                       hx-indicator="#transmission-bar-register-organization" />
     </x-input-container>
 
-    @php($rid = old("organizations.{$organization->id}.region_id"))
+    @php($rid = $organization->organizations->where('selected', true)->first()->id ?? null)
+    @php($rid = old("organizations.{$organization->id}.region_id", $rid))
     @php($region = $organization->organizations->find($rid))
 
     <x-input-container id="unit-container-{{ $organization->id }}">

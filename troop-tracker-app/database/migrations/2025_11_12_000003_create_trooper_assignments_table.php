@@ -30,8 +30,8 @@ return new class extends Migration
             $table->string('membership_role', 16)->default(MembershipRole::Member->value);
 
             $table->timestamps();
-            $table->trooperstamps();
             $table->softDeletes();
+            $table->trooperstamps();
 
             // Prevent duplicate entries
             $table->unique(columns: ['trooper_id', 'organization_id']);

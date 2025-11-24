@@ -27,8 +27,8 @@ return new class extends Migration
             $table->string('identifier', 64);
 
             $table->timestamps();
-            $table->trooperstamps();
             $table->softDeletes();
+            $table->trooperstamps();
 
             // Prevent duplicate entries
             $table->unique(columns: ['trooper_id', 'organization_id']);

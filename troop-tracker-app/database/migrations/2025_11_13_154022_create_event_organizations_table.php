@@ -26,8 +26,8 @@ return new class extends Migration
             $table->integer('handlers_allowed')->default(500);
 
             $table->timestamps();
-            $table->trooperstamps();
             $table->softDeletes();
+            $table->trooperstamps();
 
             // Prevent duplicate entries
             $table->unique(columns: ['event_id', 'organization_id']);

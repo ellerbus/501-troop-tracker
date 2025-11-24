@@ -32,8 +32,8 @@ return new class extends Migration
             $table->string('description', 512)->nullable();
 
             $table->timestamps();
-            $table->trooperstamps();
             $table->softDeletes();
+            $table->trooperstamps();
 
             // Prevent duplicate entries
             $table->unique(['parent_id', 'name']);

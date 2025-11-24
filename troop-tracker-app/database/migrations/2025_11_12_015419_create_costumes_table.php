@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('name', 128);
 
             $table->timestamps();
-            $table->trooperstamps();
             $table->softDeletes();
+            $table->trooperstamps();
 
             $table->unique(['organization_id', 'name']);
         });

@@ -62,8 +62,8 @@ return new class extends Migration
             //     ->cascadeOnDelete();
 
             $table->timestamps();
-            $table->trooperstamps();
             $table->softDeletes();
+            $table->trooperstamps();
         });
     }
 

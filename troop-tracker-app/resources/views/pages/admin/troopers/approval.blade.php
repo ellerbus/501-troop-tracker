@@ -9,6 +9,8 @@
       <dd class="col-8">{{ $trooper->email }}</dd>
       <dt class="col-4">Phone:</dt>
       <dd class="col-8">{{ $trooper->phone ?? 'n/a' }}</dd>
+      <dt class="col-4">Role:</dt>
+      <dd class="col-8">{{ $trooper->membership_role }}</dd>
     </dl>
     <hr />
     <x-table>
@@ -18,11 +20,23 @@
           <th>Organization</th>
         </tr>
       </thead>
-      @foreach($trooper->getFlatOrganizationList() as $identifier => $organization)
+      @foreach($trooper->organizations as $organization)
       <tr>
-        <td>{{ $identifier }}</td>
-        <td>{{ $organization }}</td>
+        <td>{{ $organization->name }}</td>
+        <td>{{ $organization->identifier }}</td>
       </tr>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Organization</th>
+        </tr>
+      </thead>
+      @foreach($trooper->organizations as $organization)
+      <tr>
+        <td>{{ $organization->name }}</td>
+        <td>{{ $organization->identifier }}</td>
+      </tr>
+      @endforeach
       @endforeach
     </x-table>
 
