@@ -14,30 +14,34 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Handles the display of the main trooper dashboard.
+ * Class TrooperApprovalDisplayController
  *
- * This controller gathers various statistics for a trooper, such as troop counts by organization and costume, and displays them.
+ * Handles the display of troopers pending approval.
+ * @package App\Http\Controllers\Admin\Troopers
+ * This controller retrieves a list of troopers awaiting approval and displays them to authorized command staff.
  */
 class TrooperApprovalDisplayController extends Controller
 {
+    /**
+     * TrooperApprovalDisplayController constructor.
+     *
+     * @param BreadCrumbService $crumbs The breadcrumb service for managing navigation history.
+     */
     public function __construct(private readonly BreadCrumbService $crumbs)
     {
-
     }
 
     /**
-     * Handle the incoming request to display the dashboard page for a trooper.
+     * Handle the request to display the trooper approvals page.
      *
-     * Fetches all relevant statistics for a given trooper (or the authenticated user)
-     * and displays them on the main dashboard view. Redirects if the trooper is not found.
+     * This method retrieves all troopers with a 'pending' status. For non-admin users,
+     * it filters the list to show only troopers they are responsible for moderating.
      *
      * @param Request $request The incoming HTTP request.
-     * @return View|RedirectResponse The rendered dashboard page view or a redirect response.
+     * @return View|RedirectResponse A view containing the list of troopers pending approval.
      */
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $this->authorize('viewAny', Trooper::class);
-
         $this->crumbs->addRoute('Command Staff', 'admin.display');
         $this->crumbs->addRoute('Troopers', 'admin.troopers.display');
         $this->crumbs->add('Approvals');

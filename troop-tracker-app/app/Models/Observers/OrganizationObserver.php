@@ -15,26 +15,19 @@ class OrganizationObserver
     const SEP = ':';
 
     /**
-     * Handle the Organization "creating" event.
-     *
-     * @param Organization $organization The organization instance being created.
-     */
-    public function creating(Organization $organization): void
-    {
-        $organization->node_path = '';
-    }
-
-    /**
      * Handle the Organization "saved" event.
      *
      * @param Organization $organization The organization instance that was saved.
      */
     public function saved(Organization $organization): void
     {
-        $organization->updateQuietly([
-            'node_path' => $this->buildNodePath($organization),
-        ]);
+        $node_path = $this->buildNodePath($organization);
+        $depth = substr_count($node_path, self::SEP);
 
+        $organization->updateQuietly([
+            Organization::NODE_PATH => $node_path,
+            Organization::DEPTH => $depth,
+        ]);
     }
 
     /**

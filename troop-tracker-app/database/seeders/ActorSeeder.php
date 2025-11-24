@@ -8,7 +8,6 @@ use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
 use App\Models\Organization;
 use App\Models\Trooper;
-use App\Models\TrooperOrganization;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -34,7 +33,7 @@ class ActorSeeder extends Seeder
         {
             $organization = Organization::firstWhere(Organization::NAME, '501st Legion');
 
-            $actor->trooper_assignments()->save([
+            $actor->trooper_assignments()->create([
                 'organization_id' => $organization->id,
                 'membership_role' => MembershipRole::Member,
                 'membership_status' => MembershipStatus::Active,

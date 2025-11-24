@@ -37,6 +37,21 @@ class HasOrganizationScopesTest extends TestCase
         $this->assertTrue($results[0]->organizations->first()->relationLoaded('organizations'));
     }
 
+    public function test_scope_of_type_regions_returns_only_organizations(): void
+    {
+        // Arrange
+        $organization = Organization::factory()->create(['type' => OrganizationType::Organization]);
+        Organization::factory()->create(['type' => OrganizationType::Region]);
+        Organization::factory()->create(['type' => OrganizationType::Unit]);
+
+        // Act
+        $results = Organization::ofTypeOrganizations()->get();
+
+        // Assert
+        $this->assertCount(1, $results);
+        $this->assertTrue($results->first()->is($organization));
+    }
+
     public function test_scope_of_type_regions_returns_only_regions(): void
     {
         // Arrange

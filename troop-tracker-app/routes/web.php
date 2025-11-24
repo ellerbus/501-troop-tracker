@@ -15,6 +15,8 @@ use App\Http\Controllers\Admin\Troopers\TrooperApprovalDisplayController;
 use App\Http\Controllers\Admin\Troopers\TrooperApprovalSubmitHtmxController;
 use App\Http\Controllers\Admin\Troopers\TrooperDenialSubmitHtmxController;
 use App\Http\Controllers\Admin\Troopers\TrooperDisplayController;
+use App\Http\Controllers\Admin\Troopers\TrooperProfileDisplayController;
+use App\Http\Controllers\Admin\Troopers\TrooperProfileSubmitHtmxController;
 use App\Http\Controllers\Auth\LoginDisplayController;
 use App\Http\Controllers\Auth\LoginSubmitController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -96,6 +98,8 @@ Route::prefix('admin')
         Route::prefix('troopers')->name('troopers.')->group(function ()
         {
             Route::get('/display', TrooperDisplayController::class)->name('display');
+            Route::get('/trooper/{trooper}', TrooperProfileDisplayController::class)->name('trooper');
+            Route::post('/trooper/{trooper}/profile', TrooperProfileSubmitHtmxController::class)->name('profile-htmx');
             Route::get('/approvals', TrooperApprovalDisplayController::class)->name('approvals');
             Route::post('/approvals/{trooper}/approve', TrooperApprovalSubmitHtmxController::class)->name('approve-htmx');
             Route::post('/approvals/{trooper}/deny', TrooperDenialSubmitHtmxController::class)->name('deny-htmx');

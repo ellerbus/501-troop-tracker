@@ -9,6 +9,8 @@ namespace App\Enums;
  */
 enum TrooperEventStatus: string
 {
+    use HasEnumHelpers;
+
     /**
      * No status set.
      */

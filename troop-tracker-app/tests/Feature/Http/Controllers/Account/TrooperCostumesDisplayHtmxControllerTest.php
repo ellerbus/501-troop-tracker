@@ -33,8 +33,8 @@ class TrooperCostumesDisplayHtmxControllerTest extends TestCase
         $inactive_organization = Organization::factory()->create();
 
         $this->trooper = Trooper::factory()
-            ->withAssignment($this->active_organization, MembershipStatus::Active)
-            ->withAssignment($inactive_organization, MembershipStatus::Retired)
+            ->withAssignment($this->active_organization, status: MembershipStatus::Active)
+            ->withAssignment($inactive_organization, status: MembershipStatus::Retired)
             ->withCostume($this->trooper_costume)
             ->create();
     }

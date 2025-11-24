@@ -9,6 +9,8 @@ namespace App\Enums;
  */
 enum OrganizationType: string
 {
+    use HasEnumHelpers;
+
     /**
      * The top-level entity, like '501st Legion'.
      */

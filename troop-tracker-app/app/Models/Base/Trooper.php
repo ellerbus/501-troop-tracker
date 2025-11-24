@@ -117,7 +117,7 @@ class Trooper extends Model
     public function events(): BelongsToMany
     {
         return $this->belongsToMany(Event::class, 'tt_event_troopers')
-                    ->withPivot(EventTrooper::ID, EventTrooper::COSTUME_ID, EventTrooper::BACKUP_COSTUME_ID, EventTrooper::ADDED_BY_TROOPER_ID, EventTrooper::STATUS, EventTrooper::CREATED_ID, EventTrooper::UPDATED_ID, EventTrooper::DELETED_ID, EventTrooper::DELETED_AT)
+                    ->withPivot(EventTrooper::ID, EventTrooper::COSTUME_ID, EventTrooper::BACKUP_COSTUME_ID, EventTrooper::ADDED_BY_TROOPER_ID, EventTrooper::STATUS, EventTrooper::DELETED_AT, EventTrooper::CREATED_ID, EventTrooper::UPDATED_ID, EventTrooper::DELETED_ID)
                     ->withTimestamps();
     }
 
@@ -144,14 +144,14 @@ class Trooper extends Model
     public function awards(): BelongsToMany
     {
         return $this->belongsToMany(Award::class, 'tt_trooper_awards')
-                    ->withPivot(TrooperAward::ID, TrooperAward::CREATED_ID, TrooperAward::UPDATED_ID, TrooperAward::DELETED_ID, TrooperAward::DELETED_AT)
+                    ->withPivot(TrooperAward::ID, TrooperAward::DELETED_AT, TrooperAward::CREATED_ID, TrooperAward::UPDATED_ID, TrooperAward::DELETED_ID)
                     ->withTimestamps();
     }
 
     public function costumes(): BelongsToMany
     {
         return $this->belongsToMany(Costume::class, 'tt_trooper_costumes')
-                    ->withPivot(TrooperCostume::ID, TrooperCostume::CREATED_ID, TrooperCostume::UPDATED_ID, TrooperCostume::DELETED_ID, TrooperCostume::DELETED_AT)
+                    ->withPivot(TrooperCostume::ID, TrooperCostume::DELETED_AT, TrooperCostume::CREATED_ID, TrooperCostume::UPDATED_ID, TrooperCostume::DELETED_ID)
                     ->withTimestamps();
     }
 
@@ -163,7 +163,7 @@ class Trooper extends Model
     public function organizations(): BelongsToMany
     {
         return $this->belongsToMany(Organization::class, 'tt_trooper_organizations')
-                    ->withPivot(TrooperOrganization::ID, TrooperOrganization::IDENTIFIER, TrooperOrganization::CREATED_ID, TrooperOrganization::UPDATED_ID, TrooperOrganization::DELETED_ID, TrooperOrganization::DELETED_AT)
+                    ->withPivot(TrooperOrganization::ID, TrooperOrganization::IDENTIFIER, TrooperOrganization::DELETED_AT, TrooperOrganization::CREATED_ID, TrooperOrganization::UPDATED_ID, TrooperOrganization::DELETED_ID)
                     ->withTimestamps();
     }
 }

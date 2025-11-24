@@ -34,14 +34,14 @@
       </thead>
       @foreach($trooper->trooper_assignments->filter(fn($a) => is_null($a->organization->parent_id)) as $org_asg)
       <tr>
-        <td class="ps-{{ substr_count($org_asg->organization->node_path, ':') }}">
+        <td class="ps-{{ $org_asg->organization->depth }}">
           {{ $org_asg->organization->name }}
         </td>
         <td>{{ $org_asg->membership_role }}</td>
       </tr>
       @foreach($trooper->trooper_assignments->filter(fn($a) => $a->organization->parent_id == $org_asg->organization_id) as $reg_asg)
       <tr>
-        <td class="ps-{{ substr_count($reg_asg->organization->node_path, ':') }}">
+        <td class="ps-{{ $reg_asg->organization->depth }}">
           <i class="fa fa-fw fa-caret-right"></i>
           {{ $reg_asg->organization->name }}
         </td>
@@ -49,7 +49,7 @@
       </tr>
       @foreach($trooper->trooper_assignments->filter(fn($a) => $a->organization->parent_id == $reg_asg->organization_id) as $unit_asg)
       <tr>
-        <td class="ps-{{ substr_count($unit_asg->organization->node_path, ':') }}">
+        <td class="ps-{{ $unit_asg->organization->depth }}">
           <i class="fa fa-fw fa-caret-right"></i>
           <i class="fa fa-fw fa-caret-right"></i>
           {{ $unit_asg->organization->name }}

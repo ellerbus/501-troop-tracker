@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Observers;
 
-use App\Models\Observers\OrganizationObserver;
 use App\Models\Organization;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -12,29 +11,6 @@ use Tests\TestCase;
 class OrganizationObserverTest extends TestCase
 {
     use RefreshDatabase;
-
-    public function test_creating_event_sets_node_path_to_empty_string(): void
-    {
-        // Arrange
-        $subject = new OrganizationObserver();
-        $organization = new Organization();
-
-        // Act
-        $subject->creating($organization);
-
-        // Assert
-        $this->assertSame('', $organization->node_path);
-    }
-
-    public function test_created_event_sets_node_path(): void
-    {
-        // Arrange
-        // Act
-        $organization = Organization::factory()->create();
-
-        // Assert
-        $this->assertSame("{$organization->id}:", $organization->node_path);
-    }
 
     public function test_created_event_assigns_correct_node_path(): void
     {
@@ -46,6 +22,7 @@ class OrganizationObserverTest extends TestCase
 
         // Assert
         $this->assertSame("{$parent->id}:{$child->id}:", $child->node_path);
+        $this->assertEquals(2, $child->depth);
     }
 
     public function test_created_event_assigns_correct_node_path_for_root_node(): void
@@ -55,6 +32,7 @@ class OrganizationObserverTest extends TestCase
 
         // Assert
         $this->assertSame($organization->id . ':', $organization->node_path);
+        $this->assertEquals(1, $organization->depth);
     }
 
     public function test_updating_event_reassigns_correct_node_path(): void
@@ -74,5 +52,6 @@ class OrganizationObserverTest extends TestCase
 
         // Assert
         $this->assertSame("{$new_parent->id}:{$child->id}:", $child->node_path);
+        $this->assertEquals(2, $child->depth);
     }
 }

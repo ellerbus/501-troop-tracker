@@ -62,6 +62,28 @@ class TrooperFactory extends Factory
         ]);
     }
 
+    public function asAdmin(): static
+    {
+        return $this->withMemberShipRole(MembershipRole::Admin);
+    }
+
+    public function asModerator(): static
+    {
+        return $this->withMemberShipRole(MembershipRole::Moderator);
+    }
+
+    public function asMember(): static
+    {
+        return $this->withMemberShipRole(MembershipRole::Member);
+    }
+
+    private function withMemberShipRole(MembershipRole $role = MembershipRole::Member): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'membership_role' => $role,
+        ]);
+    }
+
     public function withOrganization(Organization $organization, string $identifier = 'TK9999'): static
     {
         return $this->afterCreating(function (Trooper $trooper) use ($organization, $identifier)
@@ -72,12 +94,13 @@ class TrooperFactory extends Factory
         });
     }
 
-    public function withAssignment(Organization $organization, MembershipStatus $status = MembershipStatus::Active, bool $notify = false): static
+    public function withAssignment(Organization $organization, MembershipRole $role = MembershipRole::Member, MembershipStatus $status = MembershipStatus::Active, bool $notify = false): static
     {
-        return $this->afterCreating(function (Trooper $trooper) use ($organization, $status, $notify)
+        return $this->afterCreating(function (Trooper $trooper) use ($organization, $role, $status, $notify)
         {
             $trooper->trooper_assignments()->create([
                 'organization_id' => $organization->id,
+                'membership_role' => $role,
                 'membership_status' => $status,
                 'notify' => $notify
             ]);

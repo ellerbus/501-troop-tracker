@@ -23,11 +23,13 @@ return new class extends Migration
 
             $table->string('name', 64);
             $table->string('type', 16);
+            $table->integer('depth')->default(0);
+            $table->integer('sequence')->default(0);
+            $table->string('node_path', 128)->default('');
             $table->string('identifier_display', 64)->nullable();
             $table->string('identifier_validation', 64)->nullable();
             $table->string('image_path_lg', 128)->nullable();
             $table->string('image_path_sm', 128)->nullable();
-            $table->string('node_path', 128);
 
             $table->string('description', 512)->nullable();
 

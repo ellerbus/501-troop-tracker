@@ -28,10 +28,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $name
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  * @property int|null $created_id
  * @property int|null $updated_id
  * @property int|null $deleted_id
- * @property string|null $deleted_at
  * 
  * @property Organization $organization
  * @property Collection|Event[] $events
@@ -48,10 +48,10 @@ class Costume extends Model
     const NAME = 'name';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
+    const DELETED_AT = 'deleted_at';
     const CREATED_ID = 'created_id';
     const UPDATED_ID = 'updated_id';
     const DELETED_ID = 'deleted_id';
-    const DELETED_AT = 'deleted_at';
     protected $table = 'tt_costumes';
 
     protected $casts = [
@@ -77,7 +77,7 @@ class Costume extends Model
     public function events(): BelongsToMany
     {
         return $this->belongsToMany(Event::class, 'tt_event_costumes')
-                    ->withPivot(EventCostume::ID, EventCostume::REQUESTED, EventCostume::EXCLUDED, EventCostume::CREATED_ID, EventCostume::UPDATED_ID, EventCostume::DELETED_ID, EventCostume::DELETED_AT)
+                    ->withPivot(EventCostume::ID, EventCostume::REQUESTED, EventCostume::EXCLUDED, EventCostume::DELETED_AT, EventCostume::CREATED_ID, EventCostume::UPDATED_ID, EventCostume::DELETED_ID)
                     ->withTimestamps();
     }
 
@@ -89,7 +89,7 @@ class Costume extends Model
     public function troopers(): BelongsToMany
     {
         return $this->belongsToMany(Trooper::class, 'tt_trooper_costumes')
-                    ->withPivot(TrooperCostume::ID, TrooperCostume::CREATED_ID, TrooperCostume::UPDATED_ID, TrooperCostume::DELETED_ID, TrooperCostume::DELETED_AT)
+                    ->withPivot(TrooperCostume::ID, TrooperCostume::DELETED_AT, TrooperCostume::CREATED_ID, TrooperCostume::UPDATED_ID, TrooperCostume::DELETED_ID)
                     ->withTimestamps();
     }
 }

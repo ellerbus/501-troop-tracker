@@ -14,8 +14,8 @@ trait HasTrooperPermissionsTrait
         return $trooper->membership_role == MembershipRole::Admin;
     }
 
-    protected function isModerator(Trooper $trooper): bool
-    {
-        return $this->isAdmin($trooper) || $trooper->membership_role == MembershipRole::Moderator;
-    }
+    // protected function isModeratorOf(Trooper $trooper, ?): bool
+    // {
+    //     return $this->isAdmin($trooper) || $trooper->membership_role == MembershipRole::Moderator;
+    // }
 }

@@ -22,10 +22,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $identifier
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  * @property int|null $created_id
  * @property int|null $updated_id
  * @property int|null $deleted_id
- * @property string|null $deleted_at
  * 
  * @property Organization $organization
  * @property Trooper $trooper
@@ -41,10 +41,10 @@ class TrooperOrganization extends Model
     const IDENTIFIER = 'identifier';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
+    const DELETED_AT = 'deleted_at';
     const CREATED_ID = 'created_id';
     const UPDATED_ID = 'updated_id';
     const DELETED_ID = 'deleted_id';
-    const DELETED_AT = 'deleted_at';
     protected $table = 'tt_trooper_organizations';
 
     protected $casts = [

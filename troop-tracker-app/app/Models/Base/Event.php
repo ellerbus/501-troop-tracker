@@ -37,10 +37,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null $total_handlers_allowed
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  * @property int|null $created_id
  * @property int|null $updated_id
  * @property int|null $deleted_id
- * @property string|null $deleted_at
  * 
  * @property Collection|Costume[] $costumes
  * @property Collection|Organization[] $organizations
@@ -66,10 +66,10 @@ class Event extends Model
     const TOTAL_HANDLERS_ALLOWED = 'total_handlers_allowed';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
+    const DELETED_AT = 'deleted_at';
     const CREATED_ID = 'created_id';
     const UPDATED_ID = 'updated_id';
     const DELETED_ID = 'deleted_id';
-    const DELETED_AT = 'deleted_at';
     protected $table = 'tt_events';
 
     protected $casts = [
@@ -107,21 +107,21 @@ class Event extends Model
     public function costumes(): BelongsToMany
     {
         return $this->belongsToMany(Costume::class, 'tt_event_costumes')
-                    ->withPivot(EventCostume::ID, EventCostume::REQUESTED, EventCostume::EXCLUDED, EventCostume::CREATED_ID, EventCostume::UPDATED_ID, EventCostume::DELETED_ID, EventCostume::DELETED_AT)
+                    ->withPivot(EventCostume::ID, EventCostume::REQUESTED, EventCostume::EXCLUDED, EventCostume::DELETED_AT, EventCostume::CREATED_ID, EventCostume::UPDATED_ID, EventCostume::DELETED_ID)
                     ->withTimestamps();
     }
 
     public function organizations(): BelongsToMany
     {
         return $this->belongsToMany(Organization::class, 'tt_event_organizations')
-                    ->withPivot(EventOrganization::ID, EventOrganization::TROOPERS_ALLOWED, EventOrganization::HANDLERS_ALLOWED, EventOrganization::CREATED_ID, EventOrganization::UPDATED_ID, EventOrganization::DELETED_ID, EventOrganization::DELETED_AT)
+                    ->withPivot(EventOrganization::ID, EventOrganization::TROOPERS_ALLOWED, EventOrganization::HANDLERS_ALLOWED, EventOrganization::DELETED_AT, EventOrganization::CREATED_ID, EventOrganization::UPDATED_ID, EventOrganization::DELETED_ID)
                     ->withTimestamps();
     }
 
     public function troopers(): BelongsToMany
     {
         return $this->belongsToMany(Trooper::class, 'tt_event_troopers')
-                    ->withPivot(EventTrooper::ID, EventTrooper::COSTUME_ID, EventTrooper::BACKUP_COSTUME_ID, EventTrooper::ADDED_BY_TROOPER_ID, EventTrooper::STATUS, EventTrooper::CREATED_ID, EventTrooper::UPDATED_ID, EventTrooper::DELETED_ID, EventTrooper::DELETED_AT)
+                    ->withPivot(EventTrooper::ID, EventTrooper::COSTUME_ID, EventTrooper::BACKUP_COSTUME_ID, EventTrooper::ADDED_BY_TROOPER_ID, EventTrooper::STATUS, EventTrooper::DELETED_AT, EventTrooper::CREATED_ID, EventTrooper::UPDATED_ID, EventTrooper::DELETED_ID)
                     ->withTimestamps();
     }
 

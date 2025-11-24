@@ -66,7 +66,7 @@ class HasTrooperScopesTest extends TestCase
         $candidate->trooper_assignments()->create(['organization_id' => $organization->id]);
 
         // Act
-        $results = Trooper::approvableBy($moderator)->get();
+        $results = Trooper::moderatedBy($moderator)->get();
 
         // Assert
         $this->assertCount(2, $results);
@@ -90,7 +90,7 @@ class HasTrooperScopesTest extends TestCase
         $candidate->trooper_assignments()->create(['organization_id' => $child_org->id]);
 
         // Act
-        $results = Trooper::approvableBy($moderator)->get();
+        $results = Trooper::moderatedBy($moderator)->get();
 
         // Assert
         $this->assertCount(2, $results);
@@ -114,7 +114,7 @@ class HasTrooperScopesTest extends TestCase
         $candidate->trooper_assignments()->create(['organization_id' => $org2->id]);
 
         // Act
-        $results = Trooper::approvableBy($moderator)->get();
+        $results = Trooper::moderatedBy($moderator)->get();
 
         // Assert
         $this->assertCount(1, $results);
@@ -137,7 +137,7 @@ class HasTrooperScopesTest extends TestCase
         $candidate->trooper_assignments()->create(['organization_id' => $parent_org->id]);
 
         // Act
-        $results = Trooper::approvableBy($moderator)->get();
+        $results = Trooper::moderatedBy($moderator)->get();
 
         // Assert
         $this->assertCount(1, $results);

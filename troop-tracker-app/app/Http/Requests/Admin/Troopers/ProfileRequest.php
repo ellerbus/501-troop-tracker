@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Account;
+namespace App\Http\Requests\Admin\Troopers;
 
+use App\Enums\MembershipRole;
+use App\Enums\MembershipStatus;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Validation\Validator as ValidatorInterface;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Validator;
@@ -26,7 +29,14 @@ class ProfileRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $trooper = $this->route('trooper');
+
+        if ($trooper == null)
+        {
+            throw new AuthorizationException('Trooper not found or unauthorized.');
+        }
+
+        return $this->user()->can('update', $trooper);
     }
 
     /**
@@ -40,6 +50,8 @@ class ProfileRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:240'],
             'phone' => ['nullable', 'string', 'max:10'],
+            'membership_status' => ['nullable', 'string', 'max:16', 'in:' . MembershipStatus::toValidator()],
+            'membership_role' => ['nullable', 'string', 'max:16', 'in:' . MembershipRole::toValidator()],
         ];
 
         return $rules;

@@ -9,6 +9,8 @@ namespace App\Enums;
  */
 enum MembershipStatus: string
 {
+    use HasEnumHelpers;
+
     /**
      * Not a member of the organization.
      */

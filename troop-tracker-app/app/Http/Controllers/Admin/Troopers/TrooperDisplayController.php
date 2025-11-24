@@ -11,6 +11,7 @@ use App\Services\BreadCrumbService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -36,26 +37,27 @@ class TrooperDisplayController extends Controller
      */
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $this->authorize('viewAny', Trooper::class);
-
         $this->crumbs->addRoute('Command Staff', 'admin.display');
         $this->crumbs->add('Troopers');
 
-        $trooper = Auth::user();
-
-        $query = Trooper::query()->orderBy(Trooper::NAME);
-
-        if ($trooper->membership_role != MembershipRole::Admin)
-        {
-            $query = $query->moderatedBy($trooper);
-        }
-
-        $troopers = $query->get();
+        $troopers = $this->getTroopers();
 
         $data = [
             'troopers' => $troopers
         ];
 
         return view('pages.admin.troopers.display', $data);
+    }
+
+    private function getTroopers(): Collection
+    {
+        $trooper = Auth::user();
+
+        if ($trooper->membership_role == MembershipRole::Admin)
+        {
+            return Trooper::orderBy(Trooper::NAME)->get();
+        }
+
+        return Trooper::moderatedBy($trooper)->orderBy(Trooper::NAME)->get();
     }
 }

@@ -29,6 +29,17 @@ trait HasOrganizationScopes
     }
 
     /**
+     * Scope a query to only include organizations of the 'organization' type.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query The Eloquent query builder.
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOfTypeOrganizations(Builder $query): Builder
+    {
+        return $query->where(self::TYPE, OrganizationType::Organization);
+    }
+
+    /**
      * Scope a query to only include organizations of the 'region' type.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query The Eloquent query builder.

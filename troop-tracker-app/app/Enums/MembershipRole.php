@@ -9,6 +9,8 @@ namespace App\Enums;
  */
 enum MembershipRole: string
 {
+    use HasEnumHelpers;
+
     /**
      * An regular member.
      */

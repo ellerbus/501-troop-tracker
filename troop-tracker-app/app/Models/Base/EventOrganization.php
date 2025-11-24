@@ -23,10 +23,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $handlers_allowed
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  * @property int|null $created_id
  * @property int|null $updated_id
  * @property int|null $deleted_id
- * @property string|null $deleted_at
  * 
  * @property Event $event
  * @property Organization $organization
@@ -43,10 +43,10 @@ class EventOrganization extends Model
     const HANDLERS_ALLOWED = 'handlers_allowed';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
+    const DELETED_AT = 'deleted_at';
     const CREATED_ID = 'created_id';
     const UPDATED_ID = 'updated_id';
     const DELETED_ID = 'deleted_id';
-    const DELETED_AT = 'deleted_at';
     protected $table = 'tt_event_organizations';
 
     protected $casts = [

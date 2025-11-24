@@ -13,6 +13,8 @@ namespace App\Enums;
  */
 enum AuthenticationStatus: string
 {
+    use HasEnumHelpers;
+
     /**
      * The user provided valid credentials and is allowed to log in.
      */

@@ -27,18 +27,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null $parent_id
  * @property string $name
  * @property string $type
+ * @property int $depth
+ * @property int $sequence
+ * @property string $node_path
  * @property string|null $identifier_display
  * @property string|null $identifier_validation
  * @property string|null $image_path_lg
  * @property string|null $image_path_sm
- * @property string $node_path
  * @property string|null $description
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
  * @property int|null $created_id
  * @property int|null $updated_id
  * @property int|null $deleted_id
- * @property string|null $deleted_at
  * 
  * @property \App\Models\Organization|null $organization
  * @property Collection|Costume[] $costumes
@@ -56,23 +58,27 @@ class Organization extends Model
     const PARENT_ID = 'parent_id';
     const NAME = 'name';
     const TYPE = 'type';
+    const DEPTH = 'depth';
+    const SEQUENCE = 'sequence';
+    const NODE_PATH = 'node_path';
     const IDENTIFIER_DISPLAY = 'identifier_display';
     const IDENTIFIER_VALIDATION = 'identifier_validation';
     const IMAGE_PATH_LG = 'image_path_lg';
     const IMAGE_PATH_SM = 'image_path_sm';
-    const NODE_PATH = 'node_path';
     const DESCRIPTION = 'description';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
+    const DELETED_AT = 'deleted_at';
     const CREATED_ID = 'created_id';
     const UPDATED_ID = 'updated_id';
     const DELETED_ID = 'deleted_id';
-    const DELETED_AT = 'deleted_at';
     protected $table = 'tt_organizations';
 
     protected $casts = [
         self::ID => 'int',
         self::PARENT_ID => 'int',
+        self::DEPTH => 'int',
+        self::SEQUENCE => 'int',
         self::CREATED_AT => 'datetime',
         self::UPDATED_AT => 'datetime',
         self::CREATED_ID => 'int',
@@ -84,11 +90,13 @@ class Organization extends Model
         self::PARENT_ID,
         self::NAME,
         self::TYPE,
+        self::DEPTH,
+        self::SEQUENCE,
+        self::NODE_PATH,
         self::IDENTIFIER_DISPLAY,
         self::IDENTIFIER_VALIDATION,
         self::IMAGE_PATH_LG,
         self::IMAGE_PATH_SM,
-        self::NODE_PATH,
         self::DESCRIPTION
     ];
 
@@ -105,7 +113,7 @@ class Organization extends Model
     public function events(): BelongsToMany
     {
         return $this->belongsToMany(Event::class, 'tt_event_organizations')
-                    ->withPivot(EventOrganization::ID, EventOrganization::TROOPERS_ALLOWED, EventOrganization::HANDLERS_ALLOWED, EventOrganization::CREATED_ID, EventOrganization::UPDATED_ID, EventOrganization::DELETED_ID, EventOrganization::DELETED_AT)
+                    ->withPivot(EventOrganization::ID, EventOrganization::TROOPERS_ALLOWED, EventOrganization::HANDLERS_ALLOWED, EventOrganization::DELETED_AT, EventOrganization::CREATED_ID, EventOrganization::UPDATED_ID, EventOrganization::DELETED_ID)
                     ->withTimestamps();
     }
 
@@ -122,7 +130,7 @@ class Organization extends Model
     public function troopers(): BelongsToMany
     {
         return $this->belongsToMany(Trooper::class, 'tt_trooper_organizations')
-                    ->withPivot(TrooperOrganization::ID, TrooperOrganization::IDENTIFIER, TrooperOrganization::CREATED_ID, TrooperOrganization::UPDATED_ID, TrooperOrganization::DELETED_ID, TrooperOrganization::DELETED_AT)
+                    ->withPivot(TrooperOrganization::ID, TrooperOrganization::IDENTIFIER, TrooperOrganization::DELETED_AT, TrooperOrganization::CREATED_ID, TrooperOrganization::UPDATED_ID, TrooperOrganization::DELETED_ID)
                     ->withTimestamps();
     }
 }
