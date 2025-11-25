@@ -2,13 +2,12 @@
 @php
 $haserror = $errors->has($property);
 $selected_value = old($property, $value);
-$bracketed = preg_replace('/\.(\d+)/', '[$1]', $property);
-$bracketed = preg_replace('/\.(\w+)/', '[$1]', $bracketed);
+$bracketed = to_bracket_name( $property);
 @endphp
 <select name="{{ $bracketed }}"
         id="{{ $property }}"
-        {{$disabled?'disabled':''}}
-        {!!$attributes->merge(['class'=>'form-select' . ($haserror ? ' is-invalid' : '')])!!}>
+        @disabled($disabled)
+        {{$attributes->merge(['class'=>'form-select' . ($haserror ? ' is-invalid' : '')])}}>
   {{ $slot }}
   @if($optional)
   <option value=""></option>

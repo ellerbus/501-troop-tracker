@@ -24,7 +24,7 @@ trait HasEventScopes
      * @param bool $closed True to fetch closed (historical) events, false for open events.
      * @return Builder<self>
      */
-    public function scopeByTrooper(Builder $query, int $trooper_id, bool $closed): Builder
+    protected function scopeByTrooper(Builder $query, int $trooper_id, bool $closed): Builder
     {
         $with = [
             'event_troopers' => function ($q) use ($trooper_id)

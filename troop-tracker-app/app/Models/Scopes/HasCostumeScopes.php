@@ -19,7 +19,7 @@ trait HasCostumeScopes
      * @param array<int> $costume_ids An array of costume IDs to exclude from the query results.
      * @return Builder<self>
      */
-    public function scopeExcluding(Builder $query, Collection|array $costume_ids): Builder
+    protected function scopeExcluding(Builder $query, Collection|array $costume_ids): Builder
     {
         return $query->whereNotIn(self::ID, $costume_ids);
     }

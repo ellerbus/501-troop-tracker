@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin\Troopers;
 
+use App\Enums\MembershipRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Troopers\ProfileRequest;
 use App\Models\Trooper;
@@ -52,6 +53,14 @@ class TrooperProfileSubmitHtmxController extends Controller
                 'trooper' => $trooper
             ];
 
+            if ($trooper->wasChanged(Trooper::MEMBERSHIP_ROLE))
+            {
+                if ($trooper->membership_role == MembershipRole::Moderator)
+                {
+                    // return response('ok')->header('HX-Refresh', 'true');
+                }
+            }
+
             return response()
                 ->view('pages.admin.troopers.profile', $data)
                 ->header('X-Flash-Message', $message);
@@ -64,7 +73,9 @@ class TrooperProfileSubmitHtmxController extends Controller
 
             view()->share('errors', $errors);
 
-            $data = $request->only('name', 'email', 'phone');
+            $data = [
+                'trooper' => $trooper
+            ];
 
             $message = json_encode([
                 'message' => 'Please fix the validation errors',

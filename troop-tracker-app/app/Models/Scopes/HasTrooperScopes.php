@@ -47,7 +47,7 @@ trait HasTrooperScopes
      * @param Trooper $moderator
      * @return Builder
      */
-    public function scopeModeratedBy(Builder $query, Trooper $moderator): Builder
+    protected function scopeModeratedBy(Builder $query, Trooper $moderator): Builder
     {
         return $query->whereExists(function ($sub) use ($moderator)
         {

@@ -23,7 +23,7 @@
     @foreach ($tabs as $tab)
     <option value="{{ $tab['label'] }}"
             data-href="{{ route($tab['route'], $tab['parms'] ?? []) }}"
-            {!!$tab['active']??false?'selected':''!!}>
+            {{$tab['active']??false?'selected':''}}>
       {{ $tab['label'] }}
     </option>
     @endforeach

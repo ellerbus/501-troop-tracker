@@ -7,6 +7,7 @@ namespace App\Models\Scopes;
 use App\Enums\MembershipStatus;
 use App\Enums\OrganizationType;
 use App\Models\Organization;
+use App\Models\TrooperAssignment;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -18,23 +19,23 @@ trait HasOrganizationScopes
      * Scope a query to eager load the full organization hierarchy, starting from top-level organizations.
      * This loads up to three levels deep (organization -> region -> unit).
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query The Eloquent query builder.
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder<Organization> $query The Eloquent query builder.
+     * @return Builder<Organization>
      */
-    public function scopeFullyLoaded(Builder $query): Builder
+    protected function scopeFullyLoaded(Builder $query): Builder
     {
         return $query->with('organizations.organizations.organizations')
             ->where('type', OrganizationType::Organization)
-            ->orderBy(Organization::NAME);
+            ->orderBy(self::NAME);
     }
 
     /**
      * Scope a query to only include organizations of the 'organization' type.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query The Eloquent query builder.
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder<Organization> $query The Eloquent query builder.
+     * @return Builder<Organization>
      */
-    public function scopeOfTypeOrganizations(Builder $query): Builder
+    protected function scopeOfTypeOrganizations(Builder $query): Builder
     {
         return $query->where(self::TYPE, OrganizationType::Organization);
     }
@@ -42,10 +43,10 @@ trait HasOrganizationScopes
     /**
      * Scope a query to only include organizations of the 'region' type.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query The Eloquent query builder.
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder<Organization> $query The Eloquent query builder.
+     * @return Builder<Organization>
      */
-    public function scopeOfTypeRegions(Builder $query): Builder
+    protected function scopeOfTypeRegions(Builder $query): Builder
     {
         return $query->where(self::TYPE, OrganizationType::Region);
     }
@@ -53,10 +54,10 @@ trait HasOrganizationScopes
     /**
      * Scope a query to only include organizations of the 'unit' type.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query The Eloquent query builder.
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder<Organization> $query The Eloquent query builder.
+     * @return Builder<Organization>
      */
-    public function scopeOfTypeUnits(Builder $query): Builder
+    protected function scopeOfTypeUnits(Builder $query): Builder
     {
         return $query->where(self::TYPE, OrganizationType::Unit);
     }
@@ -64,11 +65,11 @@ trait HasOrganizationScopes
     /**
      * Scope a query to only include top-level organizations that have active trooper assignments.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query The Eloquent query builder.
+     * @param Builder<Organization> $query The Eloquent query builder.
      * @param int|null $trooper_id If provided, filters to organizations where this specific trooper is active.
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder<Organization>
      */
-    public function scopeWithActiveTroopers(Builder $query, ?int $trooper_id = null): Builder
+    protected function scopeWithActiveTroopers(Builder $query, ?int $trooper_id = null): Builder
     {
         return $query
             ->orderBy(self::NAME)
@@ -82,5 +83,22 @@ trait HasOrganizationScopes
                     $q->where('trooper_id', $trooper_id);
                 }
             });
+    }
+
+    /**
+     * Scope a query to eager load all assignments for a specific trooper.
+     *
+     * @param Builder<Organization> $query The Eloquent query builder.
+     * @param int $trooper_id The ID of the trooper whose assignments should be loaded.
+     * @return Builder<Organization>
+     */
+    protected function scopeWithAllAssignments(Builder $query, int $trooper_id): Builder
+    {
+        return $query->with([
+            'trooper_assignments' => function ($q) use ($trooper_id)
+            {
+                $q->where(TrooperAssignment::TROOPER_ID, $trooper_id);
+            }
+        ]);
     }
 }

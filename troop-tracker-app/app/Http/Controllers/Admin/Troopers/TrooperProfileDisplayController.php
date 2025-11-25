@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Troopers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Organization;
 use App\Models\Trooper;
 use App\Services\BreadCrumbService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 /**
  * Class TrooperProfileDisplayController
@@ -47,10 +49,20 @@ class TrooperProfileDisplayController extends Controller
         $this->crumbs->addRoute('Troopers', 'admin.troopers.display');
         $this->crumbs->add('Trooper');
 
+        $organization_assignments = $this->getOrganizationAssignments($trooper);
+
         $data = [
-            'trooper' => $trooper
+            'trooper' => $trooper,
+            'organization_assignments' => $organization_assignments,
         ];
 
         return view('pages.admin.troopers.trooper', $data);
+    }
+
+    private function getOrganizationAssignments(Trooper $trooper): Collection
+    {
+        return Organization::withAllAssignments($trooper->id)
+            ->orderBy(Organization::SEQUENCE)
+            ->get();
     }
 }

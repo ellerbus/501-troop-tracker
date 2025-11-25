@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait HasTrooperAwardScopes
 {
-    public function scopeByTrooper(Builder $query, int $trooper_id): Builder
+    protected function scopeByTrooper(Builder $query, int $trooper_id): Builder
     {
         return $query->with('award')
             ->where(self::TROOPER_ID, $trooper_id)

@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
  *
  * This controller gathers various statistics for a trooper, such as troop counts by organization and costume, and displays them.
  */
-class TrooperDisplayController extends Controller
+class TroopersDisplayController extends Controller
 {
     public function __construct(private readonly BreadCrumbService $crumbs)
     {

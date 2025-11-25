@@ -9,6 +9,18 @@ use Illuminate\Support\Str;
 if (!function_exists('setting'))
 {
     /**
+     * Convert a property.name to a bracketed[name]
+     * @param string $property
+     * @return array|string|null
+     */
+    function to_bracket_name(string $property)
+    {
+        $bracketed = preg_replace('/\.(\d+)/', '[$1]', $property);
+        $bracketed = preg_replace('/\.(\w+)/', '[$1]', $bracketed);
+        return $bracketed;
+    }
+
+    /**
      * Retrieve a setting value from the database with optional default and type casting.
      *
      * @param string $key
@@ -45,6 +57,5 @@ if (!function_exists('setting'))
         );
 
         return $cast($value ?? $default);
-
     }
 }

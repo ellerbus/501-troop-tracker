@@ -13,9 +13,14 @@ trait HasEnumHelpers
      */
     public static function toArray(): array
     {
+        $cases = self::cases();
+
+        // Sort by case->name
+        usort($cases, fn($a, $b) => strcmp($a->name, $b->name));
+
         $pairs = [];
 
-        foreach (self::cases() as $case)
+        foreach ($cases as $case)
         {
             $pairs[$case->value] = $case->name;
         }
@@ -30,9 +35,14 @@ trait HasEnumHelpers
      */
     public static function toValidator(): string
     {
+        $cases = self::cases();
+
+        // Sort by case->name
+        usort($cases, fn($a, $b) => strcmp($a->name, $b->name));
+
         $values = [];
 
-        foreach (self::cases() as $case)
+        foreach ($cases as $case)
         {
             $values[] = $case->value;
         }

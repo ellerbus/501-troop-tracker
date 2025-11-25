@@ -19,7 +19,7 @@ trait HasTrooperDonationScopes
      * @param int $trooper_id The ID of the trooper to filter by.
      * @return Builder<self>
      */
-    public function scopeByTrooper(Builder $query, int $trooper_id): Builder
+    protected function scopeByTrooper(Builder $query, int $trooper_id): Builder
     {
         return $query->where(self::TROOPER_ID, $trooper_id)
             ->orderBy(self::CREATED_AT, "desc");
@@ -32,7 +32,7 @@ trait HasTrooperDonationScopes
      * @param Carbon|null $date The date to determine the month. Defaults to the current month.
      * @return Builder<self>
      */
-    public function scopeForMonth(Builder $query, Carbon $date = null): Builder
+    protected function scopeForMonth(Builder $query, Carbon $date = null): Builder
     {
         $start_date = ($date ?? Carbon::now())->startOfMonth();
 
