@@ -4,14 +4,19 @@
 
 <x-transmission-bar :id="'trooper'" />
 
-<div>
-  @include('pages.admin.troopers.profile',['trooper'=>$trooper])
-</div>
-<div>
+<x-slim-container>
+
+  <x-card :label="'Profile'">
+    @include('pages.admin.troopers.profile',['trooper'=>$trooper])
+  </x-card>
+
   @if($trooper->membership_role == \App\Enums\MembershipRole::Moderator)
-  @include('pages.admin.troopers.assignments',['organization_assignments'=>$organization_assignments])
+  <x-card :label="'Moderator Of ...'">
+    @include('pages.admin.troopers.assignments',['organization_assignments'=>$organization_assignments])
+  </x-card>
   @endif
-</div>
+
+</x-slim-container>
 
 @endsection
 

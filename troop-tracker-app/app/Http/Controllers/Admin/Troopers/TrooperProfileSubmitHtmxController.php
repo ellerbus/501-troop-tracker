@@ -55,10 +55,7 @@ class TrooperProfileSubmitHtmxController extends Controller
 
             if ($trooper->wasChanged(Trooper::MEMBERSHIP_ROLE))
             {
-                if ($trooper->membership_role == MembershipRole::Moderator)
-                {
-                    // return response('ok')->header('HX-Refresh', 'true');
-                }
+                return response('ok')->header('HX-Refresh', 'true');
             }
 
             return response()
