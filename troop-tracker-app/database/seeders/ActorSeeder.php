@@ -42,9 +42,16 @@ class ActorSeeder extends Seeder
             $actor->organizations()->attach($organization->id, [
                 'identifier' => '99_999-1',
             ]);
+
+            $unit = Organization::firstWhere(Organization::NAME, 'Makaze Squad');
+
+            $actor->trooper_assignments()->create([
+                'organization_id' => $unit->id,
+                'member' => true,
+                'moderator' => true
+            ]);
         }
     }
-
 
     private function makaze()
     {
@@ -71,6 +78,7 @@ class ActorSeeder extends Seeder
 
             $actor->trooper_assignments()->create([
                 'organization_id' => $unit->id,
+                'member' => true,
                 'moderator' => true
             ]);
         }

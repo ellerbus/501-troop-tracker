@@ -56,31 +56,44 @@ class AppServiceProvider extends ServiceProvider
         //
         //  BLADE BOOTS
         //
-        Blade::if('role', function (MembershipRole|string $role): bool
+        Blade::if('role', function (MembershipRole|string|array $roles): bool
         {
-            if (Auth::check())
+            if (!Auth::check())
             {
-                $user = Auth::user();
-
-                if ($user && $user->membership_status == MembershipStatus::Active)
-                {
-                    if (is_string($role))
-                    {
-                        try
-                        {
-                            $role = MembershipRole::from($role);
-                        }
-                        catch (ValueError $e)
-                        {
-                            throw new InvalidArgumentException("Invalid permission role: '{$role}'");
-                        }
-                    }
-
-                    return $user->membership_role === $role;
-                }
+                return false;
             }
 
-            return false;
+            $user = Auth::user();
+
+            if (!$user || $user->membership_status !== MembershipStatus::Active)
+            {
+                return false;
+            }
+
+            // Normalize roles into an array of MembershipRole enums
+            if (is_string($roles))
+            {
+                $roles = array_map('trim', explode(',', $roles));
+            }
+
+            $normalized = collect($roles)->map(function ($role)
+            {
+                if ($role instanceof MembershipRole)
+                {
+                    return $role;
+                }
+
+                try
+                {
+                    return MembershipRole::from($role);
+                }
+                catch (ValueError $e)
+                {
+                    throw new InvalidArgumentException("Invalid permission role: '{$role}'");
+                }
+            });
+
+            return $normalized->contains($user->membership_role);
         });
     }
 }

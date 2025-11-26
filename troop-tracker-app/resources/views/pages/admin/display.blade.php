@@ -41,7 +41,7 @@
   </x-dashboard-card>
   <x-dashboard-card :label="'Organizations'"
                     :icon="'fa-wrench'"
-                    :url="'#'">
+                    :url="route('admin.organizations.display')">
     <p>
       Create, Update, and Manage Organizations, Regions, Units
     </p>

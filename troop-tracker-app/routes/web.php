@@ -9,6 +9,7 @@ use App\Http\Controllers\Account\TrooperCostumesDisplayHtmxController;
 use App\Http\Controllers\Account\TrooperCostumesSubmitHtmxController;
 use App\Http\Controllers\Admin\AdminDisplayController;
 use App\Http\Controllers\Admin\Awards\AwardDisplayController;
+use App\Http\Controllers\Admin\Organizations\OrganizationsDisplayController;
 use App\Http\Controllers\Admin\SettingsDisplayController;
 use App\Http\Controllers\Admin\SettingsSubmitController;
 use App\Http\Controllers\Admin\Troopers\TrooperApprovalDisplayController;
@@ -105,6 +106,12 @@ Route::prefix('admin')
             Route::get('/approvals', TrooperApprovalDisplayController::class)->name('approvals');
             Route::post('/approvals/{trooper}/approve', TrooperApprovalSubmitHtmxController::class)->name('approve-htmx');
             Route::post('/approvals/{trooper}/deny', TrooperDenialSubmitHtmxController::class)->name('deny-htmx');
+        });
+
+        //  ADMIN/ORGANIZATIONS
+        Route::prefix('organizations')->name('organizations.')->group(function ()
+        {
+            Route::get('/display', OrganizationsDisplayController::class)->name('display');
         });
     });
 

@@ -7,8 +7,10 @@ namespace App\Models\Scopes;
 use App\Enums\MembershipStatus;
 use App\Enums\OrganizationType;
 use App\Models\Organization;
+use App\Models\Trooper;
 use App\Models\TrooperAssignment;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Trait containing local scopes for the Organization model.
@@ -101,5 +103,27 @@ trait HasOrganizationScopes
                 $q->where(TrooperAssignment::TROOPER_ID, $trooper_id);
             }
         ]);
+    }
+
+    /**
+     * Scope: limit to troopers that can be approved by a given moderator.
+     *
+     * @param Builder $query
+     * @param Organization $moderator
+     * @return Builder
+     */
+    protected function scopeModeratedBy(Builder $query, Trooper $moderator): Builder
+    {
+        return $query->whereExists(function ($sub) use ($moderator)
+        {
+            $sub->select(DB::raw(1))
+                ->from('tt_trooper_assignments as ta_moderator')
+                ->join('tt_organizations as org_moderator', 'ta_moderator.organization_id', '=', 'org_moderator.id')
+                ->join('tt_trooper_assignments as ta_candidate', 'ta_candidate.organization_id', '=', 'tt_organizations.id')
+                ->join('tt_organizations as org_candidate', 'ta_candidate.organization_id', '=', 'org_candidate.id')
+                ->where('ta_moderator.trooper_id', $moderator->id)
+                ->where('ta_moderator.moderator', true)
+                ->whereRaw('org_candidate.node_path LIKE CONCAT(org_moderator.node_path, "%")');
+        });
     }
 }
