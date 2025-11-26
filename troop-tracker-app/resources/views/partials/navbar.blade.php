@@ -31,14 +31,14 @@
 
         @role(['administrator','moderator'])
         <x-nav-link :href="route('admin.display')"
-                    :active="request()->routeIs('admin.display')">
+                    :active="request()->routeIs('admin.*')">
           Command Staff
         </x-nav-link>
         @endrole
 
         @auth
         <x-nav-link :href="route('account.display')"
-                    :active="request()->routeIs('account.display')">
+                    :active="request()->routeIs('account.*')">
           Manage Account
         </x-nav-link>
         <x-nav-link :href="route('auth.logout')">

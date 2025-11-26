@@ -38,6 +38,21 @@
     }
   });
 
+  /** SCOPED BUTTON DISABLE FOR HTML **/
+  document.addEventListener('DOMContentLoaded', () => {  // Attach listener to every form on the page
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', () => {
+        const button = form.querySelector('button[type=submit]');
+        if (button) {
+          button.disabled = true;
+          button.dataset.originalText = button.innerHTML;
+          button.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Submitting ...';
+        }
+      });
+    });
+  });
+
+
   /** FLASH AFTER SWAP **/
   document.body.addEventListener('htmx:afterSwap', function (event) {
     try {

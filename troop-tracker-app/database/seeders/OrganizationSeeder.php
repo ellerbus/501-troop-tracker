@@ -15,7 +15,8 @@ class OrganizationSeeder extends Seeder
         $this->loadOrganizations();
         $this->loadRegions();
         $this->loadUnits();
-        $this->loadSequence();
+
+        Organization::resequenceAll();
     }
 
     private function loadOrganizations()
@@ -135,38 +136,6 @@ class OrganizationSeeder extends Seeder
                 $unit->type = OrganizationType::Unit;
 
                 $unit->save();
-            }
-        }
-    }
-
-    private function loadSequence()
-    {
-        $organizations = Organization::ofTypeOrganizations()->orderBy('name')->get();
-
-        $seq = 900;
-
-        foreach ($organizations as $organization)
-        {
-            $seq += 100;
-
-            $organization->updateQuietly([Organization::SEQUENCE => $seq]);
-
-            $regions = $organization->organizations()->ofTypeRegions()->orderBy('name')->get();
-
-            foreach ($regions as $region)
-            {
-                $seq += 100;
-
-                $region->updateQuietly([Organization::SEQUENCE => $seq]);
-
-                $units = $region->organizations()->ofTypeUnits()->orderBy('name')->get();
-
-                foreach ($units as $unit)
-                {
-                    $seq += 100;
-
-                    $unit->updateQuietly([Organization::SEQUENCE => $seq]);
-                }
             }
         }
     }

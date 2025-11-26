@@ -41,7 +41,7 @@
   </x-dashboard-card>
   <x-dashboard-card :label="'Organizations'"
                     :icon="'fa-wrench'"
-                    :url="route('admin.organizations.display')">
+                    :url="route('admin.organizations.list')">
     <p>
       Create, Update, and Manage Organizations, Regions, Units
     </p>
@@ -49,7 +49,7 @@
   @can('viewAny', \App\Models\Setting::class)
   <x-dashboard-card :label="'Site Settings'"
                     :icon="'fa-wrench'"
-                    :url="route('admin.settings')">
+                    :url="route('admin.settings.list')">
     <p>
       Manage Site Settings
     </p>

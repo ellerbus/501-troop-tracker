@@ -106,10 +106,10 @@ trait HasOrganizationScopes
     }
 
     /**
-     * Scope: limit to troopers that can be approved by a given moderator.
+     * Scope: limit to organizations that can be updated by a given moderator.
      *
      * @param Builder $query
-     * @param Organization $moderator
+     * @param Trooper $moderator
      * @return Builder
      */
     protected function scopeModeratedBy(Builder $query, Trooper $moderator): Builder

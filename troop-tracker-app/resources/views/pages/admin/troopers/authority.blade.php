@@ -29,7 +29,7 @@
       <x-submit-button>
         Save
       </x-submit-button>
-      <x-link-button-cancel :url="route('admin.troopers.display')" />
+      <x-link-button-cancel :url="route('admin.troopers.list')" />
     </x-submit-container>
 
     <x-table>
@@ -77,7 +77,7 @@
       <x-submit-button>
         Save
       </x-submit-button>
-      <x-link-button-cancel :url="route('admin.troopers.display')" />
+      <x-link-button-cancel :url="route('admin.troopers.list')" />
     </x-submit-container>
   </form>
 

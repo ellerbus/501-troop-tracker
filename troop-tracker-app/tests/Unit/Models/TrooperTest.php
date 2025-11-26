@@ -45,8 +45,8 @@ class TrooperTest extends TestCase
         $member_trooper = Trooper::factory()->make(['membership_role' => MembershipRole::Member]);
 
         // Act & Assert
-        $this->assertTrue($admin_trooper->isAdmin());
-        $this->assertFalse($member_trooper->isAdmin());
+        $this->assertTrue($admin_trooper->isAdministrator());
+        $this->assertFalse($member_trooper->isAdministrator());
     }
 
     public function test_is_active_returns_correct_value(): void

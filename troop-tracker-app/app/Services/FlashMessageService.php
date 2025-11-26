@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -18,6 +19,32 @@ class FlashMessageService
      * @var string
      */
     private const FLASH_KEY = 'flash_messages';
+
+    /**
+     * Adds a success flash message on a created model.
+     *
+     * @param Model $model The message content.
+     */
+    public function created(Model $model): void
+    {
+        // Get the base class name (e.g. "Organization")
+        $object_name = class_basename($model);
+
+        // If the model has a "name" attribute, include it
+        $display_name = $model->getAttribute('name');
+
+        // Build the message
+        $message = $object_name;
+
+        if (!empty($display_name))
+        {
+            $message .= " \"{$display_name}\"";
+        }
+
+        $message .= " was created successfully.";
+
+        $this->addMessage('success', $message);
+    }
 
     /**
      * Adds a success flash message.

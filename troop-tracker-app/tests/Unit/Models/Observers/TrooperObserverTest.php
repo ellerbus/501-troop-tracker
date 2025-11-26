@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Observers;
+namespace Tests\Unit\Models\Observers;
 
 use App\Models\Trooper;
 use App\Models\TrooperAchievement;

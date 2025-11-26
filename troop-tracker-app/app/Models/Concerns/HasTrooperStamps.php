@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 trait HasTrooperStamps
 {
-    public static function bootTrooperStamps(): void
+    public static function bootHasTrooperStamps(): void
     {
         static::creating(function ($model)
         {
@@ -37,7 +37,7 @@ trait HasTrooperStamps
 
         static::deleting(function ($model)
         {
-            if (Auth::check())
+            if (Auth::check() && $this->usingSoftDeletes())
             {
                 $model->deleted_id = Auth::id();
             }
@@ -47,7 +47,7 @@ trait HasTrooperStamps
     /**
      * Get the user that created the model.
      *
-     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function created_by(): BelongsTo
     {
@@ -57,7 +57,7 @@ trait HasTrooperStamps
     /**
      * Get the user that edited the model.
      *
-     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function updated_by(): BelongsTo
     {
@@ -67,7 +67,7 @@ trait HasTrooperStamps
     /**
      * Get the user that deleted the model.
      *
-     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function deleted_by(): BelongsTo
     {

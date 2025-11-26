@@ -54,9 +54,19 @@ class Trooper extends BaseTrooper implements
      *
      * @return bool True if the trooper is admin, false otherwise.
      */
-    public function isAdmin(): bool
+    public function isAdministrator(): bool
     {
-        return $this->membership_role == MembershipRole::Administrator;
+        return $this->isActive() && $this->membership_role == MembershipRole::Administrator;
+    }
+
+    /**
+     * Check if the trooper's membership role is moderator.
+     *
+     * @return bool True if the trooper is moderator, false otherwise.
+     */
+    public function isModerator(): bool
+    {
+        return $this->isActive() && $this->membership_role == MembershipRole::Moderator;
     }
 
     /**

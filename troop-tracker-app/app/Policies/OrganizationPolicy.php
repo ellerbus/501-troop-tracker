@@ -23,7 +23,7 @@ class OrganizationPolicy
      */
     public function create(Trooper $trooper): bool
     {
-        return false;
+        return $trooper->isAdministrator();
     }
 
     /**

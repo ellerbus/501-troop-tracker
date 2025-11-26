@@ -55,6 +55,12 @@ h1.site-title {
     box-shadow: 0 0 0 0.2rem rgba(58, 71, 83, 0.5);
 }
 
+.form-control:disabled,
+.form-select:disabled {
+    background-color: gray;
+    color: #000;
+}
+
 /* Headings */
 h1,
 h2,

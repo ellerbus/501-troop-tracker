@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\OrganizationType;
 use App\Models\Base\Organization as BaseOrganization;
 use App\Models\Concerns\HasObserver;
 use App\Models\Concerns\HasTrooperStamps;
@@ -18,6 +19,18 @@ class Organization extends BaseOrganization
     use HasTrooperStamps;
 
     /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts()
+    {
+        return array_merge($this->casts, [
+            self::TYPE => OrganizationType::class,
+        ]);
+    }
+
+    /**
      * Alias for organization()
      * 
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Organization, Organization>
@@ -30,5 +43,37 @@ class Organization extends BaseOrganization
     public function event_troopers(): HasManyThrough
     {
         return $this->hasManyThrough(EventTrooper::class, Costume::class);
+    }
+
+    public static function resequenceAll()
+    {
+        $organizations = self::ofTypeOrganizations()->orderBy('name')->get();
+
+        $seq = 900;
+
+        foreach ($organizations as $organization)
+        {
+            $seq += 100;
+
+            $organization->updateQuietly([self::SEQUENCE => $seq]);
+
+            $regions = $organization->organizations()->ofTypeRegions()->orderBy('name')->get();
+
+            foreach ($regions as $region)
+            {
+                $seq += 100;
+
+                $region->updateQuietly([self::SEQUENCE => $seq]);
+
+                $units = $region->organizations()->ofTypeUnits()->orderBy('name')->get();
+
+                foreach ($units as $unit)
+                {
+                    $seq += 100;
+
+                    $unit->updateQuietly([self::SEQUENCE => $seq]);
+                }
+            }
+        }
     }
 }

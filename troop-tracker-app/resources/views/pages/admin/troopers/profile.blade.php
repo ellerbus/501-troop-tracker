@@ -47,7 +47,10 @@
       <x-submit-button>
         Save
       </x-submit-button>
-      <x-link-button-cancel :url="route('admin.troopers.display')" />
+      <x-link-button-cancel :url="route('admin.troopers.list')" />
     </x-submit-container>
+
+    <x-trooper-stamps :model="$trooper" />
+
   </form>
 </div>

@@ -22,15 +22,6 @@
 </head>
 
 <body class="bg-black d-flex flex-column min-vh-100">
-  <!--
-  <div class="container">
-    <div class="text-center py-3">
-      <img src=" {{ url('images/logo.png') }}"
-      alt="501st Florida Garrison Logo"
-      class="img-fluid" />
-    </div>
-  </div>
-  -->
 
   <div>
     <h1 class="text-center py-3 site-title">

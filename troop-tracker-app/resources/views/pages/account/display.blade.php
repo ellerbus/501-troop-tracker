@@ -24,7 +24,7 @@
 
   <!-- Trooper Costumes -->
   <x-card :label="'Trooper Costumes'">
-    <div hx-get="{{ route('account.trooper-costumes-htmx') }}"
+    <div hx-get="{{ route('account.costumes-htmx') }}"
          hx-trigger="load"
          hx-swap="outerHTML">
       <x-loading />

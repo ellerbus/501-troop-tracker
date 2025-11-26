@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Account;
 
-use Illuminate\Contracts\Validation\Validator as ValidatorInterface;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\HtmxFormRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -17,7 +16,7 @@ use Illuminate\Validation\ValidationException;
  * organization-specific identifiers and unit selections. It also customizes error messages
  * for a better user experience.
  */
-class ProfileRequest extends FormRequest
+class ProfileRequest extends HtmxFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -70,10 +69,5 @@ class ProfileRequest extends FormRequest
                 'phone' => preg_replace('/\D+/', '', $this->input('phone') ?? ''),
             ]);
         }
-    }
-
-    protected function failedValidation(ValidatorInterface $validator): void
-    {
-        //  avoids failing in HTMX
     }
 }

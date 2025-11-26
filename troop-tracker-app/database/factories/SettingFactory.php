@@ -18,7 +18,7 @@ class SettingFactory extends Factory
     public function definition(): array
     {
         return [
-            Setting::KEY => $this->faker->word(),
+            Setting::KEY => 'k' . uniqid(),
             Setting::VALUE => $this->faker->word(),
         ];
     }
