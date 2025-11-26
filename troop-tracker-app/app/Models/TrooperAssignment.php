@@ -10,15 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TrooperAssignment extends BaseTrooperAssignment
 {
-    // use HasTrooperRegionScopes;
     use HasFactory;
     use HasTrooperStamps;
-
-    protected function casts(): array
-    {
-        return array_merge($this->casts, [
-            self::MEMBERSHIP_STATUS => MembershipStatus::class,
-            self::MEMBERSHIP_ROLE => MembershipRole::class,
-        ]);
-    }
 }

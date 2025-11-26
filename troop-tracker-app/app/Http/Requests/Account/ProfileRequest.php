@@ -74,6 +74,6 @@ class ProfileRequest extends FormRequest
 
     protected function failedValidation(ValidatorInterface $validator): void
     {
+        //  avoids failing in HTMX
     }
-
 }

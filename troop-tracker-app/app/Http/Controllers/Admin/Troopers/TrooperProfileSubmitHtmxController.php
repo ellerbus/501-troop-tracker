@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin\Troopers;
 
-use App\Enums\MembershipRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Troopers\ProfileRequest;
 use App\Models\Trooper;
-use App\Services\BreadCrumbService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Response;
 use Illuminate\Support\MessageBag;
@@ -16,25 +14,23 @@ use Illuminate\Support\ViewErrorBag;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Handles the display of the main trooper dashboard.
+ * Class TrooperProfileSubmitHtmxController
  *
- * This controller gathers various statistics for a trooper, such as troop counts by organization and costume, and displays them.
+ * Handles the submission of trooper profile updates via an HTMX request.
+ * @package App\Http\Controllers\Admin\Troopers
  */
 class TrooperProfileSubmitHtmxController extends Controller
 {
-    public function __construct(private readonly BreadCrumbService $crumbs)
-    {
-
-    }
-
     /**
-     * Handle the incoming request to display the dashboard page for a trooper.
+     * Handle the incoming request to update a trooper's profile.
      *
-     * Fetches all relevant statistics for a given trooper (or the authenticated user)
-     * and displays them on the main dashboard view. Redirects if the trooper is not found.
+     * Validates the request, updates the trooper's profile, and returns a view
+     * fragment. If the membership role changes, it triggers a full page refresh
+     * via an HTMX header. On successful update, it includes a flash message header.
      *
-     * @param Request $request The incoming HTTP request.
-     * @return View|RedirectResponse The rendered dashboard page view or a redirect response.
+     * @param ProfileRequest $request The validated form request.
+     * @param Trooper $trooper The trooper to be updated.
+     * @return Response|View A response object containing the view and custom HTMX headers.
      */
     public function __invoke(ProfileRequest $request, Trooper $trooper): Response|View
     {
@@ -42,7 +38,12 @@ class TrooperProfileSubmitHtmxController extends Controller
         {
             $validated = $request->validateInputs();
 
-            $trooper->update($validated);
+            $trooper->name = $request->input('name');
+            $trooper->email = $request->input('email');
+            $trooper->phone = $request->input('phone');
+            $trooper->membership_status = $request->input('membership_status');
+
+            $trooper->save();
 
             $message = json_encode([
                 'message' => 'Profile updated successfully!',
@@ -52,11 +53,6 @@ class TrooperProfileSubmitHtmxController extends Controller
             $data = [
                 'trooper' => $trooper
             ];
-
-            if ($trooper->wasChanged(Trooper::MEMBERSHIP_ROLE))
-            {
-                return response('ok')->header('HX-Refresh', 'true');
-            }
 
             return response()
                 ->view('pages.admin.troopers.profile', $data)

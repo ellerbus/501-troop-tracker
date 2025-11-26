@@ -57,7 +57,7 @@ trait HasTrooperScopes
                 ->join('tt_trooper_assignments as ta_candidate', 'ta_candidate.trooper_id', '=', 'tt_troopers.id')
                 ->join('tt_organizations as org_candidate', 'ta_candidate.organization_id', '=', 'org_candidate.id')
                 ->where('ta_moderator.trooper_id', $moderator->id)
-                ->where('ta_moderator.membership_role', MembershipRole::Moderator)
+                ->where('ta_moderator.moderator', true)
                 ->whereRaw('org_candidate.node_path LIKE CONCAT(org_moderator.node_path, "%")');
         });
     }

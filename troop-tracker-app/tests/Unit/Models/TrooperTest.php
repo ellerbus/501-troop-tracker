@@ -38,6 +38,17 @@ class TrooperTest extends TestCase
         $this->assertSame('test.email@example.com', $refreshed_trooper->email);
     }
 
+    public function test_is_admin_returns_correct_value(): void
+    {
+        // Arrange
+        $admin_trooper = Trooper::factory()->make(['membership_role' => MembershipRole::Administrator]);
+        $member_trooper = Trooper::factory()->make(['membership_role' => MembershipRole::Member]);
+
+        // Act & Assert
+        $this->assertTrue($admin_trooper->isAdmin());
+        $this->assertFalse($member_trooper->isAdmin());
+    }
+
     public function test_is_active_returns_correct_value(): void
     {
         // Arrange
@@ -94,12 +105,12 @@ class TrooperTest extends TestCase
 
         $trooper_with_active->trooper_assignments()->create([
             'organization_id' => $organization->id,
-            'membership_status' => MembershipStatus::Active,
+            'member' => true,
         ]);
 
         $trooper_with_inactive->trooper_assignments()->create([
             'organization_id' => $organization->id,
-            'membership_status' => MembershipStatus::Retired,
+            'member' => false,
         ]);
 
         // Act & Assert

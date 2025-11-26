@@ -28,164 +28,139 @@ class TrooperOrganizationSeeder extends Seeder
     {
         $legacy_troopers = DB::table('troopers')->get();
 
-        $this->loadOrganizations($legacy_troopers);
-        $this->loadRegions($legacy_troopers);
-        $this->loadUnits($legacy_troopers);
-    }
-
-    private function loadOrganizations($legacy_troopers)
-    {
-        $club_map = $this->getClubMap();
-
         foreach ($legacy_troopers as $trooper)
         {
-            foreach ($club_map as $permissions => $club)
-            {
-                $value = $club['value'];
-
-                if (!isset($club['id']))
-                {
-                    continue;
-                }
-
-                $organization = Organization::findOrFail($club['id']);
-
-                $identifier = '';
-
-                if ($club['identity'] != '')
-                {
-                    $identifier = $trooper->{$club['identity']};
-                }
-
-                if ($identifier != null && $identifier != '' && $identifier != '0')
-                {
-                    $to = TrooperOrganization::where(TrooperOrganization::TROOPER_ID, $trooper->id)
-                        ->where(TrooperOrganization::ORGANIZATION_ID, $organization->id)
-                        ->first();
-
-                    if ($to == null)
-                    {
-                        $to = new TrooperOrganization();
-
-                        $to->trooper_id = $trooper->id;
-                        $to->organization_id = $organization->id;
-                        $to->identifier = $identifier;
-
-                        $to->save();
-                    }
-                }
-
-                $notify = $trooper->{'esquad' . $value} == 1;
-                $membership_status = $this->mapLegacyStatus($trooper->{$permissions});
-                $membership_role = $this->getMembershipRole($trooper);
-
-                if ($membership_status == 'none' && !$notify)
-                {
-                    //  no status and not getting notified, skip
-                    continue;
-                }
-
-                $ta = $this->getOrganization($trooper, $organization);
-
-                $ta->notify = $notify;
-                $ta->membership_status = $membership_status;
-                $ta->membership_role = $membership_role;
-
-                $ta->save();
-            }
+            $this->assignOrganizationAndRegion($trooper);
+            $this->assignUnit($trooper);
         }
     }
 
-    private function loadRegions($legacy_troopers)
+    private function assignOrganizationAndRegion($trooper)
     {
         $club_map = $this->getClubMap();
 
-        foreach ($legacy_troopers as $trooper)
+        foreach ($club_map as $column => $club)
         {
-            foreach ($club_map as $permissions => $club)
+            $legacy_id = $club['legacy_id'];
+
+            if (!isset($club['id']))
             {
-                $value = $club['value'];
-
-                $notify = $trooper->{'esquad' . $value} == 1;
-                $membership_status = $this->mapLegacyStatus($trooper->{$permissions});
-                $membership_role = $this->getMembershipRole($trooper);
-
-                if ($membership_status == 'none' && !$notify)
-                {
-                    continue;
-                }
-
-                if (!isset($club['id']))
-                {
-                    continue;
-                }
-
-                $organization = once(fn() => Organization::find($club['id']));
-
-                //  right now only one region seeded per organization
-                $region = $organization->organizations()->first();
-
-                $ta = $this->getOrganization($trooper, $region);
-
-                $ta->notify = $notify;
-                $ta->membership_status = $membership_status;
-                $ta->membership_role = $membership_role;
-
-                $ta->save();
+                //  can't map to the new club
+                continue;
             }
+
+            $organization = $this->getOrganization($club['id']);
+
+            $identifier = '';
+
+            if ($club['identity'] != '')
+            {
+                $identifier = $trooper->{$club['identity']};
+            }
+
+            $has_identifier = $identifier != null && $identifier != '' && $identifier != '0';
+
+            if ($has_identifier)
+            {
+                $this->loadTrooperOrganization($trooper, $organization, $identifier);
+            }
+
+            //* 0 = Regular Member, 1 = Super Admin, 2 = Moderator, 3 = RIP Member
+            $moderator = $trooper->permissions == 2 && ($trooper->{$column} == 1 || $trooper->{$column} == 2);
+            $member = $has_identifier;
+            $notify = $trooper->{'esquad' . $legacy_id} == 1;
+
+            if (!$notify && !$moderator && !$member)
+            {
+                //  not getting notified, skip
+                continue;
+            }
+
+            $region = $organization->organizations->first();
+
+            $this->loadTrooperAssignment($trooper->id, $organization->id, $notify, $member, $moderator);
+            $this->loadTrooperAssignment($trooper->id, $region->id, $notify, $member, $moderator);
         }
     }
 
-    private function loadUnits($legacy_troopers)
+    private function assignUnit($trooper)
     {
         $squad_map = $this->getSquadMap();
 
-        foreach ($legacy_troopers as $trooper)
+        foreach ($squad_map as $legacy_id => $squad)
         {
-            foreach ($squad_map as $key => $squad)
+            $notify = $trooper->{'esquad' . $legacy_id} == 1;
+
+            $member = false;
+
+            if ($trooper->squad == $legacy_id)
             {
-                $notify = $trooper->{'esquad' . $key} == 1;
-
-                $membership_status = MembershipStatus::None;
-                $membership_role = $this->getMembershipRole($trooper);
-
-                if ($trooper->squad == $key)
-                {
-                    $membership_status = MembershipStatus::Active;
-                }
-
-                $unit = once(fn() => Organization::find($squad['id']));
-
-                $ta = $this->getOrganization($trooper, $unit);
-
-                $ta->notify = $notify;
-                $ta->membership_status = $membership_status;
-                $ta->membership_role = $membership_role;
-
-                $ta->save();
+                $member = true;
             }
+
+            if (!$member && !$notify)
+            {
+                //  not a member and not notified
+                continue;
+            }
+
+            $unit = $this->getOrganization($squad['id']);
+
+            $region_assignment = TrooperAssignment::where(TrooperAssignment::ORGANIZATION_ID, $unit->parent_id)
+                ->where(TrooperAssignment::TROOPER_ID, $trooper->id)
+                ->first();
+
+            $moderator = $region_assignment->moderator ?? false;
+
+            $this->loadTrooperAssignment($trooper->id, $unit->id, $notify, $member, $moderator);
         }
     }
 
-    private function getOrganization($trooper, Organization $organization): TrooperAssignment
+    private function loadTrooperOrganization($trooper, $organization, $identifier)
     {
-        $ta = TrooperAssignment::where(TrooperAssignment::TROOPER_ID, $trooper->id)
-            ->where(TrooperAssignment::ORGANIZATION_ID, $organization->id)
+        $to = TrooperOrganization::where(TrooperOrganization::TROOPER_ID, $trooper->id)
+            ->where(TrooperOrganization::ORGANIZATION_ID, $organization->id)
             ->first();
 
-        if ($ta == null)
+        if ($to == null)
         {
-            $ta = new TrooperAssignment();
+            $to = new TrooperOrganization();
 
-            $ta->trooper_id = $trooper->id;
-            $ta->organization_id = $organization->id;
+            $to->trooper_id = $trooper->id;
+            $to->organization_id = $organization->id;
         }
 
-        return $ta;
+        $to->membership_status = MembershipStatus::Active;
+        $to->identifier = $identifier;
+
+        $to->save();
     }
 
-    private function getMembershipRole($trooper): MembershipRole
+    private function loadTrooperAssignment($trooper_id, $organization_id, $notify, $member, $moderator)
     {
-        return $trooper->permissions == 4 ? MembershipRole::Handler : MembershipRole::Member;
+        $t = TrooperAssignment::where(TrooperAssignment::TROOPER_ID, $trooper_id)
+            ->where(TrooperAssignment::ORGANIZATION_ID, $organization_id)
+            ->first();
+
+        if ($t == null)
+        {
+            $t = new TrooperAssignment();
+
+            $t->trooper_id = $trooper_id;
+            $t->organization_id = $organization_id;
+        }
+
+        $t->notify = $notify;
+        $t->member = $member;
+        $t->moderator = $moderator;
+
+        $t->save();
+    }
+
+    private function getOrganization($id)
+    {
+        $organization = once(fn() => Organization::findOrFail($id));
+
+        return $organization;
     }
 }

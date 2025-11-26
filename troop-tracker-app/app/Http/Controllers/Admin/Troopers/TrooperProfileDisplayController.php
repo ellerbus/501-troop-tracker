@@ -49,20 +49,13 @@ class TrooperProfileDisplayController extends Controller
         $this->crumbs->addRoute('Troopers', 'admin.troopers.display');
         $this->crumbs->add('Trooper');
 
-        $organization_assignments = $this->getOrganizationAssignments($trooper);
+        $organization_authorities = Organization::withAllAssignments($trooper->id)->get();
 
         $data = [
             'trooper' => $trooper,
-            'organization_assignments' => $organization_assignments,
+            'organization_authorities' => $organization_authorities,
         ];
 
         return view('pages.admin.troopers.trooper', $data);
-    }
-
-    private function getOrganizationAssignments(Trooper $trooper): Collection
-    {
-        return Organization::withAllAssignments($trooper->id)
-            ->orderBy(Organization::SEQUENCE)
-            ->get();
     }
 }

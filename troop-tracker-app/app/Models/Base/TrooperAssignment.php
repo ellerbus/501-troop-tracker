@@ -20,8 +20,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $trooper_id
  * @property int $organization_id
  * @property bool $notify
- * @property string $membership_status
- * @property string $membership_role
+ * @property bool $member
+ * @property bool $moderator
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
@@ -41,8 +41,8 @@ class TrooperAssignment extends Model
     const TROOPER_ID = 'trooper_id';
     const ORGANIZATION_ID = 'organization_id';
     const NOTIFY = 'notify';
-    const MEMBERSHIP_STATUS = 'membership_status';
-    const MEMBERSHIP_ROLE = 'membership_role';
+    const MEMBER = 'member';
+    const MODERATOR = 'moderator';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
     const DELETED_AT = 'deleted_at';
@@ -56,6 +56,8 @@ class TrooperAssignment extends Model
         self::TROOPER_ID => 'int',
         self::ORGANIZATION_ID => 'int',
         self::NOTIFY => 'bool',
+        self::MEMBER => 'bool',
+        self::MODERATOR => 'bool',
         self::CREATED_AT => 'datetime',
         self::UPDATED_AT => 'datetime',
         self::CREATED_ID => 'int',
@@ -67,8 +69,8 @@ class TrooperAssignment extends Model
         self::TROOPER_ID,
         self::ORGANIZATION_ID,
         self::NOTIFY,
-        self::MEMBERSHIP_STATUS,
-        self::MEMBERSHIP_ROLE
+        self::MEMBER,
+        self::MODERATOR
     ];
 
     public function organization(): BelongsTo

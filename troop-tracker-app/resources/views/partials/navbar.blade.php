@@ -29,7 +29,7 @@
           FAQ
         </x-nav-link>
 
-        @role('admin')
+        @role('administrator')
         <x-nav-link :href="route('admin.display')"
                     :active="request()->routeIs('admin.display')">
           Command Staff

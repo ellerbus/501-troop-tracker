@@ -50,7 +50,7 @@ class TrooperApprovalDisplayController extends Controller
 
         $query = Trooper::pendingApprovals()->with('trooper_assignments.organization');
 
-        if ($trooper->membership_role != MembershipRole::Admin)
+        if ($trooper->membership_role != MembershipRole::Administrator)
         {
             $query = $query->moderatedBy($trooper);
         }

@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $trooper_id
  * @property int $organization_id
  * @property string $identifier
+ * @property string $membership_status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
@@ -39,6 +40,7 @@ class TrooperOrganization extends Model
     const TROOPER_ID = 'trooper_id';
     const ORGANIZATION_ID = 'organization_id';
     const IDENTIFIER = 'identifier';
+    const MEMBERSHIP_STATUS = 'membership_status';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
     const DELETED_AT = 'deleted_at';
@@ -61,7 +63,8 @@ class TrooperOrganization extends Model
     protected $fillable = [
         self::TROOPER_ID,
         self::ORGANIZATION_ID,
-        self::IDENTIFIER
+        self::IDENTIFIER,
+        self::MEMBERSHIP_STATUS
     ];
 
     public function organization(): BelongsTo

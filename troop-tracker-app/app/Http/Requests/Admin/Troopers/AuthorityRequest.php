@@ -20,7 +20,7 @@ use Illuminate\Validation\ValidationException;
  * organization-specific identifiers and unit selections. It also customizes error messages
  * for a better user experience.
  */
-class ProfileRequest extends FormRequest
+class AuthorityRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -36,7 +36,7 @@ class ProfileRequest extends FormRequest
             throw new AuthorizationException('Trooper not found or unauthorized.');
         }
 
-        return $this->user()->can('update', $trooper);
+        return $this->user()->membership_role == MembershipRole::Administrator;
     }
 
     /**
@@ -47,10 +47,8 @@ class ProfileRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:240'],
-            'phone' => ['nullable', 'string', 'max:10'],
-            'membership_status' => ['nullable', 'string', 'max:16', 'in:' . MembershipStatus::toValidator()],
+            'membership_role' => ['nullable', 'string', 'max:16', 'in:' . MembershipRole::toValidator()],
+            'moderators.*.selected' => ['boolean']
         ];
 
         return $rules;
@@ -66,21 +64,6 @@ class ProfileRequest extends FormRequest
         }
 
         return $validator->validated();
-    }
-
-    /**
-     * Prepare the data for validation.
-     *
-     * This method sanitizes the phone number by removing any non-digit characters.
-     */
-    protected function prepareForValidation(): void
-    {
-        if ($this->has('phone'))
-        {
-            $this->merge([
-                'phone' => preg_replace('/\D+/', '', $this->input('phone') ?? ''),
-            ]);
-        }
     }
 
     protected function failedValidation(ValidatorInterface $validator): void

@@ -13,13 +13,13 @@ trait HasClubMaps
     {
         // Hardcoded squadID → club name
         $legacy_clubs = [
-            0 => ['name' => '501st Legion', 'status' => 'p501', 'identity' => 'tkid'],
-            6 => ['name' => 'Rebel Legion', 'status' => 'pRebel', 'identity' => 'rebelforum'],
-            7 => ['name' => 'Droid Builders', 'status' => 'pDroid', 'identity' => ''],
-            8 => ['name' => 'Mandalorian Mercs', 'status' => 'pMando', 'identity' => 'mandoid'],
-            //9 => ['name' => 'Other', 'status' => 'pOther', 'identity' => ''],
-            10 => ['name' => 'Saber Guild', 'status' => 'pSG', 'identity' => 'sgid'],
-            13 => ['name' => 'Dark Empire', 'status' => 'pDE', 'identity' => 'de_id'],
+            0 => ['name' => '501st Legion', 'column' => 'p501', 'identity' => 'tkid'],
+            6 => ['name' => 'Rebel Legion', 'column' => 'pRebel', 'identity' => 'rebelforum'],
+            7 => ['name' => 'Droid Builders', 'column' => 'pDroid', 'identity' => ''],
+            8 => ['name' => 'Mandalorian Mercs', 'column' => 'pMando', 'identity' => 'mandoid'],
+            //9 => ['name' => 'Other', 'column' => 'pOther', 'identity' => ''],
+            10 => ['name' => 'Saber Guild', 'column' => 'pSG', 'identity' => 'sgid'],
+            13 => ['name' => 'Dark Empire', 'column' => 'pDE', 'identity' => 'de_id'],
         ];
 
         // Build final map: squadID → club_id
@@ -31,9 +31,9 @@ trait HasClubMaps
 
             if ($organization)
             {
-                $map[$meta['status']] = [
+                $map[$meta['column']] = [
                     'id' => $organization->id,
-                    'value' => $legacy_id,
+                    'legacy_id' => $legacy_id,
                     'identity' => $meta['identity'],
                 ];
             }

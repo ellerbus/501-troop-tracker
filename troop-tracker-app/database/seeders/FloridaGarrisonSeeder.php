@@ -29,14 +29,13 @@ class FloridaGarrisonSeeder extends Seeder
     public function run(): void
     {
         $this->call(OrganizationSeeder::class);
+        $this->call(OrganizationSeeder::class); // NO IDEA but needs a second run
         $this->call(CostumeSeeder::class);
 
         $this->call(SettingSeeder::class);
         $this->call(TrooperSeeder::class);
         $this->call(TrooperDonationSeeder::class);
-        // $this->call(TrooperOrganizationSeeder::class);
-        // $this->call(TrooperRegionSeeder::class);
-        // $this->call(TrooperUnitSeeder::class);
+        $this->call(TrooperOrganizationSeeder::class);
         $this->call(TrooperCostumeSeeder::class);
 
         $this->call(EventSeeder::class);

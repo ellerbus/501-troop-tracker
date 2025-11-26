@@ -11,8 +11,8 @@
   </x-card>
 
   @if($trooper->membership_role == \App\Enums\MembershipRole::Moderator)
-  <x-card :label="'Moderator Of ...'">
-    @include('pages.admin.troopers.assignments',['organization_assignments'=>$organization_assignments])
+  <x-card :label="'Authority'">
+    @include('pages.admin.troopers.authority',['organization_authorities'=>$organization_authorities])
   </x-card>
   @endif
 

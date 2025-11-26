@@ -55,7 +55,7 @@ class TrooperSeeder extends Seeder
             $t->membership_role = match ((int) $trooper->permissions)
             {
                 0 => MembershipRole::Member,
-                1 => MembershipRole::Admin,
+                1 => MembershipRole::Administrator,
                 2 => MembershipRole::Moderator,
                 //3 => MembershipRole::Retired,
                 4 => MembershipRole::Handler,

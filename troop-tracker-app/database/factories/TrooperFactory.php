@@ -64,7 +64,7 @@ class TrooperFactory extends Factory
 
     public function asAdmin(): static
     {
-        return $this->withMemberShipRole(MembershipRole::Admin);
+        return $this->withMemberShipRole(MembershipRole::Administrator);
     }
 
     public function asModerator(): static
@@ -94,15 +94,15 @@ class TrooperFactory extends Factory
         });
     }
 
-    public function withAssignment(Organization $organization, MembershipRole $role = MembershipRole::Member, MembershipStatus $status = MembershipStatus::Active, bool $notify = false): static
+    public function withAssignment(Organization $organization, bool $moderator = false, bool $member = true, bool $notify = false): static
     {
-        return $this->afterCreating(function (Trooper $trooper) use ($organization, $role, $status, $notify)
+        return $this->afterCreating(function (Trooper $trooper) use ($organization, $moderator, $member, $notify)
         {
             $trooper->trooper_assignments()->create([
                 'organization_id' => $organization->id,
-                'membership_role' => $role,
-                'membership_status' => $status,
-                'notify' => $notify
+                'member' => $member,
+                'notify' => $notify,
+                'moderator' => $moderator,
             ]);
         });
     }

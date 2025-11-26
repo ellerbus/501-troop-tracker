@@ -60,8 +60,8 @@ class HasTrooperScopesTest extends TestCase
 
         $moderator->trooper_assignments()->create([
             'organization_id' => $organization->id,
-            'membership_role' => MembershipRole::Moderator,
-            'membership_status' => MembershipStatus::Active,
+            'moderator' => true,
+            'member' => true,
         ]);
         $candidate->trooper_assignments()->create(['organization_id' => $organization->id]);
 
@@ -78,14 +78,14 @@ class HasTrooperScopesTest extends TestCase
     {
         // Arrange
         $moderator = Trooper::factory()->create();
-        $candidate = Trooper::factory()->create(['membership_status' => MembershipStatus::Pending]);
+        $candidate = Trooper::factory()->asPending()->create();
         $parent_org = Organization::factory()->create();
         $child_org = Organization::factory()->create(['parent_id' => $parent_org->id]);
 
         $moderator->trooper_assignments()->create([
             'organization_id' => $parent_org->id,
-            'membership_role' => MembershipRole::Moderator,
-            'membership_status' => MembershipStatus::Active,
+            'moderator' => true,
+            'member' => true,
         ]);
         $candidate->trooper_assignments()->create(['organization_id' => $child_org->id]);
 
@@ -102,14 +102,14 @@ class HasTrooperScopesTest extends TestCase
     {
         // Arrange
         $moderator = Trooper::factory()->create();
-        $candidate = Trooper::factory()->create(['membership_status' => MembershipStatus::Pending]);
+        $candidate = Trooper::factory()->asPending()->create();
         $org1 = Organization::factory()->create();
         $org2 = Organization::factory()->create();
 
         $moderator->trooper_assignments()->create([
             'organization_id' => $org1->id,
-            'membership_role' => MembershipRole::Moderator,
-            'membership_status' => MembershipStatus::Active,
+            'member' => true,
+            'moderator' => true,
         ]);
         $candidate->trooper_assignments()->create(['organization_id' => $org2->id]);
 
@@ -131,8 +131,8 @@ class HasTrooperScopesTest extends TestCase
 
         $moderator->trooper_assignments()->create([
             'organization_id' => $child_org->id,
-            'membership_role' => MembershipRole::Moderator,
-            'membership_status' => MembershipStatus::Active,
+            'member' => true,
+            'moderator' => true,
         ]);
         $candidate->trooper_assignments()->create(['organization_id' => $parent_org->id]);
 

@@ -53,6 +53,7 @@
 
   @include('partials.scripts')
   @yield('page-script')
+  @stack('scripts')
 
 </body>
 

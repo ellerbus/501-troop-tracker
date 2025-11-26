@@ -8,6 +8,7 @@ use App\Models\Concerns\HasTrooperStamps;
 use App\Models\Scopes\HasOrganizationScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Organization extends BaseOrganization
 {
@@ -26,9 +27,8 @@ class Organization extends BaseOrganization
         return $this->belongsTo(self::class, self::PARENT_ID);
     }
 
-    public function event_troopers()
+    public function event_troopers(): HasManyThrough
     {
         return $this->hasManyThrough(EventTrooper::class, Costume::class);
     }
-
 }

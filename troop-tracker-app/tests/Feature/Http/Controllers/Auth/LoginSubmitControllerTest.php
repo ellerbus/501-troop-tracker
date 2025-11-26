@@ -39,7 +39,7 @@ class LoginSubmitControllerTest extends TestCase
 
         $trooper = Trooper::factory()
             ->withOrganization($organization, 'TK9999')
-            ->withAssignment($organization, status: MembershipStatus::Active)
+            ->withAssignment($organization, member: true)
             ->create();
 
         $this->auth_mock->shouldReceive('authenticate')
@@ -152,7 +152,7 @@ class LoginSubmitControllerTest extends TestCase
         $trooper = Trooper::factory()
             ->asActive()
             ->withOrganization($organization, 'TK9999')
-            ->withAssignment($organization, status: MembershipStatus::Retired)
+            ->withAssignment($organization, member: false)
             ->create();
 
         $this->auth_mock->shouldReceive('authenticate')

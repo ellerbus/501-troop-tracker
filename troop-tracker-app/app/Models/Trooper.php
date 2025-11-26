@@ -50,6 +50,16 @@ class Trooper extends BaseTrooper implements
     }
 
     /**
+     * Check if the trooper's membership role is admin.
+     *
+     * @return bool True if the trooper is admin, false otherwise.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->membership_role == MembershipRole::Administrator;
+    }
+
+    /**
      * Check if the trooper's membership status is active.
      *
      * @return bool True if the trooper is active, false otherwise.
@@ -99,9 +109,11 @@ class Trooper extends BaseTrooper implements
      */
     public function hasActiveOrganizationStatus(): bool
     {
-        return $this->trooper_assignments()
-            ->where(TrooperAssignment::MEMBERSHIP_STATUS, MembershipStatus::Active)
+        $has_assignment = $this->trooper_assignments()
+            ->where(TrooperAssignment::MEMBER, true)
             ->exists();
+
+        return $has_assignment;
     }
 
     /**

@@ -43,21 +43,6 @@
                       :value="$trooper->membership_status->value" />
     </x-input-container>
 
-    <x-input-container>
-      <x-label>
-        Role:
-      </x-label>
-      <x-input-select :property="'membership_role'"
-                      :options="\App\Enums\MembershipRole::toArray()"
-                      :value="$trooper->membership_role->value" />
-      <x-input-help>
-        If selected as {{ \App\Enums\MembershipRole::Admin->name }}, they have full control within the Command Staff.
-        If selected as {{ \App\Enums\MembershipRole::Moderator->name }}, they have full control over their
-        assigned organizations as {{ \App\Enums\MembershipRole::Moderator->name }}. A {{ \App\Enums\MembershipRole::Member->name }},
-        can sign up for events provided they are {{ \App\Enums\MembershipStatus::Active->name }},
-      </x-input-help>
-    </x-input-container>
-
     <x-submit-container>
       <x-submit-button>
         Save

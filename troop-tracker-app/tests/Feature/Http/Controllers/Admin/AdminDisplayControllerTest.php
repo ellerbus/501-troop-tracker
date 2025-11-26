@@ -101,7 +101,7 @@ class AdminDisplayControllerTest extends TestCase
     public static function permissionProvider(): array
     {
         return [
-            'admin user' => ['admin'],
+            'admin user' => ['administrator'],
             'moderator user' => ['moderator'],
         ];
     }

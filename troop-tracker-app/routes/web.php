@@ -13,10 +13,11 @@ use App\Http\Controllers\Admin\SettingsDisplayController;
 use App\Http\Controllers\Admin\SettingsSubmitController;
 use App\Http\Controllers\Admin\Troopers\TrooperApprovalDisplayController;
 use App\Http\Controllers\Admin\Troopers\TrooperApprovalSubmitHtmxController;
+use App\Http\Controllers\Admin\Troopers\TrooperAuthoritySubmitHtmxController;
 use App\Http\Controllers\Admin\Troopers\TrooperDenialSubmitHtmxController;
-use App\Http\Controllers\Admin\Troopers\TroopersDisplayController;
 use App\Http\Controllers\Admin\Troopers\TrooperProfileDisplayController;
 use App\Http\Controllers\Admin\Troopers\TrooperProfileSubmitHtmxController;
+use App\Http\Controllers\Admin\Troopers\TroopersDisplayController;
 use App\Http\Controllers\Auth\LoginDisplayController;
 use App\Http\Controllers\Auth\LoginSubmitController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -81,7 +82,7 @@ Route::prefix('dashboard')
 //  ADMIN
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['auth', 'check.role:moderator,admin'])
+    ->middleware(['auth', 'check.role:moderator,administrator'])
     ->group(function ()
     {
         Route::get('/', AdminDisplayController::class)->name('display');
@@ -100,6 +101,7 @@ Route::prefix('admin')
             Route::get('/display', TroopersDisplayController::class)->name('display');
             Route::get('/trooper/{trooper}', TrooperProfileDisplayController::class)->name('trooper');
             Route::post('/trooper/{trooper}/profile', TrooperProfileSubmitHtmxController::class)->name('profile-htmx');
+            Route::post('/trooper/{trooper}/authority', TrooperAuthoritySubmitHtmxController::class)->name('authority-htmx');
             Route::get('/approvals', TrooperApprovalDisplayController::class)->name('approvals');
             Route::post('/approvals/{trooper}/approve', TrooperApprovalSubmitHtmxController::class)->name('approve-htmx');
             Route::post('/approvals/{trooper}/deny', TrooperDenialSubmitHtmxController::class)->name('deny-htmx');

@@ -102,6 +102,7 @@ class RegisterSubmitController extends Controller
                         $trooper_organization->trooper_id = $trooper->id;
                         $trooper_organization->organization_id = $organization->id;
                         $trooper_organization->identifier = $organization_data['identifier'];
+                        $trooper_organization->membership_status = MembershipStatus::Active;
 
                         $trooper_organization->save();
                     }
@@ -111,8 +112,7 @@ class RegisterSubmitController extends Controller
                     $organization_assignment->trooper_id = $trooper->id;
                     $organization_assignment->organization_id = $organization->id;
                     $organization_assignment->notify = true;
-                    $organization_assignment->membership_status = MembershipStatus::Pending;
-                    $organization_assignment->membership_role = $membership_role;
+                    $organization_assignment->member = true;
 
                     $organization_assignment->save();
 
@@ -127,8 +127,7 @@ class RegisterSubmitController extends Controller
                         $region_assignment->trooper_id = $trooper->id;
                         $region_assignment->organization_id = $region->id;
                         $region_assignment->notify = true;
-                        $region_assignment->membership_status = MembershipStatus::Pending;
-                        $region_assignment->membership_role = $membership_role;
+                        $region_assignment->member = true;
 
                         $region_assignment->save();
 
@@ -143,8 +142,7 @@ class RegisterSubmitController extends Controller
                             $unit_assignment->trooper_id = $trooper->id;
                             $unit_assignment->organization_id = $unit->id;
                             $unit_assignment->notify = true;
-                            $unit_assignment->membership_status = MembershipStatus::Pending;
-                            $unit_assignment->membership_role = $membership_role;
+                            $unit_assignment->member = true;
 
                             $unit_assignment->save();
                         }

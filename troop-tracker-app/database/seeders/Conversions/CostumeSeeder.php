@@ -22,9 +22,9 @@ class CostumeSeeder extends Seeder
 
         $legacy_costumes = DB::table('costumes')->get();
 
-        foreach ($legacy_costumes as $costume)
+        foreach ($legacy_costumes as $column => $costume)
         {
-            $club = $club_map->firstWhere('value', $costume->club) ?? null;
+            $club = $club_map->firstWhere('legacy_id', $costume->club) ?? null;
 
             if (is_null($club))
             {

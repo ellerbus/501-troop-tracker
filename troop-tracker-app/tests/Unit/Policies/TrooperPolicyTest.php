@@ -30,11 +30,11 @@ class TrooperPolicyTest extends TestCase
         $unit2 = Organization::factory()->unit()->create();
 
         $this->admin_trooper = Trooper::factory()->create([
-            'membership_role' => MembershipRole::Admin
+            'membership_role' => MembershipRole::Administrator
         ]);
 
         $this->moderator_trooper = Trooper::factory()
-            ->withAssignment($region, role: MembershipRole::Moderator)
+            ->withAssignment($region, moderator: true)
             ->create([
                 'membership_role' => MembershipRole::Moderator
             ]);
@@ -46,7 +46,7 @@ class TrooperPolicyTest extends TestCase
             ]);
 
         $this->nonmember_trooper = Trooper::factory()
-            ->withAssignment($unit2, MembershipRole::Member)
+            ->withAssignment($unit2)
             ->create([
                 'membership_role' => MembershipRole::Member
             ]);

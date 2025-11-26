@@ -29,5 +29,5 @@ enum MembershipRole: string
     /**
      * An regular member.
      */
-    case Admin = 'admin';
+    case Administrator = 'administrator';
 }

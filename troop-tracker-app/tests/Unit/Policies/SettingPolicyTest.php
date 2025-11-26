@@ -28,7 +28,7 @@ class SettingPolicyTest extends TestCase
     public function test_admin_can_perform_actions(string $method, bool $expected_result): void
     {
         // Arrange
-        $admin = Trooper::factory()->create(['membership_role' => MembershipRole::Admin]);
+        $admin = Trooper::factory()->create(['membership_role' => MembershipRole::Administrator]);
         $subject = new SettingPolicy();
 
         // Act & Assert

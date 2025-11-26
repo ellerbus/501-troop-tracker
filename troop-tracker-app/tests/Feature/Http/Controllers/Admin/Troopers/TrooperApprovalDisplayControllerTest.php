@@ -60,7 +60,7 @@ class TrooperApprovalDisplayControllerTest extends TestCase
 
         $moderator = Trooper::factory()
             ->asModerator()
-            ->withAssignment($region, role: MembershipRole::Moderator)
+            ->withAssignment($region, moderator: true)
             ->create();
 
         $member = Trooper::factory()
@@ -84,7 +84,6 @@ class TrooperApprovalDisplayControllerTest extends TestCase
         $response->assertViewHas('troopers', function ($view_troopers)
         {
             return $view_troopers->count() === 1;
-
         });
     }
 }

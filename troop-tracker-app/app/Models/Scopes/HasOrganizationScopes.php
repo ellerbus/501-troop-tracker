@@ -76,7 +76,7 @@ trait HasOrganizationScopes
             ->where(self::TYPE, OrganizationType::Organization)
             ->whereHas('trooper_assignments', function ($q) use ($trooper_id)
             {
-                $q->where('membership_status', MembershipStatus::Active);
+                $q->where('member', true);
 
                 if ($trooper_id)
                 {
@@ -94,7 +94,8 @@ trait HasOrganizationScopes
      */
     protected function scopeWithAllAssignments(Builder $query, int $trooper_id): Builder
     {
-        return $query->with([
+        return $query->orderBy(self::SEQUENCE)->with([
+            'parent',
             'trooper_assignments' => function ($q) use ($trooper_id)
             {
                 $q->where(TrooperAssignment::TROOPER_ID, $trooper_id);

@@ -21,13 +21,10 @@ class OrganizationObserver
      */
     public function saved(Organization $organization): void
     {
-        $node_path = $this->buildNodePath($organization);
-        $depth = substr_count($node_path, self::SEP);
+        $organization->node_path = $this->buildNodePath($organization);
+        $organization->depth = substr_count($organization->node_path, self::SEP);
 
-        $organization->updateQuietly([
-            Organization::NODE_PATH => $node_path,
-            Organization::DEPTH => $depth,
-        ]);
+        $organization->saveQuietly();
     }
 
     /**

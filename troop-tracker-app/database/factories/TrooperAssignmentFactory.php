@@ -23,24 +23,14 @@ class TrooperAssignmentFactory extends Factory
     {
         return [
             TrooperAssignment::TROOPER_ID => Trooper::factory(),
-            TrooperAssignment::MEMBERSHIP_STATUS => MembershipStatus::Active,
-            TrooperAssignment::MEMBERSHIP_ROLE => MembershipRole::Member,
             TrooperAssignment::ORGANIZATION_ID => Organization::factory(),
         ];
     }
 
-    public function active(): static
+    public function member(): static
     {
         return $this->state(fn(array $attributes) => [
-            'membership_status' => MembershipStatus::Active,
+            'member' => true,
         ]);
     }
-
-    public function retired(): static
-    {
-        return $this->state(fn(array $attributes) => [
-            'membership_status' => MembershipStatus::Retired,
-        ]);
-    }
-
 }

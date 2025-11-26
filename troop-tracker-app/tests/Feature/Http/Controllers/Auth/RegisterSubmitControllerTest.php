@@ -113,22 +113,22 @@ class RegisterSubmitControllerTest extends TestCase
         $this->assertDatabaseHas('tt_trooper_assignments', [
             'trooper_id' => $trooper->id,
             'organization_id' => $organization->id,
-            'membership_status' => MembershipStatus::Pending->value,
-            'membership_role' => MembershipRole::Member->value,
+            'notify' => true,
+            'member' => true,
         ]);
 
         $this->assertDatabaseHas('tt_trooper_assignments', [
             'trooper_id' => $trooper->id,
             'organization_id' => $region->id,
-            'membership_status' => MembershipStatus::Pending->value,
-            'membership_role' => MembershipRole::Member->value,
+            'notify' => true,
+            'member' => true,
         ]);
 
         $this->assertDatabaseHas('tt_trooper_assignments', [
             'trooper_id' => $trooper->id,
             'organization_id' => $unit->id,
-            'membership_status' => MembershipStatus::Pending->value,
-            'membership_role' => MembershipRole::Member->value,
+            'notify' => true,
+            'member' => true,
         ]);
     }
 
@@ -168,7 +168,7 @@ class RegisterSubmitControllerTest extends TestCase
         $this->assertDatabaseHas('tt_trooper_assignments', [
             'trooper_id' => $trooper->id,
             'organization_id' => $organization->id,
-            'membership_role' => MembershipRole::Handler->value,
+            'member' => true
         ]);
     }
 
@@ -223,22 +223,22 @@ class RegisterSubmitControllerTest extends TestCase
         $this->assertDatabaseHas('tt_trooper_assignments', [
             'trooper_id' => $trooper->id,
             'organization_id' => $organization->id,
-            'membership_status' => MembershipStatus::Pending->value,
-            'membership_role' => MembershipRole::Member->value,
+            'notify' => true,
+            'member' => true,
         ]);
 
         $this->assertDatabaseHas('tt_trooper_assignments', [
             'trooper_id' => $trooper->id,
             'organization_id' => $region->id,
-            'membership_status' => MembershipStatus::Pending->value,
-            'membership_role' => MembershipRole::Member->value,
+            'notify' => true,
+            'member' => true,
         ]);
 
         $this->assertDatabaseHas('tt_trooper_assignments', [
             'trooper_id' => $trooper->id,
             'organization_id' => $unit->id,
-            'membership_status' => MembershipStatus::Pending->value,
-            'membership_role' => MembershipRole::Member->value,
+            'notify' => true,
+            'member' => true,
         ]);
     }
 
@@ -275,7 +275,7 @@ class RegisterSubmitControllerTest extends TestCase
         $this->assertDatabaseHas('tt_trooper_assignments', [
             'trooper_id' => $trooper->id,
             'organization_id' => $organization->id,
-            'membership_role' => MembershipRole::Handler->value,
+            'member' => true,
         ]);
     }
 }

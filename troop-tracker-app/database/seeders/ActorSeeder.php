@@ -18,6 +18,12 @@ class ActorSeeder extends Seeder
      */
     public function run()
     {
+        $this->admin();
+        $this->makaze();    //moderator
+    }
+
+    private function admin()
+    {
         $actor = Trooper::find(501) ?? new Trooper(['id' => 501]);
 
         $actor->name = 'Sith Lord';
@@ -25,7 +31,7 @@ class ActorSeeder extends Seeder
         $actor->username = 'sith';
         $actor->password = Hash::make('password');
         $actor->membership_status = MembershipStatus::Active;
-        $actor->membership_role = MembershipRole::Admin;
+        $actor->membership_role = MembershipRole::Administrator;
 
         $actor->save();
 
@@ -33,14 +39,39 @@ class ActorSeeder extends Seeder
         {
             $organization = Organization::firstWhere(Organization::NAME, '501st Legion');
 
-            $actor->trooper_assignments()->create([
-                'organization_id' => $organization->id,
-                'membership_role' => MembershipRole::Member,
-                'membership_status' => MembershipStatus::Active,
+            $actor->organizations()->attach($organization->id, [
+                'identifier' => '99_999-1',
             ]);
+        }
+    }
+
+
+    private function makaze()
+    {
+        $actor = Trooper::find(502) ?? new Trooper(['id' => 502]);
+
+        $actor->name = 'Sith Lord Junior';
+        $actor->email = 'sith-junior@galaxy-far-far-away.com';
+        $actor->username = 'sith-jr';
+        $actor->password = Hash::make('password');
+        $actor->membership_status = MembershipStatus::Active;
+        $actor->membership_role = MembershipRole::Moderator;
+
+        $actor->save();
+
+        if ($actor->organizations->count() == 0)
+        {
+            $organization = Organization::firstWhere(Organization::NAME, '501st Legion');
 
             $actor->organizations()->attach($organization->id, [
-                'identifier' => '99999',
+                'identifier' => '99_999-2',
+            ]);
+
+            $unit = Organization::firstWhere(Organization::NAME, 'Makaze Squad');
+
+            $actor->trooper_assignments()->create([
+                'organization_id' => $unit->id,
+                'moderator' => true
             ]);
         }
     }
