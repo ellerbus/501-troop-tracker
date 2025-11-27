@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Models\Scopes;
 
-use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
 use App\Models\Organization;
 use App\Models\Trooper;
@@ -55,7 +54,7 @@ class HasTrooperScopesTest extends TestCase
     {
         // Arrange
         $moderator = Trooper::factory()->create();
-        $candidate = Trooper::factory()->create(['membership_status' => MembershipStatus::Pending]);
+        $candidate = Trooper::factory()->asPending()->create();
         $organization = Organization::factory()->create();
 
         $moderator->trooper_assignments()->create([
@@ -85,7 +84,7 @@ class HasTrooperScopesTest extends TestCase
         $moderator->trooper_assignments()->create([
             'organization_id' => $parent_org->id,
             'moderator' => true,
-            'member' => true,
+            'member' => false,
         ]);
         $candidate->trooper_assignments()->create(['organization_id' => $child_org->id]);
 
@@ -125,7 +124,7 @@ class HasTrooperScopesTest extends TestCase
     {
         // Arrange
         $moderator = Trooper::factory()->create();
-        $candidate = Trooper::factory()->create(['membership_status' => MembershipStatus::Pending]);
+        $candidate = Trooper::factory()->asPending()->create();
         $parent_org = Organization::factory()->create();
         $child_org = Organization::factory()->create(['parent_id' => $parent_org->id]);
 

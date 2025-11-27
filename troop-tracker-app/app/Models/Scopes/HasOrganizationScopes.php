@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models\Scopes;
 
-use App\Enums\MembershipStatus;
 use App\Enums\OrganizationType;
 use App\Models\Organization;
 use App\Models\Trooper;
@@ -76,13 +75,17 @@ trait HasOrganizationScopes
         return $query
             ->orderBy(self::NAME)
             ->where(self::TYPE, OrganizationType::Organization)
-            ->whereHas('trooper_assignments', function ($q) use ($trooper_id)
+            ->whereExists(function ($sub) use ($trooper_id)
             {
-                $q->where('member', true);
+                $sub->select(DB::raw(1))
+                    ->from('tt_trooper_assignments as ta')
+                    ->join('tt_organizations as org_unit', 'ta.organization_id', '=', 'org_unit.id')
+                    ->where('ta.member', true)
+                    ->whereRaw('org_unit.node_path LIKE CONCAT(tt_organizations.node_path, "%")');
 
                 if ($trooper_id)
                 {
-                    $q->where('trooper_id', $trooper_id);
+                    $sub->where('ta.trooper_id', $trooper_id);
                 }
             });
     }
@@ -119,11 +122,9 @@ trait HasOrganizationScopes
             $sub->select(DB::raw(1))
                 ->from('tt_trooper_assignments as ta_moderator')
                 ->join('tt_organizations as org_moderator', 'ta_moderator.organization_id', '=', 'org_moderator.id')
-                ->join('tt_trooper_assignments as ta_candidate', 'ta_candidate.organization_id', '=', 'tt_organizations.id')
-                ->join('tt_organizations as org_candidate', 'ta_candidate.organization_id', '=', 'org_candidate.id')
                 ->where('ta_moderator.trooper_id', $moderator->id)
                 ->where('ta_moderator.moderator', true)
-                ->whereRaw('org_candidate.node_path LIKE CONCAT(org_moderator.node_path, "%")');
+                ->whereRaw('tt_organizations.node_path LIKE CONCAT(org_moderator.node_path, "%")');
         });
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Conversions;
 
-use App\Enums\MembershipRole;
 use App\Enums\MembershipStatus;
 use App\Models\Base\Organization;
 use App\Models\TrooperAssignment;
@@ -78,8 +77,8 @@ class TrooperOrganizationSeeder extends Seeder
 
             $region = $organization->organizations->first();
 
-            $this->loadTrooperAssignment($trooper->id, $organization->id, $notify, $member, $moderator);
-            $this->loadTrooperAssignment($trooper->id, $region->id, $notify, $member, $moderator);
+            $this->loadTrooperAssignment($trooper->id, $organization->id, $notify, false, $moderator);
+            $this->loadTrooperAssignment($trooper->id, $region->id, $notify, false, $moderator);
         }
     }
 

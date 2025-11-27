@@ -28,13 +28,13 @@ class CostumesSubmitHtmxControllerTest extends TestCase
         $this->assigned_organization = Organization::factory()->withCostume('Stormtrooper')->create();
         $this->assigned_costume = $this->assigned_organization->costumes()->first();
 
-        $this->unassigned_organization = Organization::factory()->withCostume('Stormtrooper')->create();
+        $this->unassigned_organization = Organization::factory()->withCostume('Stormtrooper I')->create();
         $this->unassigned_costume = $this->unassigned_organization->costumes()->first();
 
         $this->trooper = Trooper::factory()
             ->withOrganization($this->assigned_organization, 'TK-1')
             ->withCostume($this->assigned_costume)
-            ->withAssignment($this->assigned_organization, notify: true)
+            ->withAssignment($this->assigned_organization, notify: true, member: true)
             ->create();
     }
 

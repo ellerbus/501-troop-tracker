@@ -9,6 +9,7 @@ namespace App\Models\Base;
 use App\Models\Costume;
 use App\Models\Event;
 use App\Models\EventOrganization;
+use App\Models\Notification;
 use App\Models\Trooper;
 use App\Models\TrooperAssignment;
 use App\Models\TrooperOrganization;
@@ -45,6 +46,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \App\Models\Organization|null $organization
  * @property Collection|Costume[] $costumes
  * @property Collection|Event[] $events
+ * @property Collection|Notification[] $notifications
  * @property Collection|\App\Models\Organization[] $organizations
  * @property Collection|TrooperAssignment[] $trooper_assignments
  * @property Collection|Trooper[] $troopers
@@ -115,6 +117,11 @@ class Organization extends Model
         return $this->belongsToMany(Event::class, 'tt_event_organizations')
                     ->withPivot(EventOrganization::ID, EventOrganization::TROOPERS_ALLOWED, EventOrganization::HANDLERS_ALLOWED, EventOrganization::DELETED_AT, EventOrganization::CREATED_ID, EventOrganization::UPDATED_ID, EventOrganization::DELETED_ID)
                     ->withTimestamps();
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
     }
 
     public function organizations(): HasMany

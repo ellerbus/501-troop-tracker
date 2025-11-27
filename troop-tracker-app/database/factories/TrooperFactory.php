@@ -7,6 +7,8 @@ use App\Enums\MembershipStatus;
 use App\Models\Costume;
 use App\Models\Organization;
 use App\Models\Trooper;
+use App\Models\TrooperAssignment;
+use App\Models\TrooperOrganization;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -58,7 +60,7 @@ class TrooperFactory extends Factory
     private function withMemberShipStatus(MembershipStatus $status = MembershipStatus::Active): static
     {
         return $this->state(fn(array $attributes) => [
-            'membership_status' => $status,
+            Trooper::MEMBERSHIP_STATUS => $status,
         ]);
     }
 
@@ -80,7 +82,7 @@ class TrooperFactory extends Factory
     private function withMemberShipRole(MembershipRole $role = MembershipRole::Member): static
     {
         return $this->state(fn(array $attributes) => [
-            'membership_role' => $role,
+            Trooper::MEMBERSHIP_ROLE => $role,
         ]);
     }
 
@@ -89,20 +91,20 @@ class TrooperFactory extends Factory
         return $this->afterCreating(function (Trooper $trooper) use ($organization, $identifier)
         {
             $trooper->organizations()->attach($organization->id, [
-                'identifier' => $identifier,
+                TrooperOrganization::IDENTIFIER => $identifier,
             ]);
         });
     }
 
-    public function withAssignment(Organization $organization, bool $moderator = false, bool $member = true, bool $notify = false): static
+    public function withAssignment(Organization $organization, bool $moderator = false, bool $member = false, bool $notify = false): static
     {
         return $this->afterCreating(function (Trooper $trooper) use ($organization, $moderator, $member, $notify)
         {
             $trooper->trooper_assignments()->create([
-                'organization_id' => $organization->id,
-                'member' => $member,
-                'notify' => $notify,
-                'moderator' => $moderator,
+                TrooperAssignment::ORGANIZATION_ID => $organization->id,
+                TrooperAssignment::MEMBER => $member,
+                TrooperAssignment::NOTIFY => $notify,
+                TrooperAssignment::MODERATOR => $moderator,
             ]);
         });
     }

@@ -48,7 +48,7 @@ class AdminDisplayControllerTest extends TestCase
             'membership_role' => $role,
             'membership_status' => MembershipStatus::Active
         ]);
-        Trooper::factory()->create(['membership_status' => MembershipStatus::Pending]); // Pending
+        Trooper::factory()->asPending()->create(); // Pending
         Trooper::factory()->create(['membership_status' => MembershipStatus::Active]); // Approved
 
         // Act

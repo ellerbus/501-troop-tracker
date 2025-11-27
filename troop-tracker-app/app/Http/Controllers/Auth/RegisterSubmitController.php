@@ -79,10 +79,10 @@ class RegisterSubmitController extends Controller
         $trooper->phone = $data['phone'] ?? null;
         $trooper->username = $data['username'];
         $trooper->password = Hash::make($data['password']);
+        $trooper->membership_role = $data['account_type'] == 'member' ? MembershipRole::Member : MembershipRole::Handler;
 
         $trooper->save();
 
-        $membership_role = $data['account_type'] == 'member' ? MembershipRole::Member : MembershipRole::Handler;
 
         // Loop through selected organizations and assign identifiers
         foreach ($data['organizations'] ?? [] as $organization_id => $organization_data)
@@ -112,7 +112,7 @@ class RegisterSubmitController extends Controller
                     $organization_assignment->trooper_id = $trooper->id;
                     $organization_assignment->organization_id = $organization->id;
                     $organization_assignment->notify = true;
-                    $organization_assignment->member = true;
+                    $organization_assignment->member = $organization->organizations()->count() == 0;
 
                     $organization_assignment->save();
 
@@ -127,7 +127,7 @@ class RegisterSubmitController extends Controller
                         $region_assignment->trooper_id = $trooper->id;
                         $region_assignment->organization_id = $region->id;
                         $region_assignment->notify = true;
-                        $region_assignment->member = true;
+                        $region_assignment->member = $region->organizations()->count() == 0;
 
                         $region_assignment->save();
 

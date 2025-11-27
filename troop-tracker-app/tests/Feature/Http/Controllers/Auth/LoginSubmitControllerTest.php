@@ -35,11 +35,13 @@ class LoginSubmitControllerTest extends TestCase
     public function test_invoke_with_valid_credentials_and_active_status_logs_user_in(): void
     {
         // Arrange
-        $organization = Organization::factory()->create();
+        $unit = Organization::factory()->unit()->create();
+        $region = $unit->parent;
+        $organization = $region->parent;
 
         $trooper = Trooper::factory()
             ->withOrganization($organization, 'TK9999')
-            ->withAssignment($organization, member: true)
+            ->withAssignment($unit, member: true)
             ->create();
 
         $this->auth_mock->shouldReceive('authenticate')

@@ -5,12 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers\Auth;
 
 use App\Contracts\AuthenticationInterface;
-use App\Enums\MembershipRole;
-use App\Enums\MembershipStatus;
 use App\Models\Organization;
-use App\Models\Region;
 use App\Models\Trooper;
-use App\Models\Unit;
 use Config;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
@@ -65,8 +61,13 @@ class RegisterSubmitControllerTest extends TestCase
         Config::set('tracker.plugins.type', 'xenforo');
 
         $organization = Organization::factory()->create(['identifier_validation' => 'string']);
-        $region = Organization::factory()->region()->create(['parent_id' => $organization->id]);
-        $unit = Organization::factory()->unit()->create(['parent_id' => $region->id]);
+
+        $unit = Organization::factory()->unit()->create();
+        $region = $unit->parent;
+        $organization = $region->parent;
+
+        $organization->identifier_validation = 'string';
+        $organization->save();
 
         $this->auth_mock->shouldReceive('verify')
             ->once()
@@ -114,14 +115,14 @@ class RegisterSubmitControllerTest extends TestCase
             'trooper_id' => $trooper->id,
             'organization_id' => $organization->id,
             'notify' => true,
-            'member' => true,
+            'member' => false,
         ]);
 
         $this->assertDatabaseHas('tt_trooper_assignments', [
             'trooper_id' => $trooper->id,
             'organization_id' => $region->id,
             'notify' => true,
-            'member' => true,
+            'member' => false,
         ]);
 
         $this->assertDatabaseHas('tt_trooper_assignments', [
@@ -224,14 +225,14 @@ class RegisterSubmitControllerTest extends TestCase
             'trooper_id' => $trooper->id,
             'organization_id' => $organization->id,
             'notify' => true,
-            'member' => true,
+            'member' => false,
         ]);
 
         $this->assertDatabaseHas('tt_trooper_assignments', [
             'trooper_id' => $trooper->id,
             'organization_id' => $region->id,
             'notify' => true,
-            'member' => true,
+            'member' => false,
         ]);
 
         $this->assertDatabaseHas('tt_trooper_assignments', [

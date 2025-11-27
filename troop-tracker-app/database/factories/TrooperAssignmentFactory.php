@@ -30,7 +30,7 @@ class TrooperAssignmentFactory extends Factory
     public function member(): static
     {
         return $this->state(fn(array $attributes) => [
-            'member' => true,
+            TrooperAssignment::MEMBER => true,
         ]);
     }
 }
