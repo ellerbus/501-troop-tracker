@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Admin\Organizations;
 
+use App\Models\Organization;
 use App\Rules\Admin\Organizations\UniqueNameRule;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Validation\Validator as ValidatorInterface;
@@ -28,14 +29,7 @@ class CreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $parent = $this->route('parent');
-
-        if ($parent == null)
-        {
-            throw new AuthorizationException('Organization/Parent not found or unauthorized.');
-        }
-
-        return $this->user()->can('update', $parent);
+        return $this->user()->can('create', Organization::class);
     }
 
     /**

@@ -8,18 +8,17 @@ use App\Models\Trooper;
 /**
  * Class OrganizationPolicy
  *
- * Defines authorization rules for trooper-related actions.
+ * Defines authorization rules for organization-related actions.
  */
 class OrganizationPolicy
 {
     use HasTrooperPermissionsTrait;
 
     /**
-     * Determine whether the user can create troopers.
-     * Always returns false as creation is handled by the registration process.
+     * Determine whether the user can create organizations.
      *
      * @param Trooper $trooper The authenticated user performing the action.
-     * @return bool Always false.
+     * @return bool True if the user is an administrator, false otherwise.
      */
     public function create(Trooper $trooper): bool
     {
@@ -27,11 +26,11 @@ class OrganizationPolicy
     }
 
     /**
-     * Determine whether the user can update a trooper.
+     * Determine whether the user can update an organization.
      *
      * @param Trooper $trooper The authenticated user performing the action.
-     * @param Organization $subject The trooper being updated.
-     * @return bool True if the user can moderate the subject, false otherwise.
+     * @param Organization $subject The organization being updated.
+     * @return bool True if the user can moderate the subject organization, false otherwise.
      */
     public function update(Trooper $trooper, Organization $subject): bool
     {
@@ -39,11 +38,11 @@ class OrganizationPolicy
     }
 
     /**
-     * Determine whether the user can delete a trooper.
-     * Deleting troopers is not permitted through this policy.
+     * Determine whether the user can delete an organization.
+     * Deleting organizations is not permitted through this policy.
      *
      * @param Trooper $trooper The authenticated user performing the action.
-     * @param Organization $subject The trooper being deleted.
+     * @param Organization $subject The organization being deleted.
      * @return bool Always false.
      */
     public function delete(Trooper $trooper, Organization $subject): bool
@@ -52,11 +51,11 @@ class OrganizationPolicy
     }
 
     /**
-     * Determine whether the user can restore a trooper.
-     * Restoring troopers is not permitted through this policy.
+     * Determine whether the user can restore an organization.
+     * Restoring organizations is not permitted through this policy.
      *
      * @param Trooper $trooper The authenticated user performing the action.
-     * @param Organization $subject The trooper being restored.
+     * @param Organization $subject The organization being restored.
      * @return bool Always false.
      */
     public function restore(Trooper $trooper, Organization $subject): bool
@@ -65,11 +64,11 @@ class OrganizationPolicy
     }
 
     /**
-     * Determine whether the user can permanently delete a trooper.
-     * Force deleting troopers is not permitted through this policy.
+     * Determine whether the user can permanently delete an organization.
+     * Force deleting organizations is not permitted through this policy.
      *
      * @param Trooper $trooper The authenticated user performing the action.
-     * @param Organization $subject The trooper being force-deleted.
+     * @param Organization $subject The organization being force-deleted.
      * @return bool Always false.
      */
     public function forceDelete(Trooper $trooper, Organization $subject): bool
@@ -78,12 +77,12 @@ class OrganizationPolicy
     }
 
     /**
-     * Check if a user can moderate a subject trooper.
-     * An admin can moderate any trooper. A moderator can moderate troopers within their assigned scope.
+     * Check if a user can moderate a subject organization.
+     * An admin can moderate any organization. A moderator can moderate organizations within their assigned scope.
      *
      * @param Trooper $trooper The user performing the action (moderator).
-     * @param Organization $subject The trooper being moderated.
-     * @return bool True if the user has moderation rights over the subject, false otherwise.
+     * @param Organization $subject The organization being moderated.
+     * @return bool True if the user has moderation rights over the subject organization, false otherwise.
      */
     private function canModerate(Trooper $trooper, Organization $subject): bool
     {
