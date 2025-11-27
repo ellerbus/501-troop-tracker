@@ -13,35 +13,34 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Class OrganizationsDisplayController
+ * Class ListController
  *
  * Handles the display of the main organizations list in the admin section.
- * This controller fetches and displays a list of organizations, filtering the results
- * based on the authenticated user's role. Administrators see all organizations, while
- * other roles see only the organizations they are assigned to moderate.
+ * This controller fetches and displays a list of organizations with their assignment
+ * status for the authenticated user.
  * @package App\Http\Controllers\Admin\Organizations
  */
 class ListController extends Controller
 {
     /**
-     * OrganizationsDisplayController constructor.
+     * ListController constructor.
      *
-     * @param BreadCrumbService $crumbs The breadcrumb service for managing navigation history.
+     * @param BreadCrumbService $crumbs The service for managing breadcrumbs.
      */
     public function __construct(private readonly BreadCrumbService $crumbs)
     {
     }
 
     /**
-     * Handle the incoming request to display the organizations list page.
+     * Handle the request to display the organizations list page.
      *
-     * Sets up breadcrumbs, retrieves the appropriate list of organizations based on the
-     * user's role, and returns the main organizations display view.
+     * Sets up breadcrumbs, retrieves organizations with assignment data for the
+     * authenticated user, and returns the list view.
      *
-     * @param Request $request The incoming HTTP request.
-     * @return View|RedirectResponse The rendered dashboard page view or a redirect response.
+     * @param Request $request The incoming HTTP request object.
+     * @return View The rendered organizations list view.
      */
-    public function __invoke(Request $request): View|RedirectResponse
+    public function __invoke(Request $request): View
     {
         $this->crumbs->addRoute('Command Staff', 'admin.display');
         $this->crumbs->add('Organizations');

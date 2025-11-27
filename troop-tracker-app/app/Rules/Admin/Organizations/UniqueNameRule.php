@@ -7,17 +7,19 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 /**
- * Validation rule to ensure an organization-specific identifier is unique among troopers of that organization.
+ * Validation rule to ensure an organization's name is unique among its siblings.
  *
- * This rule checks the pivot table between troopers and organizations to verify that the
- * provided identifier (e.g., a member ID for a specific organization) is not already in use.
+ * This rule's behavior changes based on whether an organization is being created or updated.
+ * - On creation, it checks for name uniqueness among the children of the given parent organization.
+ * - On update, it checks for name uniqueness among siblings, excluding the organization being updated.
  */
 class UniqueNameRule implements ValidationRule
 {
     /**
      * Creates a new rule instance.
      *
-     * @param Organization $organization The organization against which the identifier's uniqueness will be checked.
+     * @param bool $is_updating Indicates if the validation is for an update operation.
+     * @param Organization $organization For creation, this is the parent. For updates, this is the organization being updated.
      */
     public function __construct(
         private bool $is_updating,
@@ -27,6 +29,8 @@ class UniqueNameRule implements ValidationRule
 
     /**
      * Run the validation rule.
+     *
+     * Checks if the provided organization name already exists at the same hierarchical level.
      *
      * @param  string  $attribute The name of the attribute being validated.
      * @param  mixed  $value The value of the attribute being validated.

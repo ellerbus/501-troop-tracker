@@ -8,33 +8,34 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Organizations\UpdateRequest;
 use App\Models\Organization;
 use App\Services\FlashMessageService;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 /**
- * Class OrganizationsDisplayController
+ * Class UpdateSubmitController
  *
- * Handles the display of the main organizations list in the admin section.
- * This controller fetches and displays a list of organizations, filtering the results
- * based on the authenticated user's role. Administrators see all organizations, while
- * other roles see only the organizations they are assigned to moderate.
+ * Handles the submission of the form for updating an existing organization.
  * @package App\Http\Controllers\Admin\Organizations
  */
 class UpdateSubmitController extends Controller
 {
+    /**
+     * UpdateSubmitController constructor.
+     *
+     * @param FlashMessageService $flash The service for displaying flash messages.
+     */
     public function __construct(private readonly FlashMessageService $flash)
     {
     }
 
     /**
-     * Handle the incoming request to display the organizations list page.
+     * Handle the incoming request to update an organization.
      *
-     * Sets up breadcrumbs, retrieves the appropriate list of organizations based on the
-     * user's role, and returns the main organizations display view.
+     * Validates the request, updates the organization's name, saves it,
+     * and then redirects with a success message.
      *
-     * @param Request $request The incoming HTTP request.
-     * @return View|RedirectResponse The rendered dashboard page view or a redirect response.
+     * @param UpdateRequest $request The validated request containing the updated data.
+     * @param Organization $organization The organization to be updated.
+     * @return RedirectResponse A redirect response to the organization list.
      */
     public function __invoke(UpdateRequest $request, Organization $organization): RedirectResponse
     {

@@ -12,35 +12,33 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 /**
- * Class OrganizationsDisplayController
+ * Class UpdateController
  *
- * Handles the display of the main organizations list in the admin section.
- * This controller fetches and displays a list of organizations, filtering the results
- * based on the authenticated user's role. Administrators see all organizations, while
- * other roles see only the organizations they are assigned to moderate.
+ * Handles displaying the form to update an existing organization.
  * @package App\Http\Controllers\Admin\Organizations
  */
 class UpdateController extends Controller
 {
     /**
-     * OrganizationsDisplayController constructor.
+     * UpdateController constructor.
      *
-     * @param BreadCrumbService $crumbs The breadcrumb service for managing navigation history.
+     * @param BreadCrumbService $crumbs The service for managing breadcrumbs.
      */
     public function __construct(private readonly BreadCrumbService $crumbs)
     {
     }
 
     /**
-     * Handle the incoming request to display the organizations list page.
+     * Handle the request to display the organization update page.
      *
-     * Sets up breadcrumbs, retrieves the appropriate list of organizations based on the
-     * user's role, and returns the main organizations display view.
+     * Authorizes the user, sets up breadcrumbs, and returns the view
+     * containing the form to update an existing organization.
      *
-     * @param Request $request The incoming HTTP request.
-     * @return View|RedirectResponse The rendered dashboard page view or a redirect response.
+     * @param Request $request The incoming HTTP request object.
+     * @param Organization $organization The organization to be updated.
+     * @return View The rendered organization update view.
      */
-    public function __invoke(Request $request, Organization $organization): View|RedirectResponse
+    public function __invoke(Request $request, Organization $organization): View
     {
         $this->authorize('update', $organization);
 

@@ -9,41 +9,42 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Organizations\CreateRequest;
 use App\Models\Organization;
 use App\Services\FlashMessageService;
-use Exception;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use InvalidArgumentException;
 
 /**
- * Class OrganizationsDisplayController
+ * Class CreateSubmitController
  *
- * Handles the display of the main organizations list in the admin section.
- * This controller fetches and displays a list of organizations, filtering the results
- * based on the authenticated user's role. Administrators see all organizations, while
- * other roles see only the organizations they are assigned to moderate.
+ * Handles the submission of the form for creating a new organization.
  * @package App\Http\Controllers\Admin\Organizations
  */
 class CreateSubmitController extends Controller
 {
+    /**
+     * CreateSubmitController constructor.
+     *
+     * @param FlashMessageService $flash The service for displaying flash messages.
+     */
     public function __construct(private readonly FlashMessageService $flash)
     {
     }
 
     /**
-     * Handle the incoming request to display the organizations list page.
+     * Handle the incoming request to create a new organization.
      *
-     * Sets up breadcrumbs, retrieves the appropriate list of organizations based on the
-     * user's role, and returns the main organizations display view.
+     * Validates the request, creates a new organization under the given parent,
+     * determines its type, saves it, and then redirects with a success message.
      *
-     * @param Request $request The incoming HTTP request.
-     * @return View|RedirectResponse The rendered dashboard page view or a redirect response.
+     * @param CreateRequest $request The validated request containing the new organization's data.
+     * @param Organization $parent The parent organization.
+     * @return RedirectResponse A redirect response to the organization list.
      */
     public function __invoke(CreateRequest $request, Organization $parent): RedirectResponse
     {
         $organization = new Organization();
 
         $organization->parent_id = $parent->id;
-        $organization->name = $request->name;
+        $organization->name = $request->validated('name');
 
         if ($parent->type == OrganizationType::Organization)
         {
@@ -55,7 +56,7 @@ class CreateSubmitController extends Controller
         }
         else
         {
-            throw new Exception("That's a no-go there buddy!");
+            throw new InvalidArgumentException('Cannot create a sub-organization under the specified parent type.');
         }
 
         $organization->save();
