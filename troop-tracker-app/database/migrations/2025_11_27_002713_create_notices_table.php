@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\NoticeType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tt_notifications', function (Blueprint $table)
+        Schema::create('tt_notices', function (Blueprint $table)
         {
             $table->id();
 
@@ -27,7 +28,7 @@ return new class extends Migration
 
             // Core fields
             $table->string('title', 128);
-            $table->string('type', 16)->default('info');
+            $table->string('type', 16)->default(NoticeType::Info);
             $table->text('message');
 
             $table->timestamps();
@@ -41,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tt_notifications');
+        Schema::dropIfExists('tt_notices');
     }
 };

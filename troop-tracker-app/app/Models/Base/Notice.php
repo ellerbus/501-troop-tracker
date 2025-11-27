@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class Notification
+ * Class Notice
  * 
  * @property int $id
  * @property int|null $organization_id
@@ -33,7 +33,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @package App\Models\Base
  */
-class Notification extends Model
+class Notice extends Model
 {
     use SoftDeletes;
     const ID = 'id';
@@ -49,7 +49,7 @@ class Notification extends Model
     const CREATED_ID = 'created_id';
     const UPDATED_ID = 'updated_id';
     const DELETED_ID = 'deleted_id';
-    protected $table = 'tt_notifications';
+    protected $table = 'tt_notices';
 
     protected $casts = [
         self::ID => 'int',

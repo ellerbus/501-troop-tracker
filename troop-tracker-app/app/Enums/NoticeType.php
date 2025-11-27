@@ -10,7 +10,7 @@ namespace App\Enums;
  * This is typically used for flash messages or alerts to convey information
  * with a certain level of importance or context (e.g., success, error).
  */
-enum NotificationType: string
+enum NoticeType: string
 {
     use HasEnumHelpers;
 

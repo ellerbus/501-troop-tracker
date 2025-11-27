@@ -9,7 +9,7 @@ namespace App\Models\Base;
 use App\Models\Costume;
 use App\Models\Event;
 use App\Models\EventOrganization;
-use App\Models\Notification;
+use App\Models\Notice;
 use App\Models\Trooper;
 use App\Models\TrooperAssignment;
 use App\Models\TrooperOrganization;
@@ -46,7 +46,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \App\Models\Organization|null $organization
  * @property Collection|Costume[] $costumes
  * @property Collection|Event[] $events
- * @property Collection|Notification[] $notifications
+ * @property Collection|Notice[] $notices
  * @property Collection|\App\Models\Organization[] $organizations
  * @property Collection|TrooperAssignment[] $trooper_assignments
  * @property Collection|Trooper[] $troopers
@@ -119,9 +119,9 @@ class Organization extends Model
                     ->withTimestamps();
     }
 
-    public function notifications(): HasMany
+    public function notices(): HasMany
     {
-        return $this->hasMany(Notification::class);
+        return $this->hasMany(Notice::class);
     }
 
     public function organizations(): HasMany

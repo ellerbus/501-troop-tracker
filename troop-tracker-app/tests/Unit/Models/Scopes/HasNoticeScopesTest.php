@@ -4,27 +4,27 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Models\Scopes;
 
-use App\Models\Notification;
+use App\Models\Notice;
 use App\Models\Organization;
 use App\Models\Trooper;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class HasNotificationScopesTest extends TestCase
+class HasNoticeScopesTest extends TestCase
 {
     use RefreshDatabase;
 
     public function test_active_scope_includes_current_notifications(): void
     {
         // Arrange
-        Notification::factory()->active()->create(); // Has start and end dates
-        Notification::factory()->create([            // Active without an end date
+        Notice::factory()->active()->create(); // Has start and end dates
+        Notice::factory()->create([            // Active without an end date
             'starts_at' => Carbon::now()->subDay(),
             'ends_at' => null,
         ]);
         // Act
-        $result = Notification::active()->get();
+        $result = Notice::active()->get();
 
         // Assert
         $this->assertCount(2, $result);
@@ -33,9 +33,9 @@ class HasNotificationScopesTest extends TestCase
     public function test_active_scope_excludes_future_notifications(): void
     {
         // Arrange
-        Notification::factory()->future()->create(); // starts_at is in the future
+        Notice::factory()->future()->create(); // starts_at is in the future
         // Act
-        $result = Notification::active()->count();
+        $result = Notice::active()->count();
 
         // Assert
         $this->assertEquals(0, $result);
@@ -44,9 +44,9 @@ class HasNotificationScopesTest extends TestCase
     public function test_active_scope_excludes_past_notifications(): void
     {
         // Arrange
-        Notification::factory()->past()->create(); // ends_at is in the past
+        Notice::factory()->past()->create(); // ends_at is in the past
         // Act
-        $result = Notification::active()->count();
+        $result = Notice::active()->count();
 
         // Assert
         $this->assertEquals(0, $result);
@@ -60,10 +60,10 @@ class HasNotificationScopesTest extends TestCase
         $organization = $region->parent;
 
         $trooper = Trooper::factory()->withAssignment($unit, member: true)->create();
-        Notification::factory()->withOrganization($organization)->create();
+        Notice::factory()->withOrganization($organization)->create();
 
         // Act
-        $result = Notification::visibleTo($trooper)->count();
+        $result = Notice::visibleTo($trooper)->count();
 
         // Assert
         $this->assertEquals(1, $result);
@@ -77,10 +77,10 @@ class HasNotificationScopesTest extends TestCase
         $organization = $region->parent;
 
         $trooper = Trooper::factory()->withAssignment($unit, member: true)->create();
-        Notification::factory()->withOrganization($region)->create();
+        Notice::factory()->withOrganization($region)->create();
 
         // Act
-        $result = Notification::visibleTo($trooper)->count();
+        $result = Notice::visibleTo($trooper)->count();
 
         // Assert
         $this->assertEquals(1, $result);
@@ -94,10 +94,10 @@ class HasNotificationScopesTest extends TestCase
         $organization = $region->parent;
 
         $trooper = Trooper::factory()->withAssignment($unit, member: true)->create();
-        Notification::factory()->withOrganization($unit)->create();
+        Notice::factory()->withOrganization($unit)->create();
 
         // Act
-        $result = Notification::visibleTo($trooper)->count();
+        $result = Notice::visibleTo($trooper)->count();
 
         // Assert
         $this->assertEquals(1, $result);
@@ -112,10 +112,10 @@ class HasNotificationScopesTest extends TestCase
         $organization = $region->parent;
 
         $trooper = Trooper::factory()->withAssignment($unit, member: true)->create();
-        Notification::factory()->withOrganization($organization)->create();
+        Notice::factory()->withOrganization($organization)->create();
 
         // Act
-        $result = Notification::visibleTo($trooper)->count();
+        $result = Notice::visibleTo($trooper)->count();
 
         // Assert
         $this->assertEquals(1, $result);
@@ -127,10 +127,10 @@ class HasNotificationScopesTest extends TestCase
         $unit = Organization::factory()->unit()->create();
         $unrelated_org = Organization::factory()->create();
         $trooper = Trooper::factory()->withAssignment($unit, member: true)->create();
-        Notification::factory()->withOrganization($unrelated_org)->create();
+        Notice::factory()->withOrganization($unrelated_org)->create();
 
         // Act
-        $result = Notification::visibleTo($trooper)->count();
+        $result = Notice::visibleTo($trooper)->count();
 
         // Assert
         $this->assertEquals(0, $result);
@@ -144,10 +144,10 @@ class HasNotificationScopesTest extends TestCase
         $organization = $region->parent;
 
         $trooper = Trooper::factory()->withAssignment($unit, member: false, moderator: false)->create();
-        Notification::factory()->withOrganization($organization)->create();
+        Notice::factory()->withOrganization($organization)->create();
 
         // Act
-        $result = Notification::visibleTo($trooper)->count();
+        $result = Notice::visibleTo($trooper)->count();
 
         // Assert
         $this->assertEquals(0, $result);

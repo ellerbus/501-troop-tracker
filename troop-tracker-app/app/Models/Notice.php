@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use App\Enums\NotificationType;
-use App\Models\Base\Notification as BaseNotification;
+use App\Enums\NoticeType;
+use App\Models\Base\Notice as BaseNotice;
 use App\Models\Concerns\HasTrooperStamps;
-use App\Models\Scopes\HasNotificationScopes;
+use App\Models\Scopes\HasNoticeScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Notification extends BaseNotification
+class Notice extends BaseNotice
 {
-    use HasNotificationScopes;
+    use HasNoticeScopes;
     use HasFactory;
     use HasTrooperStamps;
 
@@ -22,7 +22,7 @@ class Notification extends BaseNotification
     protected function casts()
     {
         return array_merge($this->casts, [
-            self::TYPE => NotificationType::class,
+            self::TYPE => NoticeType::class,
         ]);
     }
 }

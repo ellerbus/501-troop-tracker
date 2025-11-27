@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models\Scopes;
 
-use App\Enums\OrganizationType;
-use App\Models\Organization;
 use App\Models\Trooper;
-use App\Models\TrooperAssignment;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Trait containing local scopes for the Notification model.
+ * Trait containing local scopes for the Notice model.
  */
-trait HasNotificationScopes
+trait HasNoticeScopes
 {
     /**
      * Scope: only notifications active at the current time.
@@ -52,7 +49,7 @@ trait HasNotificationScopes
             $sub->select(DB::raw(1))
                 ->from('tt_trooper_assignments as ta_assign')
                 ->join('tt_organizations as org_assign', 'ta_assign.organization_id', '=', 'org_assign.id')
-                ->join('tt_organizations as org_notice', 'tt_notifications.organization_id', '=', 'org_notice.id')
+                ->join('tt_organizations as org_notice', 'tt_notices.organization_id', '=', 'org_notice.id')
                 ->where('ta_assign.trooper_id', $trooper->id)
                 ->where('ta_assign.member', true)
                 ->whereRaw('org_assign.node_path LIKE CONCAT(org_notice.node_path, "%")');
