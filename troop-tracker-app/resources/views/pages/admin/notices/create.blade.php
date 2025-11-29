@@ -34,7 +34,7 @@
         <x-submit-button>
           Create
         </x-submit-button>
-        <x-link-button-cancel :url="route('admin.notices.list')" />
+        <x-link-button-cancel :url="route('admin.notices.list', ['organization_id'=>$notice->organization_id])" />
       </x-submit-container>
 
     </form>

@@ -53,6 +53,8 @@ class CreateController extends Controller
 
         if ($notice->organization_id != null)
         {
+            $q = Organization::query();
+
             if (!Auth::user()->isAdministrator())
             {
                 $trooper_id = Auth::user()->id;
