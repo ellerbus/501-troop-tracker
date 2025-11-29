@@ -32,6 +32,9 @@
           @endif
           <x-action-separator />
           @if(Auth::user()->isAdministrator() || $organization->trooper_assignments->count() > 0)
+          <x-action-link :label="'Add Notice'"
+                         :icon="'fa-add'"
+                         :url="route('admin.notices.create', ['organization_id'=>$organization->id])" />
           <x-action-link :label="'Notices'"
                          :url="route('admin.notices.list', ['organization_id'=>$organization->id])" />
           @endif

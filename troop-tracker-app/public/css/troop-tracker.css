@@ -30,6 +30,9 @@ h1.site-title {
     align-items: center;
 }
 
+.pointer {
+    cursor: pointer;
+}
 
 /* Custom input styling for dark theme using Slate 3 */
 .form-control,

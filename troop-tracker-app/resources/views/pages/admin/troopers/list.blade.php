@@ -24,7 +24,9 @@
       </td>
       <td>{{ $trooper->membership_status->name }}</td>
       <td>
-        <x-link-button-update :url="route('admin.troopers.update', ['trooper'=>$trooper])" />
+        <x-action-menu>
+          <x-action-link-update :url="route('admin.troopers.update', ['trooper'=>$trooper])" />
+        </x-action-menu>
       </td>
     </tr>
     @endforeach

@@ -6,9 +6,11 @@ namespace App\Http\Controllers\Admin\Notices;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notice;
+use App\Models\Organization;
 use App\Services\BreadCrumbService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class CreateController
@@ -45,8 +47,24 @@ class CreateController extends Controller
         $this->crumbs->addRoute('Notices', 'admin.notices.list');
         $this->crumbs->add('Create');
 
+        $notice = new Notice();
+
+        $notice->organization_id = $request->query('organization_id');
+
+        if ($notice->organization_id != null)
+        {
+            if (!Auth::user()->isAdministrator())
+            {
+                $trooper_id = Auth::user()->id;
+
+                $q = Organization::moderatedBy($trooper_id);
+            }
+
+            $notice->organization = $q->findOrFail($request->get('organization_id'));
+        }
+
         $data = [
-            'notice' => new Notice()
+            'notice' => $notice
         ];
 
         return view('pages.admin.notices.create', $data);

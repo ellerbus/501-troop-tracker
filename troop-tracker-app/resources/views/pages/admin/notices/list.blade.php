@@ -8,9 +8,8 @@
       <th>
         Name
       </th>
-      <th style="width: 32px;"></th>
-      <th style="width: 128px;">
-        <x-link-button-create :url="route('admin.notices.create')">
+      <th>
+        <x-link-button-create :url="route('admin.notices.create', ['organization_id'=> request('organization_id')])">
           Notice
         </x-link-button-create>
       </th>

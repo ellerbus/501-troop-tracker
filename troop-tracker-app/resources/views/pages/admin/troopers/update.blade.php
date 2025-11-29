@@ -21,7 +21,8 @@
 @endsection
 
 @section('page-script')
-<script type="text/javascript">document.addEventListener('DOMContentLoaded', () => {
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', () => {
     function bindCascadeCheckboxes() {
       document.querySelectorAll('td.cascade input[type="checkbox"]').forEach(cb => {
         cb.addEventListener('change', function () {
