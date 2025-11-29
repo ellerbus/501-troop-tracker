@@ -152,4 +152,67 @@ class HasNoticeScopesTest extends TestCase
         // Assert
         $this->assertEquals(0, $result);
     }
+
+    public function test_moderated_by_scope_includes_notice_in_same_organization(): void
+    {
+        // Arrange
+        $organization = Organization::factory()->create();
+        $moderator = Trooper::factory()->withAssignment($organization, moderator: true)->create();
+        Notice::factory()->withOrganization($organization)->create();
+
+        // Act
+        $result = Notice::moderatedBy($moderator)->count();
+
+        // Assert
+        $this->assertEquals(1, $result);
+    }
+
+    public function test_moderated_by_scope_includes_notice_in_child_organization(): void
+    {
+        // Arrange
+        $unit = Organization::factory()->unit()->create();
+        $region = $unit->parent;
+        $organization = $region->parent;
+
+        $moderator = Trooper::factory()->withAssignment($region, moderator: true)->create();
+        $notice = Notice::factory()->withOrganization($unit)->create();
+
+        // Act
+        $result = Notice::moderatedBy($moderator)->count();
+
+        // Assert
+        $this->assertEquals(1, $result);
+    }
+
+    public function test_moderated_by_scope_excludes_notice_in_parent_organization(): void
+    {
+        // Arrange
+        $unit = Organization::factory()->unit()->create();
+        $region = $unit->parent;
+        $organization = $region->parent;
+
+        $moderator = Trooper::factory()->withAssignment($region, moderator: true)->create();
+        Notice::factory()->withOrganization($organization)->create();
+
+        // Act
+        $result = Notice::moderatedBy($moderator)->count();
+
+        // Assert
+        $this->assertEquals(0, $result);
+    }
+
+    public function test_moderated_by_scope_excludes_notice_in_unrelated_organization(): void
+    {
+        // Arrange
+        $org_one = Organization::factory()->create();
+        $org_two = Organization::factory()->create();
+        $moderator = Trooper::factory()->withAssignment($org_one, moderator: true)->create();
+        Notice::factory()->withOrganization($org_two)->create();
+
+        // Act
+        $result = Notice::moderatedBy($moderator)->count();
+
+        // Assert
+        $this->assertEquals(0, $result);
+    }
 }

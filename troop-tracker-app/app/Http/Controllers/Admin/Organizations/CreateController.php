@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin\Organizations;
 
+use App\Enums\OrganizationType;
 use App\Http\Controllers\Controller;
 use App\Models\Organization;
 use App\Services\BreadCrumbService;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 /**
@@ -46,9 +46,20 @@ class CreateController extends Controller
         $this->crumbs->addRoute('Organizations', 'admin.organizations.list');
         $this->crumbs->add('Create');
 
+        $organization = new Organization();
+
+        if ($parent->type == OrganizationType::Organization)
+        {
+            $organization->type = OrganizationType::Region;
+        }
+        elseif ($parent->type == OrganizationType::Region)
+        {
+            $organization->type = OrganizationType::Unit;
+        }
+
         $data = [
             'parent' => $parent,
-            'organization' => new Organization()
+            'organization' => $organization
         ];
 
         return view('pages.admin.organizations.create', $data);

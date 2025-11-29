@@ -34,7 +34,7 @@
   </x-dashboard-card>
   <x-dashboard-card :label="'Bulletin Board'"
                     :icon="'fa-message'"
-                    :url="'#'">
+                    :url="route('admin.notices.list')">
     <p>
       Manage Site Messages
     </p>

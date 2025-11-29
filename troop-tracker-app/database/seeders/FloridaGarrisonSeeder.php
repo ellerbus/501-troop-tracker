@@ -29,7 +29,8 @@ class FloridaGarrisonSeeder extends Seeder
     public function run(): void
     {
         $this->call(OrganizationSeeder::class);
-        $this->call(OrganizationSeeder::class); // NO IDEA but needs a second run
+        $this->call(OrganizationSeeder::class); // NO IDEA but needs a second run for the node_path & depth
+        $this->call(OrganizationSeeder::class); // maybe a third - can't figure this one out
         $this->call(CostumeSeeder::class);
 
         $this->call(SettingSeeder::class);

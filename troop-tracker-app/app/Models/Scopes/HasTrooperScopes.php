@@ -61,5 +61,4 @@ trait HasTrooperScopes
                 ->whereRaw('org_candidate.node_path LIKE CONCAT(org_moderator.node_path, "%")');
         });
     }
-
 }

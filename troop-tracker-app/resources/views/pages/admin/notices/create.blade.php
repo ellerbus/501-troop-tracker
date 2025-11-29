@@ -6,7 +6,7 @@
 
 <x-slim-container>
 
-  <x-card :label="'Create ' . $organization->type->name">
+  <x-card :label="'Create Organziation'">
     <form method="POST"
           novalidate="novalidate">
       @csrf

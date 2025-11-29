@@ -8,8 +8,7 @@
       <th>
         Name
       </th>
-      <th style="width: 32px;"></th>
-      <th style="width: 128px;"></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -22,23 +21,21 @@
         {{ $organization->name }}
       </td>
       <td>
-        @if(Auth::user()->isAdministrator() || $organization->trooper_assignments->count() > 0)
-        <x-link-button-update :url="route('admin.organizations.update', ['organization'=>$organization])" />
-        @endif
-      </td>
-      <td>
-        @can('create', \App\Models\Organization::class)
-        @if($organization->type != \App\Enums\OrganizationType::Unit)
-        <x-link-button-create :url="route('admin.organizations.create', ['parent'=>$organization])">
-          @if($organization->type == \App\Enums\OrganizationType::Organization)
-          Region
+        <x-action-menu>
+          @can('create', \App\Models\Organization::class)
+          @if($organization->type != \App\Enums\OrganizationType::Unit)
+          <x-action-link-create :url="route('admin.organizations.create', ['parent'=>$organization])" />
           @endif
-          @if($organization->type == \App\Enums\OrganizationType::Region)
-          Unit
+          @endcan
+          @if(Auth::user()->isAdministrator() || $organization->trooper_assignments->count() > 0)
+          <x-action-link-update :url="route('admin.organizations.update', ['organization'=>$organization])" />
           @endif
-        </x-link-button-create>
-        @endif
-        @endcan
+          <x-action-separator />
+          @if(Auth::user()->isAdministrator() || $organization->trooper_assignments->count() > 0)
+          <x-action-link :label="'Notices'"
+                         :url="route('admin.notices.list', ['organization_id'=>$organization->id])" />
+          @endif
+        </x-action-menu>
       </td>
     </tr>
     @endforeach

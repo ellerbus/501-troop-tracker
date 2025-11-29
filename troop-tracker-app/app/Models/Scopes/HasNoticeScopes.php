@@ -56,4 +56,25 @@ trait HasNoticeScopes
         });
     }
 
+
+    /**
+     * Scope: limit to organizations that can be updated by a given moderator.
+     *
+     * @param Builder $query
+     * @param Trooper $moderator
+     * @return Builder
+     */
+    protected function scopeModeratedBy(Builder $query, Trooper $moderator): Builder
+    {
+        return $query->whereExists(function ($sub) use ($moderator)
+        {
+            $sub->select(DB::raw(1))
+                ->from('tt_trooper_assignments as ta_moderator')
+                ->join('tt_organizations as org_moderator', 'ta_moderator.organization_id', '=', 'org_moderator.id')
+                ->join('tt_organizations as org_notice', 'tt_notices.organization_id', '=', 'org_notice.id')
+                ->where('ta_moderator.trooper_id', $moderator->id)
+                ->where('ta_moderator.moderator', true)
+                ->whereRaw('org_notice.node_path LIKE CONCAT(org_moderator.node_path, "%")');
+        });
+    }
 }

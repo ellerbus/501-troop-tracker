@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Admin\Organizations;
+namespace Tests\Feature\Http\Controllers\Admin\Organizations;
 
 use App\Enums\OrganizationType;
 use App\Models\Organization;
