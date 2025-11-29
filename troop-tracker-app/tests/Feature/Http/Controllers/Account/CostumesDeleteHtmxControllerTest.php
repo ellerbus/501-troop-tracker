@@ -41,7 +41,7 @@ class CostumesDeleteHtmxControllerTest extends TestCase
     public function test_invoke_removes_trooper_costume_and_returns_view(): void
     {
         // Assert pre-condition
-        $this->assertDatabaseHas('tt_trooper_costumes', [
+        $this->assertDatabaseHas(TrooperCostume::class, [
             'trooper_id' => $this->trooper->id,
             'costume_id' => $this->costume->id,
         ]);

@@ -1,4 +1,4 @@
-@props(['id'=>'modal-picker', 'label'=>'TITLE'])
+@props(['id'=>'modal-picker', 'label'=>'TODO'])
 
 <div class="modal fade modal-picker"
      id="{{ $id }}"
@@ -6,9 +6,9 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">
+        <b class="modal-title">
           {{ $label }}
-        </h5>
+        </b>
         <button type="button"
                 class="btn-close"
                 data-bs-dismiss="modal"

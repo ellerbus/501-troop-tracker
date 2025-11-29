@@ -23,9 +23,40 @@ class FlashMessageService
     /**
      * Adds a success flash message on a created model.
      *
-     * @param Model $model The message content.
+     * @param Model $model The model that was created.
      */
     public function created(Model $model): void
+    {
+        $this->addModelMessage($model, 'created');
+    }
+
+    /**
+     * Adds a success flash message on a updated model.
+     *
+     * @param Model $model The model that was updated.
+     */
+    public function updated(Model $model): void
+    {
+        $this->addModelMessage($model, 'updated');
+    }
+
+    /**
+     * Adds a success flash message on a deleted model.
+     *
+     * @param Model $model The model that was deleted.
+     */
+    public function deleted(Model $model): void
+    {
+        $this->addModelMessage($model, 'deleted');
+    }
+
+    /**
+     * Builds and adds a flash message for a model action (created, updated, deleted).
+     *
+     * @param Model $model The model instance for which to create the message.
+     * @param string $action The action performed on the model (e.g., 'created').
+     */
+    private function addModelMessage(Model $model, string $action): void
     {
         // Get the base class name (e.g. "Organization")
         $object_name = class_basename($model);
@@ -41,7 +72,7 @@ class FlashMessageService
             $message .= " \"{$display_name}\"";
         }
 
-        $message .= " was created successfully.";
+        $message .= " was {$action} successfully.";
 
         $this->addMessage('success', $message);
     }

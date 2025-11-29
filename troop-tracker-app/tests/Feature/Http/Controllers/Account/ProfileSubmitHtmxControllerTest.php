@@ -57,7 +57,7 @@ class ProfileSubmitHtmxControllerTest extends TestCase
         ]);
         $response->assertHeader('X-Flash-Message', $expected_flash);
 
-        $this->assertDatabaseHas('tt_troopers', [
+        $this->assertDatabaseHas(Trooper::class, [
             'id' => $trooper->id,
             'name' => 'New Name',
             'email' => 'new@example.com',
@@ -99,7 +99,7 @@ class ProfileSubmitHtmxControllerTest extends TestCase
         ]);
         $response->assertHeader('X-Flash-Message', $expected_flash);
 
-        $this->assertDatabaseHas('tt_troopers', [
+        $this->assertDatabaseHas(Trooper::class, [
             'id' => $trooper->id,
             'name' => 'Old Name', // Assert data was not changed
             'email' => 'old@example.com',

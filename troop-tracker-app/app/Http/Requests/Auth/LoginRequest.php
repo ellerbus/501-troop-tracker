@@ -21,20 +21,20 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => [
+            Trooper::USERNAME => [
                 'required',
-                Rule::exists('tt_troopers', Trooper::USERNAME),
+                Rule::exists(Trooper::class, Trooper::USERNAME),
             ],
-            'password' => ['required'],
+            Trooper::PASSWORD => ['required'],
         ];
     }
 
     public function messages()
     {
         return [
-            'username.required' => 'Username is required.',
-            'username.exists' => 'This username does not exist in our records - do you need to setup your account?',
-            'password.required' => 'Password is required.',
+            Trooper::USERNAME . '.required' => 'Username is required.',
+            Trooper::USERNAME . '.exists' => 'This username does not exist in our records - do you need to setup your account?',
+            Trooper::PASSWORD . '.required' => 'Password is required.',
         ];
     }
 
@@ -46,7 +46,7 @@ class LoginRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'username' => $this->input('username'),
+            Trooper::USERNAME => $this->input('username'),
             'remember_me' => $this->input('remember_me') === 'Y',
         ]);
     }

@@ -66,7 +66,7 @@ class UpdateHtmxControllerTest extends TestCase
         $response->assertContent('ok');
         $response->assertHeader('X-Flash-Message', $expected_message);
 
-        $this->assertDatabaseHas('tt_settings', [
+        $this->assertDatabaseHas(Setting::class, [
             'key' => $setting->key,
             'value' => $new_value,
         ]);

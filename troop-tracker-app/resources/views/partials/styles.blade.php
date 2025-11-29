@@ -6,6 +6,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/darkly/bootstrap.min.css" />
 <link rel="stylesheet"
       href="{{ url('css/troop-tracker.css') }}" />
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <!--
 <link rel="stylesheet"
       href="{{ url('css/themes/sith.css') }}" />

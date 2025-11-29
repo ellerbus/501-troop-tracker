@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Admin\Organizations;
+namespace App\Http\Requests\Admin\Notices;
 
+use App\Enums\NoticeType;
+use App\Models\Notice;
 use App\Models\Organization;
-use App\Rules\Admin\Organizations\UniqueNameRule;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -18,7 +21,7 @@ use Illuminate\Validation\ValidationException;
  * organization-specific identifiers and unit selections. It also customizes error messages
  * for a better user experience.
  */
-class CreateRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,7 +30,14 @@ class CreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', Organization::class);
+        $notice = $this->route('notice');
+
+        if ($notice == null)
+        {
+            throw new AuthorizationException('Notice not found or unauthorized.');
+        }
+
+        return $this->user()->can('update', $notice);
     }
 
     /**
@@ -38,12 +48,23 @@ class CreateRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'name' => [
+            Notice::TITLE => [
                 'required',
                 'string',
-                'max:64',
-                new UniqueNameRule(false, $this->route('parent'))
+                'max:128',
             ],
+            Notice::MESSAGE => [
+                'required',
+                'string',
+            ],
+            Notice::TYPE => [
+                'required',
+                'string',
+                'max:16',
+                'in:' . NoticeType::toValidator()
+            ],
+            Notice::STARTS_AT => ['required', 'date'],
+            Notice::ENDS_AT => ['required', 'date', 'after:starts_at'],
         ];
 
         return $rules;
@@ -59,20 +80,5 @@ class CreateRequest extends FormRequest
         }
 
         return $validator->validated();
-    }
-
-    /**
-     * Prepare the data for validation.
-     *
-     * This method sanitizes the phone number by removing any non-digit characters.
-     */
-    protected function prepareForValidation(): void
-    {
-        if ($this->has('phone'))
-        {
-            $this->merge([
-                'phone' => preg_replace('/\D+/', '', $this->input('phone') ?? ''),
-            ]);
-        }
     }
 }

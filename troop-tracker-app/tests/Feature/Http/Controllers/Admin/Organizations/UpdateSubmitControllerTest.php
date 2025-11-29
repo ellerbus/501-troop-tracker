@@ -6,7 +6,6 @@ namespace Tests\Feature\Http\Controllers\Admin\Organizations;
 
 use App\Models\Organization;
 use App\Models\Trooper;
-use App\Services\FlashMessageService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -33,7 +32,7 @@ class UpdateSubmitControllerTest extends TestCase
         // Assert
         $response->assertRedirect(route('admin.organizations.list'));
 
-        $this->assertDatabaseHas('tt_organizations', [
+        $this->assertDatabaseHas(Organization::class, [
             'id' => $organization->id,
             'name' => $new_name,
         ]);

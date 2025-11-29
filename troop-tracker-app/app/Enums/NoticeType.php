@@ -30,4 +30,18 @@ enum NoticeType: string
      * For critical errors or failure messages.
      */
     case Danger = 'danger';
+
+    /**
+     * Summary of toDescriptions
+     * @return array{danger: string, info: string, success: string, warning: string}
+     */
+    public static function toDescriptions(): array
+    {
+        return [
+            'info' => 'NOW HEAR THIS!',
+            'success' => 'MISSION ACCOMPLISHED!',
+            'warning' => 'ATTENTION TROOPERS!',
+            'danger' => 'BATTLE STATIONS!'
+        ];
+    }
 }

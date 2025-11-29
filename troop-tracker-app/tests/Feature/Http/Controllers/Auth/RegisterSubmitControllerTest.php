@@ -7,6 +7,8 @@ namespace Tests\Feature\Http\Controllers\Auth;
 use App\Contracts\AuthenticationInterface;
 use App\Models\Organization;
 use App\Models\Trooper;
+use App\Models\TrooperAssignment;
+use App\Models\TrooperOrganization;
 use Config;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
@@ -52,7 +54,7 @@ class RegisterSubmitControllerTest extends TestCase
         // Assert
         $response->assertRedirect();
         $response->assertSessionHasErrors(['username' => 'Invalid Credentials']);
-        $this->assertDatabaseMissing('tt_troopers', ['username' => 'testuser']);
+        $this->assertDatabaseMissing(Trooper::class, ['username' => 'testuser']);
     }
 
     public function test_invoke_with_valid_credentials_registers_member_successfully_with_xenforo(): void
@@ -97,7 +99,7 @@ class RegisterSubmitControllerTest extends TestCase
         $response->assertRedirect(route('auth.register'));
         $response->assertSessionHasNoErrors();
 
-        $this->assertDatabaseHas('tt_troopers', [
+        $this->assertDatabaseHas(Trooper::class, [
             'username' => 'testuser',
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -105,27 +107,27 @@ class RegisterSubmitControllerTest extends TestCase
 
         $trooper = Trooper::where('username', 'testuser')->first();
 
-        $this->assertDatabaseHas('tt_trooper_organizations', [
+        $this->assertDatabaseHas(TrooperOrganization::class, [
             'trooper_id' => $trooper->id,
             'organization_id' => $organization->id,
             'identifier' => 'TK12345',
         ]);
 
-        $this->assertDatabaseHas('tt_trooper_assignments', [
+        $this->assertDatabaseHas(TrooperAssignment::class, [
             'trooper_id' => $trooper->id,
             'organization_id' => $organization->id,
             'notify' => true,
             'member' => false,
         ]);
 
-        $this->assertDatabaseHas('tt_trooper_assignments', [
+        $this->assertDatabaseHas(TrooperAssignment::class, [
             'trooper_id' => $trooper->id,
             'organization_id' => $region->id,
             'notify' => true,
             'member' => false,
         ]);
 
-        $this->assertDatabaseHas('tt_trooper_assignments', [
+        $this->assertDatabaseHas(TrooperAssignment::class, [
             'trooper_id' => $trooper->id,
             'organization_id' => $unit->id,
             'notify' => true,
@@ -166,7 +168,7 @@ class RegisterSubmitControllerTest extends TestCase
         $response->assertRedirect(route('auth.register'));
         $trooper = Trooper::where('username', 'handleruser')->first();
 
-        $this->assertDatabaseHas('tt_trooper_assignments', [
+        $this->assertDatabaseHas(TrooperAssignment::class, [
             'trooper_id' => $trooper->id,
             'organization_id' => $organization->id,
             'member' => true
@@ -207,7 +209,7 @@ class RegisterSubmitControllerTest extends TestCase
         $response->assertRedirect(route('auth.register'));
         $response->assertSessionHasNoErrors();
 
-        $this->assertDatabaseHas('tt_troopers', [
+        $this->assertDatabaseHas(Trooper::class, [
             'username' => 'testuser',
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -215,27 +217,27 @@ class RegisterSubmitControllerTest extends TestCase
 
         $trooper = Trooper::where('username', 'testuser')->first();
 
-        $this->assertDatabaseHas('tt_trooper_organizations', [
+        $this->assertDatabaseHas(TrooperOrganization::class, [
             'trooper_id' => $trooper->id,
             'organization_id' => $organization->id,
             'identifier' => 'TK12345',
         ]);
 
-        $this->assertDatabaseHas('tt_trooper_assignments', [
+        $this->assertDatabaseHas(TrooperAssignment::class, [
             'trooper_id' => $trooper->id,
             'organization_id' => $organization->id,
             'notify' => true,
             'member' => false,
         ]);
 
-        $this->assertDatabaseHas('tt_trooper_assignments', [
+        $this->assertDatabaseHas(TrooperAssignment::class, [
             'trooper_id' => $trooper->id,
             'organization_id' => $region->id,
             'notify' => true,
             'member' => false,
         ]);
 
-        $this->assertDatabaseHas('tt_trooper_assignments', [
+        $this->assertDatabaseHas(TrooperAssignment::class, [
             'trooper_id' => $trooper->id,
             'organization_id' => $unit->id,
             'notify' => true,
@@ -273,7 +275,7 @@ class RegisterSubmitControllerTest extends TestCase
         $response->assertRedirect(route('auth.register'));
         $trooper = Trooper::where('username', 'handleruser')->first();
 
-        $this->assertDatabaseHas('tt_trooper_assignments', [
+        $this->assertDatabaseHas(TrooperAssignment::class, [
             'trooper_id' => $trooper->id,
             'organization_id' => $organization->id,
             'member' => true,

@@ -9,6 +9,9 @@
         Name
       </th>
       <th>
+        Organization
+      </th>
+      <th>
         <x-link-button-create :url="route('admin.notices.create', ['organization_id'=> request('organization_id')])">
           Notice
         </x-link-button-create>
@@ -20,36 +23,26 @@
     <tr>
       <td>
         {{ $notice->title }}
+        <i class="fa fa-fw fa-circle text-{{ $notice->type->value }} me-2"></i>
       </td>
       <td>
-        {{--
-        @if(Auth::user()->isAdministrator() || $notice->trooper_assignments->count() > 0)
-        <x-link-button-update :url="route('admin.notices.update', ['notice'=>$notice])" />
-        @endif
-        --}}
+        {{ $notice->Organization->name ?? '-' }}
       </td>
       <td>
-        {{--
-        @can('create', \App\Models\Notice::class)
-        @if($notice->type != \App\Enums\NoticeType::Unit)
-        <x-link-button-create :url="route('admin.notices.create', ['parent'=>$notice])">
-          @if($notice->type == \App\Enums\NoticeType::Notice)
-          Region
+        <x-action-menu>
+          @if(Auth::user()->isAdministrator() && $notice->organization == null)
+          <x-action-link-update :url="route('admin.notices.update', ['notice'=>$notice])" />
+          @elseif($notice->organization->trooper_assignments->count() > 0)
+          <x-action-link-update :url="route('admin.notices.update', ['notice'=>$notice])" />
           @endif
-          @if($notice->type == \App\Enums\NoticeType::Region)
-          Unit
-          @endif
-        </x-link-button-create>
-        @endif
-        @endcan
-        --}}
+        </x-action-menu>
       </td>
     </tr>
     @endforeach
   </tbody>
   <tfoot>
     <tr>
-      <td colspan="2">
+      <td colspan="3">
         {{ $notices->count() }} Notices
       </td>
     </tr>

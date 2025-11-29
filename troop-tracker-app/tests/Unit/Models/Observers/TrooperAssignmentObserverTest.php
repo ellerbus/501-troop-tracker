@@ -46,7 +46,7 @@ class TrooperAssignmentObserverTest extends TestCase
         ]);
 
         // Assert
-        $this->assertDatabaseHas('tt_trooper_assignments', [
+        $this->assertDatabaseHas(TrooperAssignment::class, [
             'id' => $assignment->id,
         ]);
     }
@@ -68,7 +68,7 @@ class TrooperAssignmentObserverTest extends TestCase
         ]);
 
         // Assert
-        $this->assertDatabaseHas('tt_trooper_assignments', [
+        $this->assertDatabaseHas(TrooperAssignment::class, [
             'id' => $assignment->id,
         ]);
     }

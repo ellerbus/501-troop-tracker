@@ -7,7 +7,7 @@ namespace App\Enums;
 trait HasEnumHelpers
 {
     /**
-     * Return an associative array of enum case name => value.
+     * Return an associative array of enum case value => name.
      *
      * @return array<string, string>
      */

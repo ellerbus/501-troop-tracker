@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Enums\OrganizationType;
 use App\Models\Organization;
 use App\Models\Trooper;
 use App\Rules\Auth\AtLeastOneOrganizationSelectedRule;

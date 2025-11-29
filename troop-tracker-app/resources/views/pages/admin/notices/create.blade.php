@@ -19,15 +19,52 @@
                         :route="'pickers.organization'"
                         :params="['moderated_only' => true]"
                         :text="$notice->organization->name ?? 'Everyone'"
-                        :value="$notice->organization_id ?? -1" />
+                        :value="$notice->organization_id" />
       </x-input-container>
 
       <x-input-container>
         <x-label>
-          Name:
+          Type:
         </x-label>
-        <x-input-text :property="'name'"
-                      :value="$notice->name" />
+        <x-input-select :property="'type'"
+                        :value="$notice->title"
+                        :options="$options" />
+      </x-input-container>
+
+      <x-input-container>
+        <x-label>
+          Title:
+        </x-label>
+        <x-input-text :property="'title'"
+                      :value="$notice->title" />
+      </x-input-container>
+
+      <x-input-container>
+        <div class="row">
+          <div class="col-6">
+            <x-label>
+              Starts:
+            </x-label>
+            <x-input-datetime :property="'starts_at'"
+                              :value="$notice->starts_at" />
+          </div>
+          <div class="col-6">
+            <x-label>
+              Ends:
+            </x-label>
+            <x-input-datetime :property="'ends_at'"
+                              :value="$notice->ends_at" />
+          </div>
+        </div>
+      </x-input-container>
+
+      <x-input-container>
+        <x-label>
+          Message:
+        </x-label>
+        <x-input-text :multiline="true"
+                      :property="'message'"
+                      :value="$notice->message" />
       </x-input-container>
 
       <x-submit-container>
@@ -42,6 +79,6 @@
 
 </x-slim-container>
 
-<x-modal-picker />
+<x-modal-picker :label="'Select an Organization'" />
 
 @endsection

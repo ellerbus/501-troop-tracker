@@ -1,4 +1,4 @@
-<ul class="list-group">
+<ul class="list-group list-group-flush">
   @foreach($organizations as $organization)
   <li class="list-group-item pointer"
       data-property="{{ $property }}"

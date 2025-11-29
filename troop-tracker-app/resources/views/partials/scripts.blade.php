@@ -2,6 +2,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script type="text/javascript">
   /** HTMX CSRF TOKEN **/
@@ -9,6 +10,31 @@
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     event.detail.headers['X-CSRF-TOKEN'] = token;
   });
+
+  /** DATE PICKER **/
+  document.addEventListener('DOMContentLoaded', () => {
+    function bindDatePickers() {
+      document.querySelectorAll(".date-picker").forEach(function (el) {
+        options = {};
+        flatpickr(el, options);
+      });
+    }
+    bindDatePickers();
+    document.body.addEventListener('htmx:afterSettle', bindDatePickers);
+  });
+
+  /** DATETIME PICKER **/
+  document.addEventListener('DOMContentLoaded', () => {
+    function bindDatePickers() {
+      document.querySelectorAll(".datetime-picker").forEach(function (el) {
+        options = { enableTime: true, };
+        flatpickr(el, options);
+      });
+    }
+    bindDatePickers();
+    document.body.addEventListener('htmx:afterSettle', bindDatePickers);
+  });
+
 
   /** SCOPED BUTTON DISABLE FOR HTMX **/
   document.body.addEventListener('htmx:configRequest', function (event) {
@@ -159,7 +185,7 @@
   document.body.addEventListener('htmx:afterSettle', bindTypeaheadInputs);
 
 
-
+  /** PICKER PICKED **/
   document.addEventListener('DOMContentLoaded', () => {
     function bindModalPickers() {
       // Attach to all modals with the class .picker-modal

@@ -33,4 +33,17 @@ class ListControllerTest extends TestCase
             return $view_organizations->count() === 3;
         });
     }
+
+    public function test_invoke_is_inaccessible_by_non_privileged_user(): void
+    {
+        // Arrange
+        $trooper = Trooper::factory()->create(); // A regular user
+        $this->actingAs($trooper);
+
+        // Act
+        $response = $this->get(route('admin.organizations.list'));
+
+        // Assert
+        $response->assertForbidden();
+    }
 }

@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Admin\Organizations;
+namespace App\Http\Requests\Admin\Notices;
 
+use App\Enums\NoticeType;
+use App\Models\Notice;
 use App\Models\Organization;
-use App\Rules\Admin\Organizations\UniqueNameRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -27,7 +29,8 @@ class CreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', Organization::class);
+        //  we check NULL or PICKED in the rules
+        return $this->user()->can('create', Notice::class);
     }
 
     /**
@@ -38,13 +41,46 @@ class CreateRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'name' => [
+            Notice::TITLE => [
                 'required',
                 'string',
-                'max:64',
-                new UniqueNameRule(false, $this->route('parent'))
+                'max:128',
             ],
+            Notice::MESSAGE => [
+                'required',
+                'string',
+            ],
+            Notice::TYPE => [
+                'required',
+                'string',
+                'max:16',
+                'in:' . NoticeType::toValidator()
+            ],
+            Notice::STARTS_AT => ['required', 'date'],
+            Notice::ENDS_AT => ['required', 'date', 'after:starts_at'],
         ];
+
+        $trooper = $this->user();
+
+        // Organization rules depend on role
+        if ($trooper->isAdministrator())
+        {
+            // Admins can either leave it null or pick any existing org
+            $rules[Notice::ORGANIZATION_ID] = [
+                'nullable',
+                Rule::exists(Organization::class, Organization::ID)
+            ];
+        }
+        else
+        {
+            // Non-admins must supply an org they moderate
+            $rules[Notice::ORGANIZATION_ID] = [
+                'required',
+                Rule::exists(Organization::class, Organization::ID)
+                    ->whereIn('id', Organization::moderatedBy($trooper)->pluck('id')),
+            ];
+        }
+
 
         return $rules;
     }
@@ -59,20 +95,5 @@ class CreateRequest extends FormRequest
         }
 
         return $validator->validated();
-    }
-
-    /**
-     * Prepare the data for validation.
-     *
-     * This method sanitizes the phone number by removing any non-digit characters.
-     */
-    protected function prepareForValidation(): void
-    {
-        if ($this->has('phone'))
-        {
-            $this->merge([
-                'phone' => preg_replace('/\D+/', '', $this->input('phone') ?? ''),
-            ]);
-        }
     }
 }

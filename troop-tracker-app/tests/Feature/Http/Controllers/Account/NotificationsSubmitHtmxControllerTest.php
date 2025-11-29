@@ -6,6 +6,7 @@ namespace Tests\Feature\Http\Controllers\Account;
 
 use App\Models\Organization;
 use App\Models\Trooper;
+use App\Models\TrooperAssignment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -95,13 +96,13 @@ class NotificationsSubmitHtmxControllerTest extends TestCase
         $this->assertEquals(1, $trooper->command_staff_notification);
 
         // Assert pivot tables were updated in the database
-        $this->assertDatabaseHas('tt_trooper_assignments', ['trooper_id' => $trooper->id, 'organization_id' => $this->organization1->id, 'notify' => 1]);
-        $this->assertDatabaseHas('tt_trooper_assignments', ['trooper_id' => $trooper->id, 'organization_id' => $this->organization2->id, 'notify' => 0]);
-        $this->assertDatabaseHas('tt_trooper_assignments', ['trooper_id' => $trooper->id, 'organization_id' => $this->region1->id, 'notify' => 1]);
-        $this->assertDatabaseHas('tt_trooper_assignments', ['trooper_id' => $trooper->id, 'organization_id' => $this->region2->id, 'notify' => 0]);
-        $this->assertDatabaseHas('tt_trooper_assignments', ['trooper_id' => $trooper->id, 'organization_id' => $this->unit1->id, 'notify' => 1]);
-        $this->assertDatabaseHas('tt_trooper_assignments', ['trooper_id' => $trooper->id, 'organization_id' => $this->unit2->id, 'notify' => 0]);
-        $this->assertDatabaseHas('tt_trooper_assignments', ['trooper_id' => $trooper->id, 'organization_id' => $this->unit3->id, 'notify' => 0]);
+        $this->assertDatabaseHas(TrooperAssignment::class, ['trooper_id' => $trooper->id, 'organization_id' => $this->organization1->id, 'notify' => 1]);
+        $this->assertDatabaseHas(TrooperAssignment::class, ['trooper_id' => $trooper->id, 'organization_id' => $this->organization2->id, 'notify' => 0]);
+        $this->assertDatabaseHas(TrooperAssignment::class, ['trooper_id' => $trooper->id, 'organization_id' => $this->region1->id, 'notify' => 1]);
+        $this->assertDatabaseHas(TrooperAssignment::class, ['trooper_id' => $trooper->id, 'organization_id' => $this->region2->id, 'notify' => 0]);
+        $this->assertDatabaseHas(TrooperAssignment::class, ['trooper_id' => $trooper->id, 'organization_id' => $this->unit1->id, 'notify' => 1]);
+        $this->assertDatabaseHas(TrooperAssignment::class, ['trooper_id' => $trooper->id, 'organization_id' => $this->unit2->id, 'notify' => 0]);
+        $this->assertDatabaseHas(TrooperAssignment::class, ['trooper_id' => $trooper->id, 'organization_id' => $this->unit3->id, 'notify' => 0]);
 
         // Assert the data returned to the view is correct
         $view_data = $response->getOriginalContent()->getData();

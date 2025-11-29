@@ -7,7 +7,6 @@ namespace Tests\Feature\Http\Controllers\Admin\Organizations;
 use App\Enums\OrganizationType;
 use App\Models\Organization;
 use App\Models\Trooper;
-use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -42,7 +41,7 @@ class CreateSubmitControllerTest extends TestCase
         // Assert
         $response->assertRedirect(route('admin.organizations.list'));
 
-        $this->assertDatabaseHas('tt_organizations', [
+        $this->assertDatabaseHas(Organization::class, [
             'name' => $new_org_name,
             'parent_id' => $parent_organization->id,
             'type' => OrganizationType::Region->value,
@@ -67,7 +66,7 @@ class CreateSubmitControllerTest extends TestCase
         // Assert
         $response->assertRedirect(route('admin.organizations.list'));
 
-        $this->assertDatabaseHas('tt_organizations', [
+        $this->assertDatabaseHas(Organization::class, [
             'name' => $new_org_name,
             'parent_id' => $parent_organization->id,
             'type' => OrganizationType::Unit->value,

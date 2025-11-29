@@ -42,11 +42,11 @@ class AuthoritySubmitHtmxController extends Controller
         {
             $validated = $request->validateInputs();
 
-            $trooper->membership_role = $request->input('membership_role');
+            $trooper->membership_role = $request->validated('membership_role');
 
             $trooper->save();
 
-            $this->updateModeratedOrganizations($request->input('moderators', []), $trooper);
+            $this->updateModeratedOrganizations($request->validated('moderators', []), $trooper);
 
             $organization_authorities = Organization::withAllAssignments($trooper->id)->get();
 

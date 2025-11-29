@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Notices;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Notices\CreateRequest;
+use App\Http\Requests\Admin\Notices\UpdateRequest;
 use App\Models\Notice;
+use App\Models\Organization;
 use App\Services\FlashMessageService;
 use Illuminate\Http\RedirectResponse;
-use InvalidArgumentException;
 
 /**
- * Class CreateSubmitController
+ * Class UpdateSubmitController
  *
- * Handles the submission of the form for creating a new notice.
+ * Handles the submission of the form for updating an existing notice.
  * @package App\Http\Controllers\Admin\Notices
  */
-class CreateSubmitController extends Controller
+class UpdateSubmitController extends Controller
 {
     /**
-     * CreateSubmitController constructor.
+     * UpdateSubmitController constructor.
      *
      * @param FlashMessageService $flash The service for displaying flash messages.
      */
@@ -29,19 +29,17 @@ class CreateSubmitController extends Controller
     }
 
     /**
-     * Handle the incoming request to create a new notice.
+     * Handle the incoming request to update a notice.
      *
-     * Validates the request, creates a new notice with the provided data,
-     * saves it, and then redirects with a success message.
+     * Validates the request, updates the notice's properties, saves it,
+     * and then redirects with a success message.
      *
-     * @param CreateRequest $request The validated request containing the new notice's data.
+     * @param UpdateRequest $request The validated request containing the updated data.
+     * @param Notice $notice The notice to be updated.
      * @return RedirectResponse A redirect response to the notices list.
      */
-    public function __invoke(CreateRequest $request): RedirectResponse
+    public function __invoke(UpdateRequest $request, Notice $notice): RedirectResponse
     {
-        $notice = new Notice();
-
-        $notice->organization_id = $request->validated('organization_id');
         $notice->title = $request->validated('title');
         $notice->type = $request->validated('type');
         $notice->starts_at = $request->validated('starts_at');
@@ -50,7 +48,7 @@ class CreateSubmitController extends Controller
 
         $notice->save();
 
-        $this->flash->created($notice);
+        $this->flash->updated($notice);
 
         return redirect()->route('admin.notices.list');
     }

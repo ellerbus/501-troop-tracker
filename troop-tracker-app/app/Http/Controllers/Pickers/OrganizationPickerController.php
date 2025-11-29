@@ -42,7 +42,7 @@ class OrganizationPickerController extends Controller
             throw new Exception("Missing property parameter");
         }
 
-        $organizations = [];
+        $organizations = collect([]);
 
         if ($request->query('moderated_only'))
         {

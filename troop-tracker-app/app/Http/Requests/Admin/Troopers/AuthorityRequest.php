@@ -6,6 +6,7 @@ namespace App\Http\Requests\Admin\Troopers;
 
 use App\Enums\MembershipRole;
 use App\Http\Requests\HtmxFormRequest;
+use App\Models\Trooper;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -45,7 +46,7 @@ class AuthorityRequest extends HtmxFormRequest
     public function rules(): array
     {
         $rules = [
-            'membership_role' => ['nullable', 'string', 'max:16', 'in:' . MembershipRole::toValidator()],
+            Trooper::MEMBERSHIP_ROLE => ['nullable', 'string', 'max:16', 'in:' . MembershipRole::toValidator()],
             'moderators.*.selected' => ['boolean']
         ];
 

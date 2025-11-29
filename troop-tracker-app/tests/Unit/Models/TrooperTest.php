@@ -9,7 +9,7 @@ use App\Enums\MembershipStatus;
 use App\Models\Costume;
 use App\Models\Organization;
 use App\Models\Trooper;
-use App\Models\TrooperAssignment;
+use App\Models\TrooperCostume;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -81,7 +81,7 @@ class TrooperTest extends TestCase
         $trooper->attachCostume($costume->id);
 
         // Assert (Attach)
-        $this->assertDatabaseHas('tt_trooper_costumes', [
+        $this->assertDatabaseHas(TrooperCostume::class, [
             'trooper_id' => $trooper->id,
             'costume_id' => $costume->id,
         ]);

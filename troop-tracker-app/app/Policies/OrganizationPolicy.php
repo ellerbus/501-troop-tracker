@@ -38,6 +38,18 @@ class OrganizationPolicy
     }
 
     /**
+     * Alias for 'update'
+     *
+     * @param Trooper $trooper The authenticated user performing the action.
+     * @param Organization $subject The organization being updated.
+     * @return bool True if the user can moderate the subject organization, false otherwise.
+     */
+    public function moderate(Trooper $trooper, Organization $subject): bool
+    {
+        return $this->canModerate($trooper, $subject);
+    }
+
+    /**
      * Determine whether the user can delete an organization.
      * Deleting organizations is not permitted through this policy.
      *

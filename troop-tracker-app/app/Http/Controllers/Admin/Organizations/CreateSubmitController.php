@@ -63,7 +63,7 @@ class CreateSubmitController extends Controller
 
         Organization::resequenceAll();
 
-        $this->flash->success('Organization Created Succesfully!');
+        $this->flash->created($organization);
 
         return redirect()->route('admin.organizations.list');
     }

@@ -6,6 +6,7 @@ namespace App\Http\Requests\Admin\Troopers;
 
 use App\Enums\MembershipStatus;
 use App\Http\Requests\HtmxFormRequest;
+use App\Models\Trooper;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -45,10 +46,10 @@ class ProfileRequest extends HtmxFormRequest
     public function rules(): array
     {
         $rules = [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:240'],
-            'phone' => ['nullable', 'string', 'max:10'],
-            'membership_status' => ['nullable', 'string', 'max:16', 'in:' . MembershipStatus::toValidator()],
+            Trooper::NAME => ['required', 'string', 'max:255'],
+            Trooper::EMAIL => ['required', 'string', 'email', 'max:240'],
+            Trooper::PHONE => ['nullable', 'string', 'max:10'],
+            Trooper::MEMBERSHIP_STATUS => ['nullable', 'string', 'max:16', 'in:' . MembershipStatus::toValidator()],
         ];
 
         return $rules;

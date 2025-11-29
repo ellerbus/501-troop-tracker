@@ -39,11 +39,11 @@ class UpdateSubmitController extends Controller
      */
     public function __invoke(UpdateRequest $request, Organization $organization): RedirectResponse
     {
-        $organization->name = $request->name;
+        $organization->name = $request->validated('name');
 
         $organization->save();
 
-        $this->flash->success('Organization Updated Succesfully!');
+        $this->flash->updated($organization);
 
         return redirect()->route('admin.organizations.list');
     }

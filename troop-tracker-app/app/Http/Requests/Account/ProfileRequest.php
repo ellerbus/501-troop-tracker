@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Account;
 
 use App\Http\Requests\HtmxFormRequest;
+use App\Models\Trooper;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -36,9 +37,9 @@ class ProfileRequest extends HtmxFormRequest
     public function rules(): array
     {
         $rules = [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:240'],
-            'phone' => ['nullable', 'string', 'max:10'],
+            Trooper::NAME => ['required', 'string', 'max:255'],
+            Trooper::EMAIL => ['required', 'string', 'email', 'max:240'],
+            Trooper::PHONE => ['nullable', 'string', 'max:10'],
         ];
 
         return $rules;

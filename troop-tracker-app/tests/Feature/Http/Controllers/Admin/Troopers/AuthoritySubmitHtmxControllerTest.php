@@ -76,12 +76,12 @@ class AuthoritySubmitHtmxControllerTest extends TestCase
         $target_trooper->refresh();
         $this->assertEquals(MembershipRole::Moderator, $target_trooper->membership_role);
 
-        $this->assertDatabaseHas('tt_trooper_assignments', [
+        $this->assertDatabaseHas(TrooperAssignment::class, [
             'trooper_id' => $target_trooper->id,
             'organization_id' => $organization1->id,
             'moderator' => true,
         ]);
-        $this->assertDatabaseHas('tt_trooper_assignments', [
+        $this->assertDatabaseHas(TrooperAssignment::class, [
             'trooper_id' => $target_trooper->id,
             'organization_id' => $organization2->id,
             'moderator' => false,

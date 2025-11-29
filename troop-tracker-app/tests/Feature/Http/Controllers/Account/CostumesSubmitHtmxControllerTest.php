@@ -7,6 +7,7 @@ namespace Tests\Feature\Http\Controllers\Account;
 use App\Models\Costume;
 use App\Models\Organization;
 use App\Models\Trooper;
+use App\Models\TrooperCostume;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -66,7 +67,7 @@ class CostumesSubmitHtmxControllerTest extends TestCase
                 && $trooper_costumes->first()->id === $this->assigned_costume->id;
         });
 
-        $this->assertDatabaseHas('tt_trooper_costumes', [
+        $this->assertDatabaseHas(TrooperCostume::class, [
             'trooper_id' => $this->trooper->id,
             'costume_id' => $this->assigned_costume->id,
         ]);

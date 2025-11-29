@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin\Notices;
 
+use App\Enums\NoticeType;
 use App\Http\Controllers\Controller;
 use App\Models\Notice;
 use App\Models\Organization;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 /**
  * Class CreateController
  *
- * Handles displaying the form to create a new notice under a parent.
+ * Handles displaying the form to create a new notice.
  * @package App\Http\Controllers\Admin\Notices
  */
 class CreateController extends Controller
@@ -32,11 +33,12 @@ class CreateController extends Controller
     /**
      * Handle the request to display the notice creation page.
      *
-     * Authorizes the user, sets up breadcrumbs, and returns the view
-     * containing the form to create a new sub-notice.
+     * Authorizes the user, sets up breadcrumbs, and returns the view containing
+     * the form to create a new notice. If an organization_id is provided in the
+     * query, it pre-selects that organization, ensuring the user has moderation
+     * rights if they are not an administrator.
      *
      * @param Request $request The incoming HTTP request object.
-     * @param Notice $parent The parent notice under which to create a new one.
      * @return View The rendered notice creation view.
      */
     public function __invoke(Request $request): View
@@ -53,20 +55,23 @@ class CreateController extends Controller
 
         if ($notice->organization_id != null)
         {
+            $trooper = Auth::user();
+
             $q = Organization::query();
 
-            if (!Auth::user()->isAdministrator())
+            if (!$trooper->isAdministrator())
             {
-                $trooper_id = Auth::user()->id;
-
-                $q = Organization::moderatedBy($trooper_id);
+                $q = $q->moderatedBy($trooper);
             }
 
             $notice->organization = $q->findOrFail($request->get('organization_id'));
         }
 
+        $options = NoticeType::toDescriptions();
+
         $data = [
-            'notice' => $notice
+            'notice' => $notice,
+            'options' => $options
         ];
 
         return view('pages.admin.notices.create', $data);
